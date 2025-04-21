@@ -1,6 +1,7 @@
 {
   "expo": {
-    "name": "anotaapp",
+    "jsEngine": "hermes",
+    "name": "Anota App",
     "slug": "anotaapp",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -8,10 +9,12 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
@@ -19,10 +22,19 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [],
+      "package": "com.anotaapp",
+      "versionCode": 1,
+      "supportsTablet": true
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-sqlite",
+      "expo-router"
+    ],
+    "scheme": "anotaapp"
   }
 }

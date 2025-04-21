@@ -1,6 +1,17 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "strict": true
+    "strict": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "skipLibCheck": true,
+    "strictPropertyInitialization": false,
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"],
+      "@models/*": ["src/database/models/*"],
+      "@services/*": ["src/database/services/*"]
+    },
+    "resolveJsonModule": true
   }
 }
