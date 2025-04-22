@@ -12,15 +12,12 @@ export class Produto {
   @Column('decimal', { precision: 10, scale: 2 })
   preco: number;
 
-  @Column('text', { nullable: true })
-  descricao: string;
-
   @CreateDateColumn()
   created_at: Date;
   
   @ManyToMany(() => Ingrediente, (ingrediente) => ingrediente.produtos, { cascade: true })
   @JoinTable({
-    name: 'produto_ingrediente', // Nome da tabela de associação
+    name: 'produto_ingrediente',
     joinColumn: { name: 'produtoId', referencedColumnName: 'id' },
     inverseJoinColumn: { name: 'ingredienteId', referencedColumnName: 'id' },
   })

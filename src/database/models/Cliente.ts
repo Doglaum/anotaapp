@@ -14,7 +14,7 @@ export class Cliente {
   @Column('text', { nullable: true })
   telefone: string;
 
-  @OneToMany(() => Endereco, (endereco) => endereco.cliente, { cascade: true })
+  @OneToMany(() => Endereco, (endereco) => endereco.cliente, { cascade: true, nullable: true  })
   enderecos: Endereco[];
 
   @OneToMany(() => Pedido, (pedido) => pedido.cliente)

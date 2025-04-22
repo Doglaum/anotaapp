@@ -8,12 +8,11 @@ import {
 } from 'react-native'
 import { commonStyles, theme } from '@/theme'
 import { useState } from 'react'
-import { Cliente } from '@models/Cliente'
+import { Cliente, Pedido } from '@/database/models/'
 import { ClienteService } from '@/services/ClienteService'
-import { Pedido } from '@/database/models'
 import { useFocusEffect } from '@react-navigation/native'
 import { useCallback } from 'react'
-import { EmptyList } from 'components/EmptyList'
+import { EmptyList } from '@/components/EmptyList'
 
 export default function ClienteStep({
    pedido,
@@ -60,7 +59,6 @@ export default function ClienteStep({
             <View
                style={[
                   commonStyles.listItem,
-                  { flexDirection: 'column' },
                   isSelected && { backgroundColor: theme.colors.primary }
                ]}
             >
@@ -70,7 +68,15 @@ export default function ClienteStep({
                      isSelected && { color: theme.colors.white }
                   ]}
                >
-                  {item.nome} {' - '} {item.telefone}
+                  {item.nome}
+               </Text>
+               <Text
+                  style={[
+                     styles.clientName,
+                     isSelected && { color: theme.colors.white }
+                  ]}
+               >
+                  {item.telefone}
                </Text>
             </View>
          </TouchableOpacity>
@@ -99,10 +105,6 @@ export default function ClienteStep({
 }
 
 const styles = StyleSheet.create({
-   container: {
-      flex: 1,
-      backgroundColor: '#fff'
-   },
    clientName: {
       fontSize: 16,
       fontWeight: 'bold'

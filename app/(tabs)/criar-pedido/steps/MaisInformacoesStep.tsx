@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, TextInput, ScrollView } from 'react-native'
 import { useState } from 'react'
 import { commonStyles, theme } from '@/theme'
-import { Picker } from '@react-native-picker/picker'
+import SelectInput from '@/components/SelectInput'
 import { FormaPagamento, SituacaoPedido, Pedido } from '@/database/models/'
 import { SituacaoPedidoService, FormaPagamentoService } from '@/services'
 import { useFocusEffect } from '@react-navigation/native'
@@ -25,11 +25,9 @@ export default function MaisInformacoesStep({
       useCallback(() => {
          const loadSituacoePedido = async () => {
             try {
-               const formas =
-                  await formaPagamentoService.listarFormasPagamento()
+               const formas = await formaPagamentoService.listar()
                setListFormasPagamento(formas)
-               const situacoes =
-                  await situacaoPedidoService.listarSituacoesPedido()
+               const situacoes = await situacaoPedidoService.listar()
                setListSituacaoPedido(situacoes)
             } catch (error) {
                console.error('Erro ao carregar formas de pagamento:', error)
@@ -38,11 +36,9 @@ export default function MaisInformacoesStep({
          loadSituacoePedido()
          const loadFormasPagamentos = async () => {
             try {
-               const formas =
-                  await formaPagamentoService.listarFormasPagamento()
+               const formas = await formaPagamentoService.listar()
                setListFormasPagamento(formas)
-               const situacoes =
-                  await situacaoPedidoService.listarSituacoesPedido()
+               const situacoes = await situacaoPedidoService.listar()
                setListSituacaoPedido(situacoes)
             } catch (error) {
                console.error('Erro ao carregar formas de pagamento:', error)
@@ -90,39 +86,23 @@ export default function MaisInformacoesStep({
          <View style={styles.formGroup}>
             <Text style={styles.label}>Forma de Pagamento</Text>
             <View style={commonStyles.pickerContainer}>
-               <Picker
-                  selectedValue={pedido.formaPagamento}
+               <SelectInput
+                  selectValue={pedido.formaPagamento}
                   onValueChange={itemValue => formaPagamentoHandle(itemValue)}
                   style={commonStyles.picker}
-               >
-                  <Picker.Item label="Selecione" value="" />
-                  {listFormasPagamento?.map(formaPagamento => (
-                     <Picker.Item
-                        key={formaPagamento.id}
-                        label={formaPagamento.nome}
-                        value={formaPagamento}
-                     />
-                  ))}
-               </Picker>
+                  list={listFormasPagamento || []}
+               />
             </View>
          </View>
          <View style={styles.formGroup}>
             <Text style={styles.label}>Situação Pedido</Text>
             <View style={commonStyles.pickerContainer}>
-               <Picker
-                  selectedValue={pedido.situacaoPedido}
+               <SelectInput
+                  selectValue={pedido.situacaoPedido}
                   onValueChange={itemValue => situacaoPedidoHandle(itemValue)}
                   style={commonStyles.picker}
-               >
-                  <Picker.Item label="Selecione" value="" />
-                  {listSituacaoPedido?.map(situacaoPedido => (
-                     <Picker.Item
-                        key={situacaoPedido.id} // Use uma chave única
-                        label={situacaoPedido.nome} // Nome da situação do pedido
-                        value={situacaoPedido} // Objeto da situação do pedido
-                     />
-                  ))}
-               </Picker>
+                  list={listSituacaoPedido || []}
+               ></SelectInput>
             </View>
          </View>
          <View style={styles.formGroup}>

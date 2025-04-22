@@ -8,10 +8,11 @@
     "strictPropertyInitialization": false,
     "baseUrl": "./",
     "paths": {
-      "@/*": ["src/*"],
-      "@models/*": ["src/database/models/*"],
-      "@services/*": ["src/database/services/*"]
+      "@/*": ["src/*", "app/*"],
     },
-    "resolveJsonModule": true
-  }
+    "resolveJsonModule": true,
+    "jsx": "react-jsx"
+  },
+  "include": ["src", "app", "types"],
+  "exclude": ["node_modules"]
 }

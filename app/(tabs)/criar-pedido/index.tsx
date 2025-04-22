@@ -1,7 +1,7 @@
 import { View, StyleSheet, TouchableOpacity, Text, Alert } from 'react-native'
 import { useState } from 'react'
 import { commonStyles, theme } from '@/theme'
-import { Pedido } from '@models/index'
+import { Pedido } from '@/database/models/index'
 import { PedidoService } from '@/services/PedidoService'
 import { useRouter, Stack } from 'expo-router'
 import { ClienteStep, PedidoProdutoStep, MaisInformacoesStep } from './steps'
@@ -138,10 +138,13 @@ export default function PedidoForm() {
                )}
                {step === 3 && (
                   <TouchableOpacity
-                     style={styles.roundedButton}
+                     style={[
+                        styles.roundedButton,
+                        { backgroundColor: theme.colors.edit }
+                     ]}
                      onPress={handleSubmit}
                   >
-                     <MaterialIcons name="check" size={24} color="#fff" />
+                     <MaterialIcons name="check" size={24} color="#ffffff" />
                   </TouchableOpacity>
                )}
             </View>

@@ -8,15 +8,16 @@ import {
 } from 'react-native'
 import { useEffect, useState } from 'react'
 import { theme, commonStyles } from '@/theme'
-import { Produto } from '@models/Produto'
+import { Produto } from '@/database/models/Produto'
 import { ProdutoService } from '@/services/ProdutoService'
-import { useLocalSearchParams, useRouter, Stack } from 'expo-router'
+import { useLocalSearchParams, useRouter } from 'expo-router'
+import CurrencyInput from 'react-native-currency-input'
 
 export default function Editar() {
    const [produto, setProduto] = useState<Partial<Produto>>({
       nome: '',
-      preco: 0,
-      descricao: ''
+      preco: 0.0,
+      ingredientes: []
    })
    const router = useRouter()
    const produtoService = new ProdutoService()
@@ -41,48 +42,46 @@ export default function Editar() {
    }, [numberId])
 
    const handleSubmit = async () => {
+      if (!produto.preco) {
+         setProduto(prev => ({ ...prev, preco: 0 }))
+      }
       await produtoService.atualizarProduto(numberId, produto)
-      console.log('Produto a ser salvo:', produto)
       router.push('/produtos')
    }
 
+   const handlePrecoChange = (text: number) => {
+      setProduto(prev => ({
+         ...prev,
+         preco: text
+      }))
+   }
+
    return (
-      <ScrollView style={styles.container}>
+      <ScrollView style={commonStyles.container}>
          <View style={styles.formGroup}>
             <Text style={styles.label}>Nome</Text>
             <TextInput
                style={styles.input}
                value={produto.nome}
-               onChangeText={text => setProduto({ ...produto, nome: text })}
+               onChangeText={text =>
+                  setProduto(prev => ({ ...prev, nome: text }))
+               }
                placeholder="Digite o nome do produto"
             />
          </View>
 
          <View style={styles.formGroup}>
             <Text style={styles.label}>Preço</Text>
-            <TextInput
+            <CurrencyInput
                style={styles.input}
-               value={produto.preco?.toString()}
-               onChangeText={text =>
-                  setProduto({ ...produto, preco: parseFloat(text) || 0 })
-               }
+               value={produto.preco || null}
+               onChangeValue={handlePrecoChange}
+               minValue={0}
+               delimiter="."
+               separator=","
                placeholder="Digite o preço"
                keyboardType="decimal-pad"
                inputMode="decimal"
-            />
-         </View>
-
-         <View style={styles.formGroup}>
-            <Text style={styles.label}>Descrição</Text>
-            <TextInput
-               style={[styles.input, styles.textArea]}
-               value={produto.descricao}
-               onChangeText={text =>
-                  setProduto({ ...produto, descricao: text })
-               }
-               placeholder="Digite a descrição do produto"
-               multiline
-               numberOfLines={4}
             />
          </View>
 

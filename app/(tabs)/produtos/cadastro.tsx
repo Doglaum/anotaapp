@@ -8,9 +8,10 @@ import {
 } from 'react-native'
 import { useState } from 'react'
 import { commonStyles, theme } from '@/theme'
-import { Produto } from '@models/Produto'
+import { Produto } from '@/database/models/Produto'
 import { ProdutoService } from '@/services/ProdutoService'
-import { useRouter, Stack } from 'expo-router'
+import { useRouter } from 'expo-router'
+import CurrencyInput from 'react-native-currency-input'
 
 export default function Cadastro() {
    const router = useRouter()
@@ -18,69 +19,50 @@ export default function Cadastro() {
    const [produto, setProduto] = useState<Partial<Produto>>({
       nome: '',
       preco: 0.0,
-      descricao: ''
+      ingredientes: []
    })
 
    const handleSubmit = async () => {
+      console.log(produto)
+      if (!produto.preco) {
+         setProduto(prev => ({ ...prev, preco: 0 }))
+      }
       await produtoService.criarProduto(produto as Produto)
       router.push('/produtos/lista')
    }
-   const handleInputChange = (text: string) => {
-      console.log(text)
-      // Permite apenas números e um ponto decimal
-      const formattedText = text.replace(/[^0-9.]/g, '')
 
-      // Garante que não haja mais de um ponto decimal
-      if ((formattedText.match(/\./g) || []).length <= 1) {
-         setProduto(prev => ({
-            ...prev,
-            preco: Number.parseFloat(formattedText)
-         }))
-      }
+   const handlePrecoChange = (text: number) => {
+      setProduto(prev => ({
+         ...prev,
+         preco: text
+      }))
    }
 
    return (
       <ScrollView style={styles.container}>
-         <Stack.Screen
-            options={{
-               title: 'Gravar Produto',
-               headerStyle: {
-                  backgroundColor: theme.colors.primary
-               }
-            }}
-         />
          <View style={styles.formGroup}>
             <Text style={styles.label}>Nome</Text>
             <TextInput
                style={styles.input}
                value={produto.nome}
                onChangeText={text =>
-                  setProduto(() => ({ ...produto, nome: text }))
+                  setProduto(prev => ({ ...prev, nome: text }))
                }
                placeholder="Digite o nome do produto"
             />
          </View>
          <View style={styles.formGroup}>
             <Text style={styles.label}>Preço</Text>
-            <TextInput
+            <CurrencyInput
                style={styles.input}
-               value={produto.preco?.toString()}
-               onChangeText={handleInputChange}
-               placeholder="Digite o preço"
-               keyboardType="numeric"
-            />
-         </View>
-         <View style={styles.formGroup}>
-            <Text style={styles.label}>Descrição</Text>
-            <TextInput
-               style={[styles.input, styles.textArea]}
-               value={produto.descricao}
-               onChangeText={text =>
-                  setProduto(() => ({ ...produto, descricao: text }))
-               }
-               placeholder="Digite a descrição do produto"
-               multiline
-               numberOfLines={4}
+               value={produto.preco || null}
+               onChangeValue={handlePrecoChange}
+               minValue={0}
+               delimiter="."
+               separator=","
+               placeholder="0"
+               keyboardType="decimal-pad"
+               inputMode="decimal"
             />
          </View>
          <TouchableOpacity

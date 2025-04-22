@@ -24,6 +24,7 @@ export const theme = {
 export const commonStyles = StyleSheet.create({
   listItem: {
     justifyContent: 'space-between',
+    alignItems: 'center',
     flexDirection: 'row',
     backgroundColor: '#fff',
     paddingHorizontal: 10,

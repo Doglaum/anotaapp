@@ -8,18 +8,12 @@ import {
    Button,
    TextInput
 } from 'react-native'
-import { MaterialIcons } from '@expo/vector-icons'
-import { commonStyles, theme } from '@/theme'
-import { Stack } from 'expo-router'
-import { useState, useEffect, useCallback } from 'react'
+import { commonStyles } from '@/theme'
+import { useState, useCallback } from 'react'
 import { Pedido, Produto, PedidoProduto } from '@/database/models'
 import { ProdutoService } from '@/services/ProdutoService'
 import { useFocusEffect } from '@react-navigation/native'
-import { EmptyList } from 'components/EmptyList'
-
-interface PedidoProdutoStepProps {
-   onAdicionarPedidoProduto: (pedidoProduto: PedidoProduto) => void
-}
+import { EmptyList } from '@/components/EmptyList'
 
 export default function PedidoProdutoStep({
    pedido,

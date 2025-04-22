@@ -1,13 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { View, Text, StyleSheet, FlatList } from 'react-native'
 import { Pedido } from '@/database/models'
 import { PedidoService } from '@/services'
-import { Stack } from 'expo-router'
 import { commonStyles, theme } from '@/theme'
-import { MaterialIcons } from '@expo/vector-icons'
 import { useFocusEffect } from 'expo-router'
 import { useCallback } from 'react'
-import { EmptyList } from 'components/EmptyList'
+import { EmptyList } from '@/components/EmptyList'
 
 const renderItem = ({ item }: { item: Pedido }) => (
    <View

@@ -23,7 +23,7 @@ export default function TabLayout() {
             }}
          />
          <Stack.Screen
-            name="editar/[id]"
+            name="[id]"
             options={{
                title: 'Editar produto'
             }}

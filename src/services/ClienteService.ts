@@ -12,9 +12,6 @@ export class ClienteService {
     if (!cliente.nome) {
       throw new Error('Nome é obrigatório');
     }
-    if(!cliente.endereco) {
-      throw new Error('Endereço é obrigatório');
-    }
     return await this.repository.create(cliente);
   }
 
@@ -29,9 +26,6 @@ export class ClienteService {
   async atualizarCliente(id: number, dados: Partial<Cliente>): Promise<Cliente | null> {
     if (!dados.nome) {
       throw new Error('Nome é obrigatório');
-    }
-    if(!dados.endereco) {
-      throw new Error('Endereço é obrigatório');
     }
 
     return await this.repository.update(id, dados);

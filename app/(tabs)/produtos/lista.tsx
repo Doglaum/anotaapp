@@ -10,10 +10,10 @@ import { MaterialIcons } from '@expo/vector-icons'
 import { commonStyles, theme } from '@/theme'
 import { useRouter } from 'expo-router'
 import { useState, useEffect, useCallback } from 'react'
-import { Produto } from '@models/Produto'
+import { Produto } from '@/database/models/Produto'
 import { ProdutoService } from '@/services/ProdutoService'
 import { useFocusEffect } from 'expo-router'
-import { EmptyList } from 'components/EmptyList'
+import { EmptyList } from '@/components/EmptyList'
 
 export default function Lista() {
    const router = useRouter()
@@ -84,9 +84,7 @@ export default function Lista() {
                   <View style={styles.productActions}>
                      <TouchableOpacity
                         style={styles.actionButton}
-                        onPress={() =>
-                           router.push(`/produtos/editar/${item.id}`)
-                        }
+                        onPress={() => router.push(`/produtos/${item.id}`)}
                      >
                         <MaterialIcons
                            name="edit"

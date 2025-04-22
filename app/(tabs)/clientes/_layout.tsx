@@ -23,9 +23,21 @@ export default function TabLayout() {
             }}
          />
          <Stack.Screen
-            name="editar/[id]"
+            name="[id]"
             options={{
                title: 'Editar Cliente'
+            }}
+         />
+         <Stack.Screen
+            name="endereco/cadastro"
+            options={{
+               title: 'Cadastrar Endereço'
+            }}
+         />
+         <Stack.Screen
+            name="endereco/[id]"
+            options={{
+               title: 'Editar Endereço'
             }}
          />
       </Stack>

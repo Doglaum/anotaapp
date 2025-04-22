@@ -4,51 +4,41 @@ import {
    StyleSheet,
    TextInput,
    TouchableOpacity,
-   ScrollView
+   ScrollView,
+   FlatList
 } from 'react-native'
-import { useEffect, useState } from 'react'
-import { theme } from '../../../../src/theme'
-import { Cliente } from '@models/Cliente'
+import { useState, useEffect } from 'react'
+import { commonStyles, theme } from '@/theme'
+import { Cliente, Endereco } from '@/database/models'
 import { ClienteService } from '@/services/ClienteService'
-import { useLocalSearchParams, useRouter } from 'expo-router'
+import { useRouter, useLocalSearchParams } from 'expo-router'
+import { EmptyList } from '@/components/EmptyList'
 
-type EditarClienteParams = {
-   id: number
-}
-
-export default function ClienteForm() {
+export default function EnderecoForm() {
+   const router = useRouter()
+   const clienteService = new ClienteService()
    const [cliente, setCliente] = useState<Partial<Cliente>>({
       nome: '',
       telefone: '',
-      endereco: ''
+      enderecos: []
    })
-   const router = useRouter()
-   const clienteService = new ClienteService()
-   const { id } = useLocalSearchParams<{ id: string }>()
-   const numberId = Number(id)
-   useEffect(() => {
-      const loadCliente = async () => {
-         try {
-            const cliente = await clienteService.buscarCliente(numberId)
-            if (cliente) {
-               setCliente(cliente)
-            } else {
-               console.error('Cliente não encontrado.')
-               router.push('/clientes')
-            }
-         } catch (error) {
-            console.error('Erro ao carregar cliente:', error)
-         }
-      }
-
-      loadCliente()
-   }, [numberId])
 
    const handleSubmit = async () => {
-      await clienteService.atualizarCliente(numberId, cliente)
+      await clienteService.criarCliente(cliente as Cliente)
       console.log('Cliente a ser salvo:', cliente)
-      router.push('/clientes')
+      router.back()
    }
+   const params = useLocalSearchParams()
+   useEffect(() => {
+      if (params.endereco) {
+         const endereco = params.endereco as Partial<Endereco>
+         setCliente(prevState => ({
+            ...prevState,
+            enderecos: [...(prevState.enderecos || []), endereco as Endereco]
+         }))
+         console.log(params)
+      }
+   }, [params])
 
    return (
       <ScrollView style={styles.container}>
@@ -58,29 +48,41 @@ export default function ClienteForm() {
                style={styles.input}
                value={cliente.nome}
                onChangeText={text => setCliente({ ...cliente, nome: text })}
-               placeholder="Digite o nome do cliente"
+               placeholder="Digite o nome"
             />
          </View>
+
          <View style={styles.formGroup}>
             <Text style={styles.label}>Telefone</Text>
             <TextInput
                style={styles.input}
                value={cliente.telefone}
                onChangeText={text => setCliente({ ...cliente, telefone: text })}
-               placeholder="Digite o telefone do cliente"
+               placeholder="Digite o telefone"
             />
          </View>
-         <View style={styles.formGroup}>
-            <Text style={styles.label}>Endereço</Text>
-            <TextInput
-               style={[styles.input, styles.textArea]}
-               value={cliente.endereco}
-               onChangeText={text => setCliente({ ...cliente, endereco: text })}
-               placeholder="Digite o endereço do cliente"
-               multiline
-               numberOfLines={4}
-            />
-         </View>
+         <TouchableOpacity
+            style={styles.button}
+            onPress={() => router.push('/clientes/endereco/cadastro')}
+         >
+            <Text style={styles.buttonText}>Cadastrar Endereço</Text>
+         </TouchableOpacity>
+         {/* <FlatList<Endereco>
+            data={cliente.enderecos}
+            keyExtractor={item => item.id.toString()}
+            renderItem={({ item }) => (
+               <View style={commonStyles.listItem}>
+                  <View>
+                     <Text>
+                        {item.bairro} {' - '} {item.rua}
+                     </Text>
+                  </View>
+               </View>
+            )}
+            ListEmptyComponent={
+               <EmptyList iconName="person" text="Nenhum cliente cadastrado" />
+            }
+         /> */}
          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
             <Text style={styles.buttonText}>Salvar</Text>
          </TouchableOpacity>

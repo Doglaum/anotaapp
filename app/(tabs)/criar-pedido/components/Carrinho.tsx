@@ -1,4 +1,3 @@
-import React from 'react'
 import {
    View,
    Text,
@@ -8,8 +7,9 @@ import {
    Button,
    TouchableOpacity
 } from 'react-native'
-import { Pedido } from '@models/Pedido'
+import { Pedido } from '@/database/models/Pedido'
 import { MaterialIcons } from '@expo/vector-icons'
+import { EmptyList } from '@/components/EmptyList'
 
 export default function Carrinho({
    visible,
@@ -40,7 +40,9 @@ export default function Carrinho({
          <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
                <Text style={styles.modalTitle}>
-                  Carrinho de {pedido?.cliente?.nome}
+                  {pedido?.cliente?.nome
+                     ? `Carrinho de ${pedido.cliente.nome}`
+                     : 'Carrinho'}
                </Text>
                <FlatList
                   data={pedido.pedidoProdutos}
@@ -65,22 +67,26 @@ export default function Carrinho({
                      </View>
                   )}
                   ListEmptyComponent={
-                     <Text style={styles.emptyCartText}>
-                        O carrinho está vazio.
-                     </Text>
+                     <EmptyList
+                        iconName="shopping-cart"
+                        text="O carrinho está vazio."
+                     />
                   }
                />
                <View style={{ marginTop: 16 }}>
-                  <Text style={styles.modalTitle}>
-                     Total produtos: R${' '}
-                     {pedido.pedidoProdutos &&
-                        pedido.pedidoProdutos
-                           .reduce(
-                              (total, item) => total + item.produto.preco,
-                              0
-                           )
-                           .toFixed(2)}
-                  </Text>
+                  {pedido.pedidoProdutos &&
+                     pedido.pedidoProdutos.length > 1 && (
+                        <Text style={styles.modalTitle}>
+                           Total produtos: R${' '}
+                           {pedido.pedidoProdutos &&
+                              pedido.pedidoProdutos
+                                 .reduce(
+                                    (total, item) => total + item.produto.preco,
+                                    0
+                                 )
+                                 .toFixed(2)}
+                        </Text>
+                     )}
                </View>
                <Button title="Fechar" onPress={onClose} />
             </View>

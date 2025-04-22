@@ -9,10 +9,11 @@ import {
 import { MaterialIcons } from '@expo/vector-icons'
 import { commonStyles, theme } from '@/theme'
 import { Stack, useRouter } from 'expo-router'
-import { useState, useEffect } from 'react'
-import { Cliente } from '@models/Cliente'
+import { useState, useCallback } from 'react'
+import { Cliente } from '@/database/models/Cliente'
 import { ClienteService } from '@/services/ClienteService'
-import { EmptyList } from 'components/EmptyList'
+import { EmptyList } from '@/components/EmptyList'
+import { useFocusEffect } from '@react-navigation/native'
 
 export default function Clientes() {
    const router = useRouter()
@@ -20,19 +21,24 @@ export default function Clientes() {
    const [filteredClientes, setFilteredClientes] = useState<Cliente[]>([])
    const clienteService = new ClienteService()
 
-   useEffect(() => {
-      const loadClientes = async () => {
-         try {
-            const clientes = await clienteService.listarClientes()
-            setClientes(clientes)
-            setFilteredClientes(clientes)
-         } catch (error) {
-            console.error('Erro ao carregar clientes:', error)
+   useFocusEffect(
+      useCallback(() => {
+         const loadPedidos = async () => {
+            try {
+               const clientes = await clienteService.listarClientes()
+               setClientes(clientes)
+               setFilteredClientes(clientes)
+            } catch (error) {
+               console.error('Erro ao carregar clientes:', error)
+            }
          }
-      }
 
-      loadClientes()
-   }, [])
+         loadPedidos()
+         return () => {
+            console.log('Saindo da aba Pedidos')
+         }
+      }, [])
+   )
 
    const handleDelete = async (id: number) => {
       await clienteService.excluirCliente(id)
@@ -79,9 +85,7 @@ export default function Clientes() {
                   <View style={styles.clienteActions}>
                      <TouchableOpacity
                         style={styles.actionButton}
-                        onPress={() =>
-                           router.push(`/clientes/editar/${item.id}`)
-                        }
+                        onPress={() => router.push(`/clientes/${item.id}`)}
                      >
                         <MaterialIcons
                            name="edit"
