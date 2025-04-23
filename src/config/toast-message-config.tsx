@@ -11,7 +11,7 @@ export const toastMessageConfig = {
          {...props}
          style={{
             borderColor: theme.colors.success,
-            backgroundColor: theme.colors.appContainerColor,
+            backgroundColor: theme.colors.toastBackgroundColor,
             borderWidth: 1
          }}
          text1Style={{
@@ -27,7 +27,7 @@ export const toastMessageConfig = {
          {...props}
          style={{
             borderColor: theme.colors.error,
-            backgroundColor: theme.colors.appContainerColor,
+            backgroundColor: theme.colors.toastBackgroundColor,
             borderWidth: 1
          }}
          text1Style={{
@@ -43,7 +43,7 @@ export const toastMessageConfig = {
          {...props}
          style={{
             borderColor: theme.colors.warning,
-            backgroundColor: theme.colors.appContainerColor,
+            backgroundColor: theme.colors.toastBackgroundColor,
             borderWidth: 1
          }}
          text1Style={{

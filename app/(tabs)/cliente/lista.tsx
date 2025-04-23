@@ -67,7 +67,7 @@ export default function Clientes() {
             />
             <TouchableOpacity
                style={commonStyles.addButton}
-               onPress={() => router.push('/clientes/cadastro')}
+               onPress={() => router.push('/cliente/cadastro')}
             >
                <MaterialIcons name="add" size={24} color="#fff" />
             </TouchableOpacity>
@@ -85,7 +85,7 @@ export default function Clientes() {
                   <View style={styles.clienteActions}>
                      <TouchableOpacity
                         style={styles.actionButton}
-                        onPress={() => router.push(`/clientes/${item.id}`)}
+                        onPress={() => router.push(`/cliente/${item.id}`)}
                      >
                         <MaterialIcons
                            name="edit"

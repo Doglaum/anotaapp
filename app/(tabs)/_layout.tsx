@@ -11,9 +11,9 @@ export default function TabLayout() {
          }}
       >
          <Tabs.Screen
-            name="pedidos"
+            name="pedido"
             options={{
-               tabBarLabel: 'Início',
+               tabBarLabel: 'Pedidos',
                tabBarIcon: ({ color, size }) => (
                   <MaterialIcons name="home" size={size} color={color} />
                ),
@@ -21,7 +21,7 @@ export default function TabLayout() {
             }}
          />
          <Tabs.Screen
-            name="clientes"
+            name="cliente"
             options={{
                tabBarLabel: 'Clientes',
                tabBarIcon: ({ color, size }) => (

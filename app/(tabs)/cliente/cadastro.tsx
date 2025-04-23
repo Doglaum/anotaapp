@@ -16,6 +16,7 @@ import { EmptyList } from '@/components/EmptyList'
 
 export default function EnderecoForm() {
    const router = useRouter()
+   const { from } = useLocalSearchParams()
    const clienteService = new ClienteService()
    const [cliente, setCliente] = useState<Partial<Cliente>>({
       nome: '',
@@ -25,7 +26,6 @@ export default function EnderecoForm() {
 
    const handleSubmit = async () => {
       await clienteService.criarCliente(cliente as Cliente)
-      console.log('Cliente a ser salvo:', cliente)
       router.back()
    }
    const params = useLocalSearchParams()
@@ -61,12 +61,6 @@ export default function EnderecoForm() {
                placeholder="Digite o telefone"
             />
          </View>
-         <TouchableOpacity
-            style={styles.button}
-            onPress={() => router.push('/clientes/endereco/cadastro')}
-         >
-            <Text style={styles.buttonText}>Cadastrar Endereço</Text>
-         </TouchableOpacity>
          {/* <FlatList<Endereco>
             data={cliente.enderecos}
             keyExtractor={item => item.id.toString()}

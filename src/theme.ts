@@ -20,7 +20,8 @@ export const theme = {
       success: "#26e030",
       error: '#FF3B30',
       warning: '#dd9748',
-      appContainerColor: '#f5f5f5'
+      appContainerColor: '#f5f5f5',
+      toastBackgroundColor: '#ffffff'
     },
 };
 
@@ -64,13 +65,13 @@ export const commonStyles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
     borderColor: '#ccc',
-    padding: 15,
+    padding: 16,
     backgroundColor: '#fff',
   },
   addButton: {
     backgroundColor: theme.colors.primary,
-    alignSelf: 'flex-end',
-    padding: 13,
+  //  alignSelf: 'flex-end',
+    padding: 16,
     borderRadius: 8,
     flexDirection: 'row',
     alignItems: 'center'

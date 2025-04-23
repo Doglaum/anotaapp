@@ -39,10 +39,10 @@ export default function PedidoForm() {
    //TODO : adicionar forma de somar o valor do frete
    const handleSubmit = async () => {
       console.log(pedido)
-      await pedidoService.criarPedido(pedido)
-      setPedido({})
-      setStep(1)
-      router.push('/pedidos/lista')
+      //await pedidoService.criarPedido(pedido)
+      //setPedido({})
+      //setStep(1)
+      //router.push('/pedidos/lista')
    }
 
    return (
@@ -92,21 +92,23 @@ export default function PedidoForm() {
                <Text style={styles.cartButtonText}>Carrinho</Text>
             </TouchableOpacity>
          </View>
-         {step === 1 && (
-            <ClienteStep pedido={pedido} atualizarPedido={atualizarPedido} />
-         )}
-         {step === 2 && (
-            <PedidoProdutoStep
-               pedido={pedido}
-               atualizarPedido={atualizarPedido}
-            />
-         )}
-         {step === 3 && (
-            <MaisInformacoesStep
-               pedido={pedido}
-               atualizarPedido={atualizarPedido}
-            />
-         )}
+         <View style={{ flex: 1 }}>
+            <View style={{ display: step === 1 ? 'flex' : 'none', flex: 1 }}>
+               <ClienteStep pedido={pedido} atualizarPedido={atualizarPedido} />
+            </View>
+            <View style={{ display: step === 2 ? 'flex' : 'none', flex: 1 }}>
+               <PedidoProdutoStep
+                  pedido={pedido}
+                  atualizarPedido={atualizarPedido}
+               />
+            </View>
+            <View style={{ display: step === 3 ? 'flex' : 'none', flex: 1 }}>
+               <MaisInformacoesStep
+                  pedido={pedido}
+                  atualizarPedido={atualizarPedido}
+               />
+            </View>
+         </View>
          <View
             style={{
                flexDirection: 'row',
