@@ -15,13 +15,13 @@ import { ProdutoService } from '@/services/ProdutoService'
 import { useFocusEffect } from '@react-navigation/native'
 import { EmptyList } from '@/components/EmptyList'
 
-export default function PedidoProdutoStep({
+export const PedidoProdutoStep = ({
    pedido,
    atualizarPedido
 }: {
    pedido: Partial<Pedido>
    atualizarPedido: <K extends keyof Pedido>(campo: K, valor: Pedido[K]) => void
-}) {
+}) => {
    const produtoService = new ProdutoService()
    const [produtos, setProdutos] = useState<Produto[]>([])
    const [modalVisible, setModalVisible] = useState(false)
@@ -40,6 +40,7 @@ export default function PedidoProdutoStep({
       const pedidoProduto = new PedidoProduto()
       pedidoProduto.detalhes = detalhe
       pedidoProduto.produto = produtoSelecionado
+      pedidoProduto.valorUnitario = produtoSelecionado.preco
       atualizarPedido('pedidoProdutos', [
          ...(pedido?.pedidoProdutos || []),
          pedidoProduto

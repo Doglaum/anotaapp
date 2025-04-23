@@ -1,5 +1,5 @@
 import { Repository } from 'typeorm';
-import { AppDataSource } from '../../config/ormconfig';
+import { AppDataSource } from '../../config/orm-config';
 import { Pedido } from '../models/Pedido';
 import { PedidoProduto } from '../models/PedidoProduto';
 

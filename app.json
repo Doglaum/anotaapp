@@ -15,29 +15,6 @@
     "assetBundlePatterns": [
       "**/*"
     ],
-    "ios": {
-      "infoPlist": {
-        "NSBluetoothAlwaysUsageDescription": "Este aplicativo usa Bluetooth para se conectar a dispositivos.",
-        "NSBluetoothPeripheralUsageDescription": "Este aplicativo usa Bluetooth para se conectar a dispositivos."
-      }
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "permissions": [
-        "BLUETOOTH",
-        "BLUETOOTH_ADMIN",
-        "ACCESS_FINE_LOCATION",
-        "BLUETOOTH_SCAN",
-        "BLUETOOTH_CONNECT",
-        "BLUETOOTH_ADVERTISE"
-      ],
-      "package": "com.anotaapp",
-      "versionCode": 1,
-      "supportsTablet": true
-    },
     "web": {
       "favicon": "./assets/favicon.png"
     },

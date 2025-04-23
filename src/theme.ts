@@ -11,13 +11,16 @@ export const theme = {
       background: '#ea1d2c',
       surface: '#ffffff',
       text: '#000000',
-      error: '#FF3B30',
       delete: "#ff4444",
-      edit:"#31e472",
-      add:"#0731bb",
+      edit: "#26e030",
+      add: "#26e030",
       white:"#ffffff",
       whiteGray:"#f2f2f2",
       gray:"#a7a7a7",
+      success: "#26e030",
+      error: '#FF3B30',
+      warning: '#dd9748',
+      appContainerColor: '#f5f5f5'
     },
 };
 
@@ -28,7 +31,7 @@ export const commonStyles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#fff',
     paddingHorizontal: 10,
-    paddingVertical: 8,
+    paddingVertical: 13,
     borderRadius: 8,
     elevation: 2,
     shadowColor: '#000',
@@ -46,7 +49,7 @@ export const commonStyles = StyleSheet.create({
     flex: 1,
     paddingVertical: 16,
     paddingHorizontal: 10,
-    backgroundColor: '#f5f5f5'
+    backgroundColor: theme.colors.appContainerColor
  },
   searchContainer: {
     flexDirection: 'row',
@@ -111,17 +114,5 @@ export const commonStyles = StyleSheet.create({
     fontSize: 16,
     color: '#666',
     marginTop: 16
-  },
-  pickerContainer: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    overflow: 'hidden'
-  },
-  picker: {
-    height: 50,
-    width: '100%',
-    backgroundColor: '#fff',
- },
-  
+  },  
 });

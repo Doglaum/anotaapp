@@ -14,13 +14,13 @@ import { useFocusEffect } from '@react-navigation/native'
 import { useCallback } from 'react'
 import { EmptyList } from '@/components/EmptyList'
 
-export default function ClienteStep({
+export const ClienteStep = ({
    pedido,
    atualizarPedido
 }: {
    pedido: Partial<Pedido>
    atualizarPedido: <K extends keyof Pedido>(campo: K, valor: Pedido[K]) => void
-}) {
+}) => {
    const clienteService = new ClienteService()
    const [clientes, setClientes] = useState<Cliente[]>([])
    const [filteredClientes, setFilteredClientes] = useState<Cliente[]>([])
@@ -43,11 +43,11 @@ export default function ClienteStep({
    )
 
    const handleSearch = (text: string) => {
-      const searchText = text.toLowerCase().trim() // Remove espaços extras e converte para minúsculas
+      const searchText = text.toLowerCase().trim()
       const filtered = clientes.filter(cliente => {
-         const nome = cliente.nome?.toLowerCase() || '' // Garante que nome seja uma string
-         const telefone = cliente.telefone?.toLowerCase() || '' // Garante que telefone seja uma string
-         return nome.includes(searchText) || telefone.includes(searchText) // Verifica se o texto está no nome ou telefone
+         const nome = cliente.nome?.toLowerCase() || ''
+         const telefone = cliente.telefone?.toLowerCase() || ''
+         return nome.includes(searchText) || telefone.includes(searchText)
       })
       setFilteredClientes(filtered)
    }

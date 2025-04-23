@@ -1,4 +1,4 @@
-import { AppDataSource } from '../config/ormconfig';
+import { AppDataSource } from '../config/orm-config';
 import { FormaPagamentoService } from '../services/FormaPagamentoService';
 import { SituacaoPedidoService } from '../services/SituacaoPedidoService';
 import { FormaPagamentoEnum } from './enums/FormaPagamentoEnum';

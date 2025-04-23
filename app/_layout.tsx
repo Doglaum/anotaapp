@@ -5,6 +5,7 @@ import { theme } from '../src/theme'
 import { useEffect, useState } from 'react'
 import { View, ActivityIndicator, Text } from 'react-native'
 import { initDatabase } from '../src/database/database'
+import { AppToast } from '@/components/Toast'
 
 export default function RootLayout() {
    const [isReady, setIsReady] = useState(false)
@@ -39,6 +40,7 @@ export default function RootLayout() {
             <Stack>
                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             </Stack>
+            <AppToast />
          </PaperProvider>
       </SafeAreaProvider>
    )

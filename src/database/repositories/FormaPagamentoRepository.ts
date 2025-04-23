@@ -1,5 +1,5 @@
 import { Repository } from 'typeorm';
-import { AppDataSource } from '../../config/ormconfig';
+import { AppDataSource } from '../../config/orm-config';
 import { FormaPagamento } from '../models/FormaPagamento';
 
 export class FormaPagamentoRepository {

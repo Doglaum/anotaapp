@@ -38,6 +38,7 @@ export default function PedidoForm() {
 
    //TODO : adicionar forma de somar o valor do frete
    const handleSubmit = async () => {
+      console.log(pedido)
       await pedidoService.criarPedido(pedido)
       setPedido({})
       setStep(1)

@@ -1,30 +1,43 @@
 import { useState } from 'react'
-import { View, Text, StyleSheet, FlatList } from 'react-native'
+import {
+   View,
+   Text,
+   StyleSheet,
+   FlatList,
+   TouchableOpacity
+} from 'react-native'
 import { Pedido } from '@/database/models'
 import { PedidoService } from '@/services'
 import { commonStyles, theme } from '@/theme'
 import { useFocusEffect } from 'expo-router'
 import { useCallback } from 'react'
 import { EmptyList } from '@/components/EmptyList'
+import { successToast, errorToast, infoToast } from '@/components'
 
 const renderItem = ({ item }: { item: Pedido }) => (
-   <View
-      style={[
-         commonStyles.listItem,
-         item?.situacaoPedido?.id === 2
-            ? { backgroundColor: theme.colors.edit }
-            : { backgroundColor: theme.colors.edit }
-      ]}
+   <TouchableOpacity
+      onPress={() => {
+         successToast('sucesso')
+      }}
    >
-      <Text style={styles.itemText}>
-         {item.id}
-         {' - '}
-         {item.cliente.nome}
-         {' - '}
-         {item?.situacaoPedido?.nome}
-         {' - '}
-      </Text>
-   </View>
+      <View
+         style={[
+            commonStyles.listItem,
+            item?.situacaoPedido?.id === 2
+               ? { backgroundColor: theme.colors.edit }
+               : { backgroundColor: theme.colors.edit }
+         ]}
+      >
+         <Text style={styles.itemText}>
+            {item.id}
+            {' - '}
+            {item.cliente.nome}
+            {' - '}
+            {item?.situacaoPedido?.nome}
+            {' - '}
+         </Text>
+      </View>
+   </TouchableOpacity>
 )
 
 export default function Lista() {

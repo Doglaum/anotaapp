@@ -1,6 +1,6 @@
 import { SituacaoPedido } from "../database/models/SituacaoPedido";
 import { SituacaoPedidoRepository } from "../database/repositories/SituacaoPedidoRepository";
-
+import { Item } from "react-native-picker-select";
 
 export class SituacaoPedidoService {
   private repository: SituacaoPedidoRepository;
@@ -21,5 +21,14 @@ export class SituacaoPedidoService {
 
   async buscarSituacaoPedido(id: number): Promise<SituacaoPedido | null> {
     return await this.repository.findById(id);
+  }
+
+  async listarAsPickerItem(): Promise<Item[]> {
+    const results = await this.repository.findAll();
+    return results.map((item: any) => ({
+      label: item.nome,
+      value: item,
+      key: item.id
+    }));
   }
 } 

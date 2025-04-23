@@ -1,5 +1,3 @@
-import ClienteStep from "./ClienteStep";
-import PedidoProdutoStep from "./PedidoProdutoStep";
-import MaisInformacoesStep from "./MaisInformacoesStep";
-
-export { ClienteStep, PedidoProdutoStep, MaisInformacoesStep };
+export { ClienteStep } from "./ClienteStep";
+export { PedidoProdutoStep} from "./PedidoProdutoStep"
+export { MaisInformacoesStep } from "./MaisInformacoesStep";

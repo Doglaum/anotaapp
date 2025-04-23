@@ -23,8 +23,11 @@ export class Endereco {
    @Column('text', { nullable: true })
    complemento: string;
 
-   @ManyToOne(() => Cliente)
+   @Column('text', { nullable: true })
+   cep: string;
+
+   @ManyToOne(() => Cliente, {onDelete: 'CASCADE'})
    @JoinColumn({ name: 'clienteId' })
    cliente: Cliente;
 
-} 
+}

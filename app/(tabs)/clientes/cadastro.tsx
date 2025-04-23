@@ -83,8 +83,11 @@ export default function EnderecoForm() {
                <EmptyList iconName="person" text="Nenhum cliente cadastrado" />
             }
          /> */}
-         <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-            <Text style={styles.buttonText}>Salvar</Text>
+         <TouchableOpacity
+            style={commonStyles.saveButton}
+            onPress={handleSubmit}
+         >
+            <Text style={commonStyles.saveButtonText}>Salvar</Text>
          </TouchableOpacity>
       </ScrollView>
    )

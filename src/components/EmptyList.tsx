@@ -1,5 +1,4 @@
 import { View, Text } from 'react-native'
-import React from 'react'
 import { MaterialIcons } from '@expo/vector-icons'
 import { commonStyles } from '@/theme'
 

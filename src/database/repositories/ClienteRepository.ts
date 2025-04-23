@@ -1,5 +1,5 @@
 import { Repository } from 'typeorm';
-import { AppDataSource } from '../../config/ormconfig';
+import { AppDataSource } from '../../config/orm-config';
 import { Cliente } from '../models/Cliente';
 
 export class ClienteRepository {
