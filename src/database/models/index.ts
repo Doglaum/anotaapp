@@ -1,8 +1,8 @@
-export { Cliente } from './Cliente';
-export { Produto } from './Produto';
-export { Pedido } from './Pedido';
-export { FormaPagamento } from './FormaPagamento';
-export { PedidoProduto } from './PedidoProduto';
-export { SituacaoPedido } from './SituacaoPedido';
-export { Endereco } from './Endereco';
-export { Ingrediente } from './Ingrediente';
+export { Address } from './Address';
+export { Client } from './Client';
+export { Ingredient } from './Ingredient';
+export { Order } from './Order';
+export { OrderProduct } from './OrderProduct';
+export { OrderSituation } from './OrderSituation';
+export { PaymentMethod } from './PaymentMethod';
+export { Product } from './Product';

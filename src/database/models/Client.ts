@@ -1,0 +1,25 @@
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany } from 'typeorm';
+import { Address } from './Address';
+import { Order } from './Order';
+
+@Entity('client')
+export class Client {
+
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column('text')
+  name: string;
+
+  @Column('text', { nullable: true })
+  phoneNumber: string;
+
+  @OneToMany(() => Address, (address) => address.client, { cascade: true, nullable: true  })
+  addresses: Address[];
+
+  @OneToMany(() => Order, (order) => order.client)
+  orders: Order[];
+
+  @CreateDateColumn()
+  created_at: Date;
+}

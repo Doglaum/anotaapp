@@ -13,7 +13,7 @@ export const theme = {
       text: '#000000',
       delete: "#ff4444",
       edit: "#26e030",
-      add: "#26e030",
+      add: "#007AFF",
       white:"#ffffff",
       whiteGray:"#f2f2f2",
       gray:"#a7a7a7",
@@ -61,19 +61,26 @@ export const commonStyles = StyleSheet.create({
     borderRadius: 8,
   },
   input: {
-    flex: 1,
     borderWidth: 1,
-    borderRadius: 8,
-    borderColor: '#ccc',
-    padding: 16,
+    borderColor: '#ddd',
+    borderRadius: 8,    
+    fontSize: 16,
     backgroundColor: '#fff',
+    flex: 1,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: {
+        width: 0,
+        height: 1
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2
   },
   addButton: {
     backgroundColor: theme.colors.primary,
-  //  alignSelf: 'flex-end',
     padding: 16,
     borderRadius: 8,
-    flexDirection: 'row',
     alignItems: 'center'
   },
   addButtonText: {
@@ -115,5 +122,24 @@ export const commonStyles = StyleSheet.create({
     fontSize: 16,
     color: '#666',
     marginTop: 16
-  },  
+  },
+  selectedStyle: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 14,
+    backgroundColor: 'white',
+    shadowColor: '#000',
+    marginTop: 8,
+    marginRight: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    shadowOffset: {
+       width: 0,
+       height: 1
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2
+ }
 });

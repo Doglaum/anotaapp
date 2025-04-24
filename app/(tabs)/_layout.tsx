@@ -11,7 +11,7 @@ export default function TabLayout() {
          }}
       >
          <Tabs.Screen
-            name="pedido"
+            name="order"
             options={{
                tabBarLabel: 'Pedidos',
                tabBarIcon: ({ color, size }) => (
@@ -21,7 +21,7 @@ export default function TabLayout() {
             }}
          />
          <Tabs.Screen
-            name="cliente"
+            name="client"
             options={{
                tabBarLabel: 'Clientes',
                tabBarIcon: ({ color, size }) => (
@@ -31,7 +31,7 @@ export default function TabLayout() {
             }}
          />
          <Tabs.Screen
-            name="produtos"
+            name="product"
             options={{
                tabBarLabel: 'Produtos',
                tabBarIcon: ({ color, size }) => (
@@ -41,7 +41,7 @@ export default function TabLayout() {
             }}
          />
          <Tabs.Screen
-            name="criar-pedido"
+            name="create-order"
             options={{
                tabBarLabel: 'Tirar Pedido',
                tabBarIcon: ({ color, size }) => (

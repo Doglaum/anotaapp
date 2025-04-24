@@ -1,20 +1,20 @@
 import { AppDataSource } from '../config/orm-config';
-import { FormaPagamentoService } from '../services/FormaPagamentoService';
-import { SituacaoPedidoService } from '../services/SituacaoPedidoService';
-import { FormaPagamentoEnum } from './enums/FormaPagamentoEnum';
-import { SituacaoPedidoEnum } from './enums/SituacaoPedidoEnum';
+import { PaymentMethodService } from '../services/PaymentMethodService';
+import { OrderSituationService } from '../services/OrderSituationService';
+import { PaymentMethodEnum } from './enums/PaymentMethodEnum';
+import { OrderSituationEnum } from './enums/OrderSituationEnum';
 
-const formasPagamentoPadrao = [
-  { id: FormaPagamentoEnum.DINHEIRO, nome: 'Dinheiro' },
-  { id: FormaPagamentoEnum.CARTAO_CREDITO, nome: 'Cartão de Crédito' },
-  { id: FormaPagamentoEnum.CARTAO_DEBITO, nome: 'Cartão de Débito' },
-  { id: FormaPagamentoEnum.PIX, nome: 'PIX' },
+const defaultPaymentMethods = [
+  { id: PaymentMethodEnum.DINHEIRO, name: 'Dinheiro' },
+  { id: PaymentMethodEnum.CARTAO_CREDITO, name: 'Cartão de Crédito' },
+  { id: PaymentMethodEnum.CARTAO_DEBITO, name: 'Cartão de Débito' },
+  { id: PaymentMethodEnum.PIX, name: 'PIX' },
 ];
 
-const situacoesPedidoPadrao = [
-  { id: SituacaoPedidoEnum.PAGO, nome: 'Pago' },
-  { id: SituacaoPedidoEnum.PENDENTE, nome: 'Pendente' },
-  { id: SituacaoPedidoEnum.CANCELADO, nome: 'Cancelado' },
+const defaultOrderSituations = [
+  { id: OrderSituationEnum.PAGO, name: 'Pago' },
+  { id: OrderSituationEnum.PENDENTE, name: 'Pendente' },
+  { id: OrderSituationEnum.CANCELADO, name: 'Cancelado' },
 ];
 
 export const initDatabase = async (): Promise<void> => {
@@ -24,15 +24,15 @@ export const initDatabase = async (): Promise<void> => {
     }
     console.log('Banco de dados inicializado com sucesso!');
 
-    await verificarEInserirDadosPadrao(
-      new FormaPagamentoService(),
-      formasPagamentoPadrao,
+    await insertDefaultData(
+      new PaymentMethodService(),
+      defaultPaymentMethods,
       'Formas de pagamento padrão verificadas e atualizadas.'
     );
 
-    await verificarEInserirDadosPadrao(
-      new SituacaoPedidoService(),
-      situacoesPedidoPadrao,
+    await insertDefaultData(
+      new OrderSituationService(),
+      defaultOrderSituations,
       'Situações de pedido padrão verificadas e atualizadas.'
     );
 
@@ -43,22 +43,22 @@ export const initDatabase = async (): Promise<void> => {
   }
 };
 
-const verificarEInserirDadosPadrao = async (
-  service: { listar: () => Promise<any[]>; gravar: (data: any) => Promise<any> },
-  dadosPadrao: any[],
-  mensagemSucesso: string
+const insertDefaultData = async (
+  service: { listAll: () => Promise<any[]>; save: (data: any) => Promise<any> },
+  defaultData: any[],
+  successMessage: string
 ): Promise<void> => {
-  const dadosExistentes = await service.listar();
-  for (const dado of dadosPadrao) {
-    const existe = dadosExistentes.some((item) => item.nome === dado.nome);
-    if (!existe) {
-      await service.gravar(dado).catch((error) => {
-        console.error(`Erro ao gravar "${dado.nome}":`, error);
+  const existentDatas = await service.listAll();
+  for (const data of defaultData) {
+    const exists = existentDatas.some((item) => item.name === data.name);
+    if (!exists) {
+      await service.save(data).catch((error) => {
+        console.error(`Erro ao gravar "${data.name}":`, error);
       });
-      console.log(`"${dado.nome}" foi inserido.`);
+      console.log(`"${data.name}" foi inserido.`);
     }
   }
-  console.log(mensagemSucesso);
+  console.log(successMessage);
 };
 
 export default AppDataSource;

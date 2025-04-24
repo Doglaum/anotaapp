@@ -1,5 +1,5 @@
-export { ClienteService } from './ClienteService';
-export { ProdutoService } from './ProdutoService';
-export { PedidoService } from './PedidoService';
-export { FormaPagamentoService } from './FormaPagamentoService';
-export { SituacaoPedidoService } from './SituacaoPedidoService';
+export { ClientService } from './ClientService';
+export { ProductService } from './ProductService';
+export { OrderService } from './OrderService';
+export { PaymentMethodService } from './PaymentMethodService';
+export { OrderSituationService } from './OrderSituationService';

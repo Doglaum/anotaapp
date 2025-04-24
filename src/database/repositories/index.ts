@@ -1,5 +1,6 @@
-export { ClienteRepository } from './ClienteRepository';
-export { ProdutoRepository } from './ProdutoRepository';
-export { PedidoRepository } from './PedidoRepository';
-export { FormaPagamentoRepository } from './FormaPagamentoRepository';
-export { SituacaoPedidoRepository } from './SituacaoPedidoRepository';
+export { ClientRepository } from './ClientRepository';
+export { ProductRepository } from './ProductRepository';
+export { OrderRepository } from './OrderRepository';
+export { PaymentMethodRepository } from './PaymentMethodRepository';
+export { OrderSituationRepository } from './OrderSituationRepository';
+export { IngredientRepository } from './IngredientRepository';
