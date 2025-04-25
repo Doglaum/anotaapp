@@ -1,17 +1,10 @@
-import {
-   View,
-   Text,
-   StyleSheet,
-   TextInput,
-   TouchableOpacity,
-   ScrollView,
-   FlatList
-} from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { useState } from 'react'
 import { commonStyles, theme } from '@/theme'
 import { Client } from '@/database/models'
 import { ClientService } from '@/services/ClientService'
 import { useRouter } from 'expo-router'
+import { FormTextInput } from '@/components'
 
 export default function RegisterClient() {
    const router = useRouter()
@@ -27,47 +20,27 @@ export default function RegisterClient() {
       router.back()
    }
 
+   const handleChange = (name: string, value: any) => {
+      setClient(prev => ({
+         ...prev,
+         [name]: value
+      }))
+   }
+
    return (
       <View style={commonStyles.container}>
-         <ScrollView style={commonStyles.container}>
-            <View style={styles.formGroup}>
-               <Text style={commonStyles.title}>Nome</Text>
-               <TextInput
-                  style={commonStyles.input}
-                  value={client.name}
-                  onChangeText={text => setClient({ ...client, name: text })}
-                  placeholder="Digite o nome"
-               />
-            </View>
-
-            <View style={styles.formGroup}>
-               <Text style={commonStyles.title}>Telefone</Text>
-               <TextInput
-                  style={commonStyles.input}
-                  value={client.phoneNumber}
-                  onChangeText={text =>
-                     setClient({ ...client, phoneNumber: text })
-                  }
-                  placeholder="Digite o telefone"
-               />
-            </View>
-            {/* <FlatList<Endereco>
-            data={cliente.enderecos}
-            keyExtractor={item => item.id.toString()}
-            renderItem={({ item }) => (
-               <View style={commonStyles.listItem}>
-                  <View>
-                     <Text>
-                        {item.bairro} {' - '} {item.rua}
-                     </Text>
-                  </View>
-               </View>
-            )}
-            ListEmptyComponent={
-               <EmptyList iconName="person" text="Nenhum cliente cadastrado" />
-            }
-         /> */}
-         </ScrollView>
+         <FormTextInput
+            label="Nome"
+            name="name"
+            value={client.name}
+            onChange={handleChange}
+         />
+         <FormTextInput
+            label="Numero"
+            name="phoneNumber"
+            value={client.phoneNumber}
+            onChange={handleChange}
+         />
          <TouchableOpacity
             style={commonStyles.saveButton}
             onPress={handleSubmit}

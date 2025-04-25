@@ -14,6 +14,7 @@ import { Client } from '@/database/models/Client'
 import { ClientService } from '@/services/ClientService'
 import { EmptyList } from '@/components/EmptyList'
 import { useFocusEffect } from '@react-navigation/native'
+import SearchInput from '@/components/SearchInput'
 
 export default function Clients() {
    const router = useRouter()
@@ -47,26 +48,22 @@ export default function Clients() {
       setFilteredClients(() => newList)
    }
 
+   const handleSearch = (text: string) => {
+      const filteredClients = clients.filter(
+         client =>
+            client.name.toLowerCase().includes(text.toLowerCase()) ||
+            client.phoneNumber.toLowerCase().includes(text.toLowerCase())
+      )
+      setFilteredClients(filteredClients)
+   }
+
    return (
       <View style={commonStyles.container}>
-         <View style={commonStyles.searchContainer}>
-            <TextInput
-               style={commonStyles.input}
-               placeholder="Pesquisar cliente"
-               onChangeText={text => {
-                  const filteredClients = clients.filter(client =>
-                     client.name.toLowerCase().includes(text.toLowerCase())
-                  )
-                  setFilteredClients(filteredClients)
-               }}
-            />
-            <TouchableOpacity
-               style={commonStyles.addButton}
-               onPress={() => router.push('/client/register')}
-            >
-               <MaterialIcons name="add" size={24} color="#fff" />
-            </TouchableOpacity>
-         </View>
+         <SearchInput
+            onChange={handleSearch}
+            label="Digite nome ou numero..."
+            rota="/client/register"
+         />
          <FlatList<Client>
             data={filteredClients}
             keyExtractor={item => item.id.toString()}

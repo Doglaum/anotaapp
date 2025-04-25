@@ -62,13 +62,8 @@ export default function PedidoForm() {
       if (order.orderProducts) {
          totalOrder += order.orderProducts.reduce((total, orderProduct) => {
             const productPrice = orderProduct.product.price
-            const ingredientsPrice = orderProduct.product.ingredients.reduce(
-               (ingredientTotal, ingredient) =>
-                  ingredientTotal + ingredient.price,
-               0
-            )
 
-            return total + productPrice + ingredientsPrice
+            return total + productPrice
          }, 0)
       }
       return parseFloat(totalOrder.toFixed(2))

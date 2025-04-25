@@ -1,17 +1,9 @@
-import {
-   View,
-   Text,
-   StyleSheet,
-   TextInput,
-   TouchableOpacity,
-   ScrollView
-} from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { useEffect, useState } from 'react'
 import { commonStyles } from '@/theme'
 import { Product } from '@/database/models/Product'
 import { ProductService, IngredientService } from '@/services/'
 import { useRouter } from 'expo-router'
-import CurrencyInput from 'react-native-currency-input'
 import { MultiSelectInput } from '@/components/MultiSelectInput'
 import { CreateIngredientsModal } from '@/components/CreateIngredientsModal'
 import { Ingredient } from '@/database/models'

@@ -12,6 +12,7 @@ import { Product } from '@/database/models/Product'
 import { ProductService } from '@/services/ProductService'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import CurrencyInput from 'react-native-currency-input'
+import { FormCurrencyInput, FormTextInput } from '@/components'
 
 export default function Editar() {
    const [product, setProduct] = useState<Partial<Product>>({
@@ -37,7 +38,6 @@ export default function Editar() {
             console.error('Erro ao carregar produto:', error)
          }
       }
-
       loadProduct()
    }, [numberId])
 
@@ -49,77 +49,33 @@ export default function Editar() {
       router.push('/product')
    }
 
-   const handlePriceChange = (text: number) => {
+   const handleChange = (name: string, value: any) => {
       setProduct(prev => ({
          ...prev,
-         price: text
+         [name]: value
       }))
    }
 
    return (
-      <ScrollView style={commonStyles.container}>
-         <View style={styles.formGroup}>
-            <Text style={styles.label}>Nome</Text>
-            <TextInput
-               style={styles.input}
-               value={product.name}
-               onChangeText={text =>
-                  setProduct(prev => ({ ...prev, price: Number(text) }))
-               }
-               placeholder="Digite o nome do produto"
-            />
-         </View>
-
-         <View style={styles.formGroup}>
-            <Text style={styles.label}>Preço</Text>
-            <CurrencyInput
-               style={styles.input}
-               value={product.price || null}
-               onChangeValue={handlePriceChange}
-               minValue={0}
-               delimiter="."
-               separator=","
-               placeholder="Digite o preço"
-               keyboardType="decimal-pad"
-               inputMode="decimal"
-            />
-         </View>
-
+      <View style={commonStyles.container}>
+         <FormTextInput
+            label="Nome"
+            name="name"
+            onChange={handleChange}
+            value={product.name}
+         />
+         <FormCurrencyInput
+            label="Preço"
+            name="price"
+            onChange={handleChange}
+            value={product.price}
+         />
          <TouchableOpacity
             style={commonStyles.editButton}
             onPress={handleSubmit}
          >
             <Text style={commonStyles.editButtonText}>Editar</Text>
          </TouchableOpacity>
-      </ScrollView>
+      </View>
    )
 }
-
-const styles = StyleSheet.create({
-   container: {
-      flex: 1,
-      padding: 16,
-      backgroundColor: '#fff'
-   },
-   formGroup: {
-      marginBottom: 16
-   },
-   label: {
-      fontSize: 16,
-      fontWeight: 'bold',
-      marginBottom: 8,
-      color: theme.colors.text
-   },
-   input: {
-      borderWidth: 1,
-      borderColor: '#ddd',
-      borderRadius: 8,
-      padding: 12,
-      fontSize: 16,
-      backgroundColor: '#fff'
-   },
-   textArea: {
-      height: 100,
-      textAlignVertical: 'top'
-   }
-})

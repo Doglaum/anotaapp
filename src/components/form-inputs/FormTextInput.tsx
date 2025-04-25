@@ -14,7 +14,7 @@ export const FormTextInput = ({
 }) => {
    return (
       <View style={commonStyles.formGroup}>
-         <Text style={commonStyles.formLabel}>{label}</Text>
+         <Text style={commonStyles.formLabel}>{`${label}:`}</Text>
          <TextInput
             style={commonStyles.formInput}
             value={value}

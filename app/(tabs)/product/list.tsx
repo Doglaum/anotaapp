@@ -3,13 +3,12 @@ import {
    Text,
    StyleSheet,
    FlatList,
-   TouchableOpacity,
-   TextInput
+   TouchableOpacity
 } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
 import { commonStyles, theme } from '@/theme'
 import { useRouter } from 'expo-router'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import { Product } from '@/database/models/Product'
 import { ProductService } from '@/services/ProductService'
 import { useFocusEffect } from 'expo-router'

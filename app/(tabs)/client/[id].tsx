@@ -1,16 +1,10 @@
-import {
-   View,
-   Text,
-   StyleSheet,
-   TextInput,
-   TouchableOpacity,
-   ScrollView
-} from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { useEffect, useState } from 'react'
 import { commonStyles, theme } from '@/theme'
 import { Client } from '@/database/models/Client'
 import { ClientService } from '@/services/ClientService'
 import { useLocalSearchParams, useRouter } from 'expo-router'
+import { FormTextInput } from '@/components'
 
 export default function UpdateClient() {
    const [client, setClient] = useState<Partial<Client>>({
@@ -44,35 +38,34 @@ export default function UpdateClient() {
       router.push('/client')
    }
 
+   const handleChange = (name: string, value: any) => {
+      setClient(prev => ({
+         ...prev,
+         [name]: value
+      }))
+   }
+
    return (
-      <ScrollView style={styles.container}>
-         <View style={styles.formGroup}>
-            <Text style={styles.label}>Nome</Text>
-            <TextInput
-               style={styles.input}
-               value={client.name}
-               onChangeText={text => setClient({ ...client, name: text })}
-               placeholder="Digite o nome do cliente"
-            />
-         </View>
-         <View style={styles.formGroup}>
-            <Text style={styles.label}>Telefone</Text>
-            <TextInput
-               style={styles.input}
-               value={client.phoneNumber}
-               onChangeText={text =>
-                  setClient({ ...client, phoneNumber: text })
-               }
-               placeholder="Digite o telefone do cliente"
-            />
-         </View>
+      <View style={commonStyles.container}>
+         <FormTextInput
+            label="Nome"
+            name="name"
+            value={client.name}
+            onChange={handleChange}
+         />
+         <FormTextInput
+            label="Numero"
+            name="phoneNumber"
+            value={client.phoneNumber}
+            onChange={handleChange}
+         />
          <TouchableOpacity
             style={commonStyles.editButton}
             onPress={handleSubmit}
          >
             <Text style={commonStyles.editButtonText}>Salvar</Text>
          </TouchableOpacity>
-      </ScrollView>
+      </View>
    )
 }
 

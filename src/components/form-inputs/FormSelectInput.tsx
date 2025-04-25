@@ -1,8 +1,8 @@
 import { View, Text } from 'react-native'
 import { commonStyles } from '@/theme'
-import { SelectInput } from './SelectInput'
+import { SelectInput } from '../SelectInput'
 
-const FormSelectInput = ({
+export const FormSelectInput = ({
    label,
    data,
    changeValue,
@@ -30,5 +30,3 @@ const FormSelectInput = ({
       </View>
    )
 }
-
-export default FormSelectInput
