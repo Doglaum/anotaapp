@@ -29,7 +29,7 @@ export const MultiSelectInput = ({
       >
          <MultiSelect
             key={key}
-            style={[commonStyles.input, { flex: 1 }]}
+            style={[commonStyles.formInput, { flex: 1 }]}
             placeholderStyle={styles.placeholderStyle}
             selectedTextStyle={styles.selectedTextStyle}
             inputSearchStyle={styles.inputSearchStyle}

@@ -6,7 +6,7 @@ import { OrderSituationService, PaymentMethodService } from '@/services'
 import { useFocusEffect } from '@react-navigation/native'
 import { useCallback } from 'react'
 import CurrencyInput from 'react-native-currency-input'
-import { SelectInput } from '@/components'
+import { FormCurrencyInput, FormSelectInput, SelectInput } from '@/components'
 
 export const AdditionalInformationsStep = ({
    order,
@@ -39,58 +39,40 @@ export const AdditionalInformationsStep = ({
       }, [])
    )
 
+   const selectHandle = (name: any, text: any) => {
+      insertOrderData(name, text)
+   }
+
    return (
       <ScrollView style={commonStyles.container}>
-         <View style={styles.formGroup}>
-            <Text style={styles.label}>Forma de Pagamento</Text>
-            <SelectInput
-               data={paymentMethods || []}
-               labelField="nome"
-               valueField="id"
-               placeholder="Selecione a forma de pagamento"
-               onChange={value => insertOrderData('paymentMethod', value)}
-            />
-         </View>
-         <View style={styles.formGroup}>
-            <Text style={styles.label}>Situação Pedido</Text>
-            <SelectInput
-               data={orderSituations || []}
-               labelField="nome"
-               valueField="id"
-               placeholder="Selecione a situação do pedido"
-               onChange={item => insertOrderData('orderSituation', item)}
-            />
-         </View>
-         <View style={styles.formGroup}>
-            <Text style={styles.label}>Troco</Text>
-            <CurrencyInput
-               style={commonStyles.input}
-               value={order.changeFor || 0.0}
-               onChangeValue={item => insertOrderData('changeFor', item || 0.0)}
-               placeholder="Digite o troco"
-               keyboardType="numeric"
-               minValue={0}
-               delimiter="."
-               separator=","
-               inputMode="decimal"
-            />
-         </View>
-         <View style={styles.formGroup}>
-            <Text style={styles.label}>Taxa Entrega</Text>
-            <CurrencyInput
-               style={commonStyles.input}
-               value={order.deliveryFee || 0}
-               onChangeValue={item =>
-                  insertOrderData('deliveryFee', item || 0.0)
-               }
-               placeholder="Digite a taxa de entrega"
-               keyboardType="numeric"
-               minValue={0}
-               delimiter="."
-               separator=","
-               inputMode="decimal"
-            />
-         </View>
+         <FormSelectInput<Order>
+            onChange={selectHandle}
+            data={paymentMethods || []}
+            label="Selecione a forma de pagamento"
+            labelField="name"
+            valueField="id"
+            name="paymentMethod"
+         />
+         <FormSelectInput<Order>
+            onChange={selectHandle}
+            data={orderSituations || []}
+            label="Selecione a situação do pedido"
+            labelField="name"
+            valueField="id"
+            name="orderSituation"
+         />
+         <FormCurrencyInput
+            label="Troco"
+            name="changeFor"
+            onChange={selectHandle}
+            value={order.changeFor}
+         />
+         <FormCurrencyInput
+            label="Tx. Entrega"
+            name="deliveryFee"
+            onChange={selectHandle}
+            value={order.deliveryFee}
+         />
          <View style={{ marginTop: 16 }}>
             <Text style={styles.modalTitle}>
                Valor total: R${order.totalPrice?.toFixed(2)}
