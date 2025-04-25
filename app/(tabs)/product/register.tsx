@@ -6,20 +6,21 @@ import {
    TouchableOpacity,
    ScrollView
 } from 'react-native'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { commonStyles } from '@/theme'
 import { Product } from '@/database/models/Product'
-import { ProductService } from '@/services/ProductService'
+import { ProductService, IngredientService } from '@/services/'
 import { useRouter } from 'expo-router'
 import CurrencyInput from 'react-native-currency-input'
 import { MultiSelectInput } from '@/components/MultiSelectInput'
-import { MaterialIcons } from '@expo/vector-icons'
 import { CreateIngredientsModal } from '@/components/CreateIngredientsModal'
 import { Ingredient } from '@/database/models'
+import { FormTextInput, FormCurrencyInput } from '@/components/'
 
 export default function RegisterProduct() {
    const router = useRouter()
    const productService = new ProductService()
+   const ingredientService = new IngredientService()
    const [product, setProduct] = useState<Partial<Product>>({
       name: '',
       price: 0.0,
@@ -29,6 +30,18 @@ export default function RegisterProduct() {
    const insertIngredients = (listIngredients: Ingredient[]) => {
       setListIngredients(prev => [...prev, ...listIngredients])
    }
+   const [selectedIngredients, setSelectedIngredients] = useState<string[]>([])
+
+   const loadIngredients = async () => {
+      const ingredients = await ingredientService.listAll()
+      console.log(ingredients)
+      setListIngredients(ingredients)
+   }
+
+   useEffect(() => {
+      loadIngredients()
+   }, [])
+
    const handleSubmit = async () => {
       if (!product.price) {
          setProduct(prev => ({ ...prev, price: 0 }))
@@ -44,50 +57,42 @@ export default function RegisterProduct() {
       }))
    }
 
+   const changeHandle = (name: string, value: any) => {
+      setProduct(prev => ({
+         ...prev,
+         [name]: value
+      }))
+   }
+
    return (
       <View style={commonStyles.container}>
-         <ScrollView style={commonStyles.container}>
-            <View style={styles.formGroup}>
-               <Text style={commonStyles.title}>Nome</Text>
-               <TextInput
-                  style={commonStyles.input}
-                  value={product.name}
-                  onChangeText={text =>
-                     setProduct(prev => ({ ...prev, name: text }))
-                  }
-                  placeholder="Digite o nome do produto"
+         <FormTextInput
+            name="name"
+            label="Nome"
+            value={product.name}
+            onChange={changeHandle}
+         />
+         <FormCurrencyInput
+            name="price"
+            label="Preço"
+            value={product.price}
+            onChange={changeHandle}
+         />
+         <Text>{JSON.stringify(product)}</Text>
+         <View style={styles.formGroup}>
+            <View style={[commonStyles.searchContainer]}>
+               <MultiSelectInput
+                  value={selectedIngredients}
+                  key="id"
+                  data={listIngredients}
+                  labelField="name"
+                  setIngredients={setSelectedIngredients}
+                  placeholder="Selecione os ingredientes"
+                  valueField="id"
                />
+               <CreateIngredientsModal onClose={loadIngredients} />
             </View>
-            <View style={styles.formGroup}>
-               <Text style={commonStyles.title}>Preço</Text>
-               <CurrencyInput
-                  style={commonStyles.input}
-                  value={product.price || null}
-                  onChangeValue={handlePriceChange}
-                  minValue={0}
-                  delimiter="."
-                  separator=","
-                  placeholder="0"
-                  keyboardType="decimal-pad"
-                  inputMode="decimal"
-               />
-            </View>
-            <View style={styles.formGroup}>
-               <Text style={commonStyles.title}>Ingredientes</Text>
-               <View style={commonStyles.searchContainer}>
-                  <MultiSelectInput
-                     data={listIngredients}
-                     labelField="name"
-                     onChange={insertIngredients}
-                     placeholder="Selecione os ingredientes"
-                     valueField="id"
-                  />
-                  <CreateIngredientsModal
-                     insertIngredients={insertIngredients}
-                  />
-               </View>
-            </View>
-         </ScrollView>
+         </View>
          <TouchableOpacity
             style={[commonStyles.saveButton, { marginTop: 'auto' }]}
             onPress={handleSubmit}

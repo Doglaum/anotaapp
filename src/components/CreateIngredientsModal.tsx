@@ -7,21 +7,19 @@ import {
    TextInput,
    FlatList
 } from 'react-native'
-import { commonStyles } from '@/theme'
+import { commonStyles, theme } from '@/theme'
 import { OverlayerModal } from './OverlayModal'
 import { Ingredient } from '@/database/models'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import CurrencyInput from 'react-native-currency-input'
-import { EmptyList } from './EmptyList'
 import { IngredientService } from '@/services/IngredientService'
-
-type CreateIngredientsModalProps = {
-   insertIngredients: (listIngredients: Ingredient[]) => void
-}
+import { MaterialIcons } from '@expo/vector-icons'
 
 export const CreateIngredientsModal = ({
-   insertIngredients
-}: CreateIngredientsModalProps) => {
+   onClose
+}: {
+   onClose?: () => void
+}) => {
    const ingredientService = new IngredientService()
    const [ingredient, setIngredient] = useState<Partial<Ingredient>>({
       name: '',
@@ -35,29 +33,31 @@ export const CreateIngredientsModal = ({
       console.log(ingredient)
    }
 
-   useEffect(() => {
-      insertIngredients(listIngredients)
-   }, [listIngredients])
+   const handleDelete = async (id: number) => {
+      await ingredientService.delete(id)
+      const newList = listIngredients.filter(p => p.id !== id)
+      setListIngredients(() => newList)
+   }
 
    return (
-      <OverlayerModal title="Cadastrar Ingredientes">
-         <View style={[commonStyles.container, { flex: 0 }]}>
-            <ScrollView>
-               <View style={styles.formGroup}>
-                  <Text style={commonStyles.title}>Nome</Text>
+      <OverlayerModal title="Cadastrar Ingredientes" onClose={onClose}>
+         <View style={[commonStyles.container]}>
+            {/* <ScrollView > */}
+            <View style={{ marginBottom: 10 }}>
+               <View style={commonStyles.formGroup}>
+                  <Text style={commonStyles.formLabel}>Nome:</Text>
                   <TextInput
-                     style={commonStyles.input}
+                     style={commonStyles.formInput}
                      value={ingredient.name}
                      onChangeText={text =>
                         setIngredient(prev => ({ ...prev, name: text }))
                      }
-                     placeholder="Digite o nome do produto"
                   />
                </View>
-               <View style={styles.formGroup}>
-                  <Text style={commonStyles.title}>Preço</Text>
+               <View style={commonStyles.formGroup}>
+                  <Text style={commonStyles.formLabel}>Preço:</Text>
                   <CurrencyInput
-                     style={commonStyles.input}
+                     style={commonStyles.formInput}
                      value={ingredient.price || null}
                      onChangeValue={text =>
                         setIngredient(prev => ({
@@ -73,36 +73,42 @@ export const CreateIngredientsModal = ({
                      inputMode="decimal"
                   />
                </View>
-            </ScrollView>
+               <TouchableOpacity
+                  style={commonStyles.saveButton}
+                  onPress={saveIngredient}
+               >
+                  <Text style={commonStyles.saveButtonText}>Salvar</Text>
+               </TouchableOpacity>
+            </View>
+            {/* </ScrollView> */}
             <FlatList<Ingredient>
                data={listIngredients}
-               horizontal
                keyExtractor={item => item.id.toString()}
                renderItem={({ item }) => (
-                  <View style={commonStyles.selectedStyle}>
-                     <Text>{item.name}</Text>
+                  <View style={[commonStyles.listItem]}>
+                     <View
+                        style={{
+                           alignItems: 'center',
+                           flexDirection: 'row'
+                        }}
+                     >
+                        <Text>{item.name}</Text>
+                        <Text>{item.price ? ` - R$ ${item.price}` : ''}</Text>
+                     </View>
+                     <TouchableOpacity onPress={() => handleDelete(item.id)}>
+                        <MaterialIcons
+                           name="delete"
+                           size={24}
+                           color={theme.colors.delete}
+                        />
+                     </TouchableOpacity>
                   </View>
                )}
-               ListEmptyComponent={
-                  <EmptyList
-                     iconName="restaurant"
-                     text="Nenhum produto cadastrado"
-                  />
-               }
+               ListEmptyComponent={<View></View>}
             />
          </View>
-         <TouchableOpacity
-            style={[commonStyles.saveButton, { marginTop: 'auto' }]}
-            onPress={saveIngredient}
-         >
-            <Text style={commonStyles.saveButtonText}>Salvar</Text>
-         </TouchableOpacity>
       </OverlayerModal>
    )
 }
 
-const styles = StyleSheet.create({
-   formGroup: {
-      marginBottom: 16
-   }
-})
+const styles = StyleSheet.create({})

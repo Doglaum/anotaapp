@@ -10,18 +10,28 @@ import {
 } from 'react-native'
 import { commonStyles, theme } from '@/theme'
 import { MaterialIcons } from '@expo/vector-icons'
+import { AppToast } from './AppToast'
 
 type OverlayModalProps = {
    children: React.ReactNode
    title: string
+   onClose?: () => void
 }
 
 export const OverlayerModal: React.FC<OverlayModalProps> = ({
    children,
-   title
+   title,
+   onClose
 }) => {
    const [visible, setVisible] = React.useState(false)
    const { height } = Dimensions.get('window')
+
+   const handleClose = () => {
+      setVisible(!visible)
+      if (onClose && visible == true) {
+         onClose()
+      }
+   }
 
    return (
       <View>
@@ -30,10 +40,10 @@ export const OverlayerModal: React.FC<OverlayModalProps> = ({
                <Modal
                   animationType="fade"
                   visible={visible}
-                  onDismiss={() => setVisible(false)}
+                  onDismiss={handleClose}
                   transparent
                >
-                  <TouchableWithoutFeedback onPress={() => setVisible(false)}>
+                  <TouchableWithoutFeedback onPress={handleClose}>
                      <View
                         style={{
                            flex: 1,
@@ -74,9 +84,7 @@ export const OverlayerModal: React.FC<OverlayModalProps> = ({
                                  >
                                     {title}
                                  </Text>
-                                 <TouchableOpacity
-                                    onPress={() => setVisible(false)}
-                                 >
+                                 <TouchableOpacity onPress={handleClose}>
                                     <MaterialIcons
                                        name="close"
                                        size={26}
@@ -100,10 +108,7 @@ export const OverlayerModal: React.FC<OverlayModalProps> = ({
                </Modal>
             </Portal>
          </PaperProvider>
-         <TouchableOpacity
-            style={commonStyles.addButton}
-            onPress={() => setVisible(true)}
-         >
+         <TouchableOpacity style={commonStyles.addButton} onPress={handleClose}>
             <MaterialIcons name="add" size={24} color="#fff" />
          </TouchableOpacity>
       </View>

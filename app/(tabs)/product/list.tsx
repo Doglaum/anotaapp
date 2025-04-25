@@ -14,6 +14,7 @@ import { Product } from '@/database/models/Product'
 import { ProductService } from '@/services/ProductService'
 import { useFocusEffect } from 'expo-router'
 import { EmptyList } from '@/components/EmptyList'
+import SearchInput from '@/components/SearchInput'
 
 export default function Products() {
    const router = useRouter()
@@ -57,19 +58,11 @@ export default function Products() {
 
    return (
       <View style={commonStyles.container}>
-         <View style={commonStyles.searchContainer}>
-            <TextInput
-               style={commonStyles.input}
-               placeholder="Pesquisar produto"
-               onChangeText={handleSearch}
-            />
-            <TouchableOpacity
-               style={commonStyles.addButton}
-               onPress={() => router.push('/product/register')}
-            >
-               <MaterialIcons name="add" size={24} color="#fff" />
-            </TouchableOpacity>
-         </View>
+         <SearchInput
+            label="Pesquisar produto..."
+            onChange={handleSearch}
+            rota="/product/register/"
+         />
          <FlatList<Product>
             data={filteredProducts}
             keyExtractor={item => item.id.toString()}

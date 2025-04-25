@@ -1,56 +1,69 @@
-import React, { useState } from 'react'
 import { StyleSheet, View, TouchableOpacity, Text } from 'react-native'
 import { MultiSelect } from 'react-native-element-dropdown'
-import AntDesign from '@expo/vector-icons/AntDesign'
-import { commonStyles } from '../theme'
+import { commonStyles, theme } from '../theme'
+import { Ingredient } from '@/database/models'
+import { MaterialIcons } from '@expo/vector-icons'
 
 type MultiSelectType = {
+   value: string[]
+   key: string
    data: any[]
    labelField: string
    valueField: string
    placeholder: string
-   onChange: (item: any) => void
+   setIngredients: (item: any) => void
 }
 
 export const MultiSelectInput = ({
+   value,
+   key,
    data,
    labelField,
-   onChange,
+   setIngredients,
    placeholder,
    valueField
 }: MultiSelectType) => {
-   const [selected, setSelected] = useState<string[]>([])
-
    return (
-      <MultiSelect
-         style={commonStyles.input}
-         placeholderStyle={styles.placeholderStyle}
-         selectedTextStyle={styles.selectedTextStyle}
-         inputSearchStyle={styles.inputSearchStyle}
-         data={data}
-         labelField={labelField}
-         valueField={valueField}
-         placeholder={placeholder}
-         value={selected}
-         search
-         searchPlaceholder="Procurar..."
-         onChange={item => {
-            setSelected(item)
-         }}
-         renderItem={item => (
-            <View style={styles.item}>
-               <Text style={styles.selectedTextStyle}>{item.label}</Text>
-            </View>
-         )}
-         renderSelectedItem={(item, unSelect) => (
-            <TouchableOpacity onPress={() => unSelect && unSelect(item)}>
-               <View style={styles.selectedStyle}>
-                  <Text style={styles.textSelectedStyle}>{item.label}</Text>
-                  <AntDesign color="black" name="delete" size={17} />
+      <View
+         style={{ flex: 1, backgroundColor: theme.colors.appContainerColor }}
+      >
+         <MultiSelect
+            key={key}
+            style={[commonStyles.input, { flex: 1 }]}
+            placeholderStyle={styles.placeholderStyle}
+            selectedTextStyle={styles.selectedTextStyle}
+            inputSearchStyle={styles.inputSearchStyle}
+            data={data}
+            labelField={labelField}
+            valueField={valueField}
+            placeholder={placeholder}
+            value={value}
+            search
+            searchPlaceholder="Procurar..."
+            onChange={setIngredients}
+            renderItem={item => (
+               <View style={styles.item}>
+                  <Text style={styles.selectedTextStyle}>
+                     {item[labelField]}
+                  </Text>
                </View>
-            </TouchableOpacity>
-         )}
-      />
+            )}
+            renderSelectedItem={(item, unSelect) => (
+               <TouchableOpacity onPress={() => unSelect && unSelect(item)}>
+                  <View style={styles.selectedStyle}>
+                     <Text style={styles.textSelectedStyle}>
+                        {item[labelField]}
+                     </Text>
+                     <MaterialIcons
+                        name="delete"
+                        size={24}
+                        color={theme.colors.delete}
+                     />
+                  </View>
+               </TouchableOpacity>
+            )}
+         />
+      </View>
    )
 }
 
@@ -74,6 +87,7 @@ const styles = StyleSheet.create({
       marginRight: 5
    },
    item: {
+      flex: 1,
       padding: 17,
       flexDirection: 'row',
       justifyContent: 'space-between',

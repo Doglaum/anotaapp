@@ -18,7 +18,7 @@ export const SelectInput = ({
 }: DropdownType) => {
    return (
       <Dropdown
-         style={commonStyles.input}
+         style={commonStyles.formInput}
          data={data}
          labelField={labelField}
          valueField={valueField}

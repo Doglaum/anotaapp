@@ -32,14 +32,9 @@ export const commonStyles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#fff',
     paddingHorizontal: 10,
-    paddingVertical: 13,
+    paddingVertical: 8,
     borderRadius: 8,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    flex: 1,
+    borderWidth: 0.2,
     marginBottom: 6,
   },
   title: {
@@ -59,27 +54,36 @@ export const commonStyles = StyleSheet.create({
     backgroundColor: '#fff',
     marginBottom: 16,
     borderRadius: 8,
+    borderWidth: 0.3,
+    paddingLeft:10
   },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,    
-    fontSize: 16,
+  formGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#fff',
+    marginBottom: 16,
+    borderRadius: 8,
+    borderWidth: 0.2,
+    paddingLeft:10
+    
+  },
+  formInput: {
     flex: 1,
-    padding: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-        width: 0,
-        height: 1
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
-    elevation: 2
+    borderWidth: 0.2,
+    borderLeftWidth:0,
+    borderRadius: 8,
+    backgroundColor: '#fff',
+    paddingHorizontal: 10,
+  },
+  formLabel: {
+    marginLeft: 5,
+    marginRight:5,
+    fontSize: 14,
+    fontWeight: 'bold'
   },
   addButton: {
     backgroundColor: theme.colors.primary,
-    padding: 16,
+    padding: 9,
     borderRadius: 8,
     alignItems: 'center'
   },
@@ -91,9 +95,8 @@ export const commonStyles = StyleSheet.create({
   editButton: {
     backgroundColor: theme.colors.edit,
     padding: 16,
-    borderRadius: 8,
+    borderRadius: 12,
     alignItems: 'center',
-    marginTop: 16
   },
   editButtonText: {
       color: '#fff',
@@ -103,9 +106,9 @@ export const commonStyles = StyleSheet.create({
   saveButton: {
     backgroundColor: theme.colors.add,
     padding: 16,
-    borderRadius: 8,
+    borderRadius: 12,
     alignItems: 'center',
-    marginTop: 16
+    
   },
   saveButtonText: {
     color: '#fff',
@@ -127,19 +130,13 @@ export const commonStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 14,
+    borderWidth: 0.2,
+    borderRadius: 10,
     backgroundColor: 'white',
     shadowColor: '#000',
     marginTop: 8,
     marginRight: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    shadowOffset: {
-       width: 0,
-       height: 1
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
-    elevation: 2
+    paddingHorizontal: 10,
+    paddingVertical: 6,
  }
 });

@@ -5,7 +5,7 @@ import { theme } from '../src/theme'
 import { useEffect, useState } from 'react'
 import { View, ActivityIndicator, Text } from 'react-native'
 import { initDatabase } from '../src/database/database'
-import { AppToast } from '@/components/Toast'
+import { AppToast } from '@/components/AppToast'
 
 export default function RootLayout() {
    const [isReady, setIsReady] = useState(false)

@@ -19,6 +19,11 @@ export class IngredientService {
     return newIngredient
   }
 
+  async delete(id: number) {
+    await this.repository.delete(id)
+    return await this.listAll()
+  }
+
   async listAll(): Promise<Ingredient[]> {
     return await this.repository.findAll();
   }
