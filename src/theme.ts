@@ -14,14 +14,16 @@ export const theme = {
       delete: "#ff4444",
       edit: "#26e030",
       add: "#007AFF",
+      copy: "#cecece",
       white:"#ffffff",
       whiteGray:"#f2f2f2",
-      gray:"#a7a7a7",
+      gray:"#818181",
       success: "#26e030",
       error: '#FF3B30',
       warning: '#dd9748',
       appContainerColor: '#f5f5f5',
-      toastBackgroundColor: '#ffffff'
+      toastBackgroundColor: '#ffffff',
+      placeholder: "#818181"
     },
 };
 
@@ -57,36 +59,25 @@ export const commonStyles = StyleSheet.create({
     borderWidth: 0.3,
     paddingLeft:10
   },
-  formGroup: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    marginBottom: 16,
-    borderRadius: 8,
-    borderWidth: 0.2,
-    paddingLeft:10
-    
-  },
-  formInput: {
-    flex: 1,
-    borderWidth: 0.2,
-    borderLeftWidth:0,
-    borderRadius: 8,
-    backgroundColor: '#fff',
-    paddingHorizontal: 10,
-  },
-  formLabel: {
-    marginLeft: 5,
-    marginRight:5,
-    fontSize: 14,
-    fontWeight: 'bold'
-  },
   addButton: {
-    backgroundColor: theme.colors.primary,
-    padding: 9,
+    backgroundColor: theme.colors.add,
+    padding: 12,
     borderRadius: 8,
     alignItems: 'center'
   },
+  circleAddButton: {
+    backgroundColor: theme.colors.add,
+    padding: 4,
+    borderRadius: 50,
+    alignItems: 'center'
+  },
+  circleCopyButton: {
+    backgroundColor: theme.colors.copy,
+    padding: 4,
+    borderRadius: 50,
+    alignItems: 'center'
+  }
+  ,
   addButtonText: {
     color: '#fff',
     marginLeft: 8,

@@ -3,7 +3,8 @@ import {
    PrimaryGeneratedColumn,
    Column,
    CreateDateColumn,
-   ManyToMany
+   ManyToOne,
+   JoinColumn
 } from 'typeorm'
 import { Product } from './Product'
 
@@ -21,6 +22,7 @@ export class Ingredient {
    @CreateDateColumn()
    created_at: Date
 
-   @ManyToMany(() => Product, product => product.ingredients)
-   products: Product[]
+   @ManyToOne(() => Product, {onDelete: 'CASCADE'})
+   @JoinColumn({ name: 'productId' })
+   product: Product
 }

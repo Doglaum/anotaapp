@@ -25,7 +25,7 @@ export class Address {
    @Column('text', { nullable: true })
    zipCode: string;
 
-   @ManyToOne(() => Client, {onDelete: 'CASCADE'})
+   @ManyToOne(() => Client, {onDelete: 'SET NULL'})
    @JoinColumn({ name: 'clientId' })
    client: Client;
 

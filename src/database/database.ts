@@ -1,21 +1,28 @@
 import { AppDataSource } from '../config/orm-config';
-import { PaymentMethodService } from '../services/PaymentMethodService';
-import { OrderSituationService } from '../services/OrderSituationService';
+import { OrderSituationService, PaymentMethodService, PaymentStatusService } from '@/services/';
 import { PaymentMethodEnum } from './enums/PaymentMethodEnum';
 import { OrderSituationEnum } from './enums/OrderSituationEnum';
+import { PaymentSituationEnum } from './enums/PaymentSituationEnums';
+
 
 const defaultPaymentMethods = [
-  { id: PaymentMethodEnum.DINHEIRO, name: 'Dinheiro' },
+  { id: PaymentMethodEnum.DINHEIRO, name: 'Dinheiro'},
   { id: PaymentMethodEnum.CARTAO_CREDITO, name: 'Cartão de Crédito' },
-  { id: PaymentMethodEnum.CARTAO_DEBITO, name: 'Cartão de Débito' },
+  { id: PaymentMethodEnum.CARTAO_DEBITO, name: 'Cartão de Débito'},
   { id: PaymentMethodEnum.PIX, name: 'PIX' },
 ];
 
 const defaultOrderSituations = [
-  { id: OrderSituationEnum.PAGO, name: 'Pago' },
+  { id: OrderSituationEnum.PREPARANDO, name: 'Preparando' },
   { id: OrderSituationEnum.PENDENTE, name: 'Pendente' },
   { id: OrderSituationEnum.CANCELADO, name: 'Cancelado' },
 ];
+
+const defaultPaymentStatus = [
+  { id: PaymentSituationEnum.PAGO, name: 'Pago' },
+  { id: PaymentSituationEnum.PENDENTE, name: 'Pendente' },
+  { id: PaymentSituationEnum.PAGAR_NA_ENTREGA, name: 'Pagar na entrega' },
+]
 
 export const initDatabase = async (): Promise<void> => {
   try {
@@ -29,11 +36,17 @@ export const initDatabase = async (): Promise<void> => {
       defaultPaymentMethods,
       'Formas de pagamento padrão verificadas e atualizadas.'
     );
-
+        
     await insertDefaultData(
-      new OrderSituationService(),
+      new PaymentStatusService(),
       defaultOrderSituations,
       'Situações de pedido padrão verificadas e atualizadas.'
+    );
+    
+    await insertDefaultData(
+      new OrderSituationService(),
+      defaultPaymentStatus,
+      'Situações de pagamento padrão verificadas e atualizadas.'
     );
 
     console.log('Todos os dados padrão foram verificados e atualizados.');

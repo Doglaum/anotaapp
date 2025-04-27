@@ -44,22 +44,24 @@ export const AdditionalInformationsStep = ({
    }
 
    return (
-      <ScrollView style={commonStyles.container}>
+      <View style={{ marginTop: 10, gap: 10 }}>
          <FormSelectInput<Order>
             onChange={selectHandle}
             data={paymentMethods || []}
-            label="Selecione a forma de pagamento"
+            label="Forma de pagamento"
             labelField="name"
             valueField="id"
             name="paymentMethod"
+            placeholder="PIX, Crédito, Débito, Dinheiro"
          />
          <FormSelectInput<Order>
             onChange={selectHandle}
             data={orderSituations || []}
-            label="Selecione a situação do pedido"
+            label="Situação do pedido"
             labelField="name"
             valueField="id"
             name="orderSituation"
+            placeholder="Pago, Pedente, Cancelado"
          />
          <FormCurrencyInput
             label="Troco"
@@ -78,7 +80,7 @@ export const AdditionalInformationsStep = ({
                Valor total: R${order.totalPrice?.toFixed(2)}
             </Text>
          </View>
-      </ScrollView>
+      </View>
    )
 }
 

@@ -13,7 +13,7 @@ import { Product } from '@/database/models/Product'
 import { ProductService } from '@/services/ProductService'
 import { useFocusEffect } from 'expo-router'
 import { EmptyList } from '@/components/EmptyList'
-import SearchInput from '@/components/SearchInput'
+import { FormSearchInput } from '@/components/form-inputs/FormSearchInput'
 
 export default function Products() {
    const router = useRouter()
@@ -33,6 +33,7 @@ export default function Products() {
             }
          }
          loadProducts()
+         console.log(products)
          return () => {
             console.log('Saindo da aba Pedidos')
          }
@@ -57,11 +58,12 @@ export default function Products() {
 
    return (
       <View style={commonStyles.container}>
-         <SearchInput
+         <FormSearchInput
             label="Pesquisar produto..."
             onChange={handleSearch}
             rota="/product/register/"
          />
+         <Text>{JSON.stringify(products)}</Text>
          <FlatList<Product>
             data={filteredProducts}
             keyExtractor={item => item.id.toString()}

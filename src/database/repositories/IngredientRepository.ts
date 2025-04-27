@@ -30,4 +30,11 @@ export class IngredientRepository {
   async delete(id: number): Promise<void> {
     await this.repository.delete(id);
   }
+
+  async findByProductId(productId: number): Promise<Ingredient[]> {
+    return await this.repository.query(
+      'SELECT * FROM ingredients WHERE productId = ?',
+      [productId]
+    );
+  }
 } 

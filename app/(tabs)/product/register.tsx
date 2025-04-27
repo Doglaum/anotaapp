@@ -1,37 +1,41 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import {
+   View,
+   Text,
+   StyleSheet,
+   TouchableOpacity,
+   ScrollView
+} from 'react-native'
 import { useEffect, useState } from 'react'
-import { commonStyles } from '@/theme'
+import { commonStyles, theme } from '@/theme'
 import { Product } from '@/database/models/Product'
 import { ProductService, IngredientService } from '@/services/'
 import { useRouter } from 'expo-router'
-import { MultiSelectInput } from '@/components/MultiSelectInput'
-import { CreateIngredientsModal } from '@/components/CreateIngredientsModal'
+import { CreateIngredientsModal } from './components/CreateIngredientsModal'
 import { Ingredient } from '@/database/models'
 import { FormTextInput, FormCurrencyInput } from '@/components/'
+import { MaterialIcons } from '@expo/vector-icons'
+import { CopyIngredientsModal } from './components/CopyIngredientsModal'
 
-export default function RegisterProduct() {
+export default function RegisterProduct({
+   editProductId
+}: {
+   editProductId: number
+}) {
    const router = useRouter()
    const productService = new ProductService()
-   const ingredientService = new IngredientService()
    const [product, setProduct] = useState<Partial<Product>>({
       name: '',
       price: 0.0,
       ingredients: []
    })
-   const [listIngredients, setListIngredients] = useState<Ingredient[]>([])
-   const insertIngredients = (listIngredients: Ingredient[]) => {
-      setListIngredients(prev => [...prev, ...listIngredients])
-   }
-   const [selectedIngredients, setSelectedIngredients] = useState<string[]>([])
-
-   const loadIngredients = async () => {
-      const ingredients = await ingredientService.listAll()
-      console.log(ingredients)
-      setListIngredients(ingredients)
-   }
-
    useEffect(() => {
-      loadIngredients()
+      if (editProductId) {
+         const searchProduct = async () => {
+            const editProduct = await productService.findById(editProductId)
+            setProduct(editProduct || {})
+         }
+         searchProduct()
+      }
    }, [])
 
    const handleSubmit = async () => {
@@ -42,13 +46,6 @@ export default function RegisterProduct() {
       router.push('/product/list')
    }
 
-   const handlePriceChange = (price: number) => {
-      setProduct(prev => ({
-         ...prev,
-         price: price
-      }))
-   }
-
    const changeHandle = (name: string, value: any) => {
       setProduct(prev => ({
          ...prev,
@@ -56,12 +53,42 @@ export default function RegisterProduct() {
       }))
    }
 
+   const saveIngredient = (ingredient: Partial<Ingredient>) => {
+      setProduct(prev => ({
+         ...prev,
+         ingredients: [...(prev.ingredients || []), ingredient as Ingredient]
+      }))
+   }
+
+   const removeIngredient = (removeIngredient: Partial<Ingredient>) => {
+      setProduct(prev => ({
+         ...prev,
+         ingredients: prev.ingredients?.filter(
+            ingredient => ingredient !== removeIngredient
+         )
+      }))
+   }
+
+   const copyIngredients = (ingredients: Ingredient[]) => {
+      setProduct(prev => ({
+         ...prev,
+         ingredients: [...(prev.ingredients || []), ...ingredients]
+      }))
+      console.log(ingredients)
+   }
+
    return (
-      <View style={commonStyles.container}>
+      <View style={[commonStyles.container, { gap: 10 }]}>
          <FormTextInput
             name="name"
             label="Nome"
             value={product.name}
+            onChange={changeHandle}
+         />
+         <FormTextInput
+            name="description"
+            label="Descrição"
+            value={product.description}
             onChange={changeHandle}
          />
          <FormCurrencyInput
@@ -71,20 +98,101 @@ export default function RegisterProduct() {
             onChange={changeHandle}
          />
          <Text>{JSON.stringify(product)}</Text>
-         <View style={styles.formGroup}>
-            <View style={[commonStyles.searchContainer]}>
-               <MultiSelectInput
-                  value={selectedIngredients}
-                  key="id"
-                  data={listIngredients}
-                  labelField="name"
-                  setIngredients={setSelectedIngredients}
-                  placeholder="Selecione os ingredientes"
-                  valueField="id"
-               />
-               <CreateIngredientsModal onClose={loadIngredients} />
+         <ScrollView
+            style={[
+               styles.formGroup,
+               {
+                  backgroundColor: 'white',
+                  borderWidth: 0.8,
+                  borderRadius: 8,
+                  borderColor: theme.colors.primary,
+                  flex: 1,
+                  overflow: 'scroll'
+               }
+            ]}
+         >
+            <View
+               style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginBottom: 10,
+                  padding: 10
+               }}
+            >
+               <View style={{ flex: 1 }}>
+                  <Text
+                     style={{
+                        fontSize: 18,
+                        fontWeight: 'bold',
+                        color: theme.colors.primary
+                     }}
+                  >
+                     Ingredientes
+                  </Text>
+               </View>
+               <View style={{ flexDirection: 'row', gap: 5 }}>
+                  <CopyIngredientsModal
+                     buttonStyle={commonStyles.circleCopyButton}
+                     onSelect={copyIngredients}
+                  />
+                  <CreateIngredientsModal
+                     buttonStyle={commonStyles.circleAddButton}
+                     onSave={saveIngredient}
+                  />
+               </View>
             </View>
-         </View>
+            <View
+               style={{
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                  justifyContent: 'center',
+                  gap: 4
+               }}
+            >
+               {product.ingredients?.map((ingredient, index) => (
+                  <TouchableOpacity
+                     key={index}
+                     style={styles.selectedStyle}
+                     onPress={() => {
+                        removeIngredient(ingredient)
+                     }}
+                  >
+                     <View
+                        style={{ flexDirection: 'row', alignItems: 'center' }}
+                     >
+                        <View
+                           style={{
+                              alignItems: 'center',
+                              flexDirection: 'column'
+                           }}
+                        >
+                           <Text
+                              style={{
+                                 fontSize: 12,
+                                 color: theme.colors.white
+                              }}
+                           >
+                              {`${ingredient.name}`}
+
+                              <Text>
+                                 {`${
+                                    ingredient.price
+                                       ? `R$:${ingredient.price.toFixed(2)}`
+                                       : ''
+                                 }`}
+                              </Text>
+                           </Text>
+                        </View>
+                        <MaterialIcons
+                           name="delete"
+                           size={14}
+                           color={theme.colors.white}
+                        />
+                     </View>
+                  </TouchableOpacity>
+               ))}
+            </View>
+         </ScrollView>
          <TouchableOpacity
             style={[commonStyles.saveButton, { marginTop: 'auto' }]}
             onPress={handleSubmit}
@@ -98,5 +206,12 @@ export default function RegisterProduct() {
 const styles = StyleSheet.create({
    formGroup: {
       marginBottom: 16
+   },
+   selectedStyle: {
+      backgroundColor: '#fa0c5b',
+      marginRight: 10,
+      fontSize: 10,
+      borderRadius: 8,
+      padding: 6
    }
 })

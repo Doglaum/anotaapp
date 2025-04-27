@@ -1,24 +1,54 @@
-import { Text, TextInput, View } from 'react-native'
-import { commonStyles } from '@/theme'
+import { StyleProp, Text, TextInput, View, ViewStyle } from 'react-native'
+import { formStyle } from './styles'
+import { useEffect, useState } from 'react'
+import { theme } from '@/theme'
 
 export const FormTextInput = ({
    label,
    value,
    name,
-   onChange
+   onChange,
+   style
 }: {
    label: string
    value: any
    name: string
    onChange: (name: string, text: any) => void
+   style?: StyleProp<ViewStyle>
 }) => {
+   const [localValue, setLocalValue] = useState(value)
+   const [isFocus, setIsFocus] = useState(false)
+   const onChangeText = (text: string) => {
+      setLocalValue(text)
+      onChange(name, text)
+   }
+
+   useEffect(() => {
+      setLocalValue(value)
+   }, [value])
+
    return (
-      <View style={commonStyles.formGroup}>
-         <Text style={commonStyles.formLabel}>{`${label}:`}</Text>
+      <View style={[formStyle.formGroup, style]}>
+         <Text
+            style={[
+               isFocus && { color: theme.colors.primary },
+               formStyle.formLabel
+            ]}
+         >
+            {label}
+         </Text>
          <TextInput
-            style={commonStyles.formInput}
-            value={value}
-            onChangeText={text => onChange(name, text)}
+            style={[
+               formStyle.formInput,
+               isFocus && {
+                  color: theme.colors.primary,
+                  borderColor: theme.colors.primary
+               }
+            ]}
+            value={localValue}
+            onChangeText={onChangeText}
+            onFocus={() => setIsFocus(true)}
+            onBlur={() => setIsFocus(false)}
          />
       </View>
    )

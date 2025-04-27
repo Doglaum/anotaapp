@@ -10,16 +10,18 @@ export class ProductRepository {
   }
 
   async create(product: Partial<Product>): Promise<Product> {
+    console.log(product)
     const newProduct = this.repository.create(product);
+    console.log(newProduct)
     return await this.repository.save(newProduct);
   }
 
   async findAll(): Promise<Product[]> {
-    return await this.repository.find();
+    return await this.repository.find({relations: ['ingredients']});
   }
 
   async findById(id: number): Promise<Product | null> {
-    return await this.repository.findOne({ where: { id } });
+    return await this.repository.findOne({ where: { id }, relations: ['ingredients'] });
   }
 
   async update(id: number, product: Partial<Product>): Promise<Product | null> {
@@ -29,5 +31,9 @@ export class ProductRepository {
 
   async delete(id: number): Promise<void> {
     await this.repository.delete(id);
+  }
+
+  async findAllWithIngredients(): Promise<Product[]> {
+    return await this.repository.createQueryBuilder("product").leftJoinAndSelect("product.ingredients", "ingredient").where("ingredient.id IS NOT NULL").getMany()
   }
 } 

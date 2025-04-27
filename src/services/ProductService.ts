@@ -31,6 +31,10 @@ export class ProductService {
     await this.repository.delete(id);
   }
 
+  async listAllWithIngredients(): Promise<Product[]> {
+    return await this.repository.findAllWithIngredients();
+  }
+
   private validate(product : Partial<Product>) {
     if (!product.name) {
       errorToast('Nome é obrigatório')

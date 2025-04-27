@@ -14,6 +14,7 @@ import { useFocusEffect } from '@react-navigation/native'
 import { useCallback } from 'react'
 import { EmptyList } from '@/components/EmptyList'
 import { router } from 'expo-router'
+import { FormSearchInput } from '@/components/form-inputs/FormSearchInput'
 
 export const ClientStep = ({
    order,
@@ -61,14 +62,11 @@ export const ClientStep = ({
 
    return (
       <View style={commonStyles.container}>
-         <View style={commonStyles.searchContainer}>
-            <TextInput
-               style={commonStyles.input}
-               placeholder="Nome, telefone"
-               onChangeText={setFilterText}
-               value={filterText}
-            />
-         </View>
+         <FormSearchInput
+            onChange={setFilterText}
+            label="Nome, telefone"
+            value={filterText}
+         />
          <FlatList<Client>
             data={filteredClients}
             keyExtractor={item => item.id.toString()}

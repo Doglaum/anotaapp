@@ -4,3 +4,4 @@ export { OrderService } from './OrderService';
 export { PaymentMethodService } from './PaymentMethodService';
 export { OrderSituationService } from './OrderSituationService';
 export { IngredientService } from './IngredientService';
+export { PaymentStatusService } from './PaymentStatusService';

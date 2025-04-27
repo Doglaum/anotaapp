@@ -6,29 +6,36 @@ import {
    TouchableOpacity,
    TouchableWithoutFeedback,
    View,
-   Text
+   Text,
+   StyleProp,
+   ViewStyle
 } from 'react-native'
 import { commonStyles, theme } from '@/theme'
-import { MaterialIcons } from '@expo/vector-icons'
-import { AppToast } from './AppToast'
+import { Ionicons, MaterialIcons } from '@expo/vector-icons'
+import { Icon, IconProps } from 'react-native-vector-icons/Icon'
+import { GlyphMap } from '@expo/vector-icons/build/createIconSet'
 
 type OverlayModalProps = {
    children: React.ReactNode
    title: string
    onClose?: () => void
+   buttonStyle?: StyleProp<ViewStyle>
+   iconName: keyof typeof MaterialIcons.glyphMap
 }
 
 export const OverlayerModal: React.FC<OverlayModalProps> = ({
    children,
    title,
-   onClose
+   onClose,
+   buttonStyle,
+   iconName
 }) => {
    const [visible, setVisible] = React.useState(false)
    const { height } = Dimensions.get('window')
 
    const handleClose = () => {
-      setVisible(!visible)
-      if (onClose && visible == true) {
+      setVisible(false)
+      if (onClose) {
          onClose()
       }
    }
@@ -108,8 +115,11 @@ export const OverlayerModal: React.FC<OverlayModalProps> = ({
                </Modal>
             </Portal>
          </PaperProvider>
-         <TouchableOpacity style={commonStyles.addButton} onPress={handleClose}>
-            <MaterialIcons name="add" size={24} color="#fff" />
+         <TouchableOpacity
+            style={[buttonStyle]}
+            onPress={() => setVisible(true)}
+         >
+            <MaterialIcons name={iconName} size={18} color="#fff" />
          </TouchableOpacity>
       </View>
    )

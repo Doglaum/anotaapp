@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToMany, JoinTable, OneToMany } from 'typeorm';
 import { Ingredient } from './Ingredient';
 
 @Entity('product')
@@ -12,14 +12,12 @@ export class Product {
   @Column('decimal', { precision: 10, scale: 2 })
   price: number;
 
+  @Column('text', { nullable: true })
+  description: string
+
   @CreateDateColumn()
   created_at: Date;
   
-  @ManyToMany(() => Ingredient, (ingredients) => ingredients.products, { cascade: true })
-  @JoinTable({
-    name: 'product_ingredients',
-    joinColumn: { name: 'productId', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'ingredientId', referencedColumnName: 'id' },
-  })
+  @OneToMany(() => Ingredient, (ingredient) => ingredient.product, { cascade: true })
   ingredients: Ingredient[];
 }

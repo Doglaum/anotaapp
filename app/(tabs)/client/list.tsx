@@ -14,7 +14,7 @@ import { Client } from '@/database/models/Client'
 import { ClientService } from '@/services/ClientService'
 import { EmptyList } from '@/components/EmptyList'
 import { useFocusEffect } from '@react-navigation/native'
-import SearchInput from '@/components/SearchInput'
+import { FormSearchInput } from '@/components/form-inputs/FormSearchInput'
 
 export default function Clients() {
    const router = useRouter()
@@ -59,10 +59,11 @@ export default function Clients() {
 
    return (
       <View style={commonStyles.container}>
-         <SearchInput
+         <FormSearchInput
             onChange={handleSearch}
             label="Digite nome ou numero..."
             rota="/client/register"
+            style={{ marginBottom: 20 }}
          />
          <FlatList<Client>
             data={filteredClients}
