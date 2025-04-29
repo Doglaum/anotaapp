@@ -97,7 +97,6 @@ export default function RegisterProduct({
             value={product.price}
             onChange={changeHandle}
          />
-         <Text>{JSON.stringify(product)}</Text>
          <ScrollView
             style={[
                styles.formGroup,
@@ -177,7 +176,7 @@ export default function RegisterProduct({
                               <Text>
                                  {`${
                                     ingredient.price
-                                       ? `R$:${ingredient.price.toFixed(2)}`
+                                       ? ` R$:${ingredient.price.toFixed(2)}`
                                        : ''
                                  }`}
                               </Text>

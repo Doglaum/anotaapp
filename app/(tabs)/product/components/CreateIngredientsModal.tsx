@@ -11,6 +11,7 @@ import { OverlayerModal } from '@/components/OverlayModal'
 import { Ingredient } from '@/database/models'
 import { useState } from 'react'
 import { FormCurrencyInput, FormTextInput } from '@/components/form-inputs'
+import { MaterialIcons } from '@expo/vector-icons'
 
 export const CreateIngredientsModal = ({
    onClose,
@@ -21,6 +22,8 @@ export const CreateIngredientsModal = ({
    buttonStyle?: StyleProp<ViewStyle>
    onSave: (ingredient: Partial<Ingredient>) => void
 }) => {
+   const [overlayModalVisible, setOverlayModalVisible] =
+      useState<boolean>(false)
    const [ingredient, setIngredient] = useState<Partial<Ingredient>>({
       name: '',
       price: 0.0
@@ -38,35 +41,49 @@ export const CreateIngredientsModal = ({
       }))
    }
 
+   const handleClose = () => {
+      setIngredient({ name: '', price: 0.0 })
+   }
+
    return (
-      <OverlayerModal
-         buttonStyle={buttonStyle}
-         title="Cadastrar Ingredientes"
-         onClose={() => setIngredient({ name: '', price: 0.0 })}
-         iconName="add"
-      >
-         <View style={commonStyles.container}>
-            <View style={{ marginBottom: 10, gap: 20 }}>
-               <FormTextInput
-                  label="Nome"
-                  name="name"
-                  onChange={changeHandle}
-                  value={ingredient.name}
-               />
-               <FormCurrencyInput
-                  label="Preço"
-                  name="price"
-                  onChange={changeHandle}
-                  value={ingredient.price}
-               />
-               <TouchableOpacity
-                  style={[commonStyles.saveButton, { marginTop: 'auto' }]}
-                  onPress={saveIngredient}
-               >
-                  <Text style={commonStyles.saveButtonText}>Salvar</Text>
-               </TouchableOpacity>
+      <View>
+         <OverlayerModal
+            title="Cadastrar Ingredientes"
+            onClose={() => {
+               setOverlayModalVisible(false)
+               handleClose()
+            }}
+            overlayModalVisible={overlayModalVisible}
+         >
+            <View style={commonStyles.container}>
+               <View style={{ marginBottom: 10, gap: 20 }}>
+                  <FormTextInput
+                     label="Nome"
+                     name="name"
+                     onChange={changeHandle}
+                     value={ingredient.name}
+                  />
+                  <FormCurrencyInput
+                     label="Preço"
+                     name="price"
+                     onChange={changeHandle}
+                     value={ingredient.price}
+                  />
+                  <TouchableOpacity
+                     style={[commonStyles.saveButton, { marginTop: 'auto' }]}
+                     onPress={saveIngredient}
+                  >
+                     <Text style={commonStyles.saveButtonText}>Salvar</Text>
+                  </TouchableOpacity>
+               </View>
             </View>
-         </View>
-      </OverlayerModal>
+         </OverlayerModal>
+         <TouchableOpacity
+            style={[buttonStyle]}
+            onPress={() => setOverlayModalVisible(true)}
+         >
+            <MaterialIcons name="add" size={18} color="#fff" />
+         </TouchableOpacity>
+      </View>
    )
 }

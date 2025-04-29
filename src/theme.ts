@@ -36,7 +36,8 @@ export const commonStyles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 8,
     borderRadius: 8,
-    borderWidth: 0.2,
+    borderWidth: 0.25,
+    borderColor: theme.colors.gray,
     marginBottom: 6,
   },
   title: {
