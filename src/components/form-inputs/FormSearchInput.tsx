@@ -35,8 +35,12 @@ export const FormSearchInput = ({
    return (
       <View style={[styles.searchContainer, style]}>
          <TextInput
-            style={[formStyle.formInput, rota && { borderRightWidth: 0 }]}
-            value={value}
+            style={[
+               formStyle.formInput,
+               { flex: 1 },
+               rota && { borderRightWidth: 0 }
+            ]}
+            value={localValue}
             placeholder={label}
             onChangeText={onChangeText}
          />
@@ -56,8 +60,6 @@ const styles = StyleSheet.create({
    searchContainer: {
       flexDirection: 'row',
       justifyContent: 'space-between',
-
-      height: 50,
       backgroundColor: '#fff'
    }
 })

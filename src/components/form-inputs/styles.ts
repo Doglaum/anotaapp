@@ -4,16 +4,14 @@ const inputCommonsStyles = {
   borderWidth: 2,
   borderRadius: 8,  
   borderColor: '#dfdfdf',
-  backgroundColor: '#fff',  
-  paddingHorizontal: 5,
+  backgroundColor: '#fff',
 }
 
 export const formStyle = StyleSheet.create({
    formGroup: {
-       height:65
      },
      formInput: {
-       flex: 1,
+      padding: 8,
        ...inputCommonsStyles
      },
      dropdown: {
@@ -23,7 +21,7 @@ export const formStyle = StyleSheet.create({
      formLabel: {
        marginLeft: 5,
        marginRight:5,
-       fontSize: 14,
+       fontSize: 12,
        fontWeight: 'bold'
      },
 })

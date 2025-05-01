@@ -9,11 +9,12 @@ import {
    TextInput
 } from 'react-native'
 import { commonStyles } from '@/theme'
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { Order, Product, OrderProduct } from '@/database/models'
 import { ProductService } from '@/services/ProductService'
 import { useFocusEffect } from '@react-navigation/native'
 import { EmptyList } from '@/components/EmptyList'
+import { FormSearchInput } from '@/components'
 
 export const OrdeProductStep = ({
    order,
@@ -30,6 +31,7 @@ export const OrdeProductStep = ({
       {} as Product
    )
    const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
+   const [filterText, setFilterText] = useState<string>('')
 
    const handleOpenModal = (product: Product) => {
       setSelectedProduct(product)
@@ -68,20 +70,26 @@ export const OrdeProductStep = ({
       }, [])
    )
 
+   useEffect(() => {
+      const handleSearch = (text: string) => {
+         const searchText = text.toLowerCase().trim()
+         const filtered = products.filter(product => {
+            const name = product.name?.toLowerCase() || ''
+            const price = product.price?.toString().toLowerCase() || ''
+            return name.includes(searchText) || price.includes(searchText)
+         })
+         setFilteredProducts(filtered)
+      }
+      handleSearch(filterText)
+   }, [filterText])
+
    return (
       <View style={commonStyles.container}>
-         <View style={commonStyles.searchContainer}>
-            <TextInput
-               style={commonStyles.input}
-               placeholder="Pesquisar produto"
-               onChangeText={text => {
-                  const filteredProducts = products.filter(product =>
-                     product.name.toLowerCase().includes(text.toLowerCase())
-                  )
-                  setFilteredProducts(filteredProducts)
-               }}
-            />
-         </View>
+         <FormSearchInput
+            onChange={setFilterText}
+            label="Nome, preço"
+            value={filterText}
+         />
          <FlatList<Product>
             data={filteredProducts}
             keyExtractor={item => item.id.toString()}
