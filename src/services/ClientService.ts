@@ -29,9 +29,9 @@ export class ClientService {
     return cliente
   }
 
-  async update(id: number, dados: Partial<Client>): Promise<Client | null> {
-    this.validate(dados)
-    return await this.repository.update(id, dados);
+  async update(id: number, partialCliente: Partial<Client>): Promise<Client | null> {
+    this.validate(partialCliente)
+    return await this.repository.update(id, partialCliente);
   }
 
   async delete(id: number): Promise<void> {

@@ -1,6 +1,6 @@
 import { ProductRepository } from '../database/repositories';
 import { Product } from '../database/models/Product';
-import { errorToast } from '@/components';
+import { errorToast, successToast } from '@/components';
 
 export class ProductService {
   private repository: ProductRepository;
@@ -11,7 +11,13 @@ export class ProductService {
 
   async save(product: Product): Promise<Product> {
     this.validate(product)
-    return await this.repository.create(product);
+    try {
+      product = await this.repository.create(product);
+      successToast('Produto cadastrado com sucesso')
+    } catch (error) {
+      errorToast('Erro ao cadastrar produto')
+    }
+    return product
   }
 
   async listAll(): Promise<Product[]> {
@@ -24,7 +30,17 @@ export class ProductService {
 
   async update(id: number, product: Partial<Product>): Promise<Product | null> {
     this.validate(product)
+    try {
+      return await this.repository.update(id, product);
+
+    }
+    catch (error) {
+      console.log(error)
+    }
     return await this.repository.update(id, product);
+    const updatedProduct = await this.repository.update(id, product);
+    console.log(updatedProduct)
+    successToast('Produto editado com sucesso')
   }
 
   async delete(id: number): Promise<void> {

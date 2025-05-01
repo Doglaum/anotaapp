@@ -21,11 +21,13 @@ import { MaterialIcons } from '@expo/vector-icons'
 export const CopyIngredientsModal = ({
    onClose,
    buttonStyle,
-   onSelect
+   onSelect,
+   currentProductId
 }: {
    onClose?: () => void
    buttonStyle?: StyleProp<ViewStyle>
    onSelect: (ingredient: Ingredient[]) => void
+   currentProductId: number | undefined
 }) => {
    const productService = new ProductService()
    const [productList, setProductList] = useState<Product[]>([])
@@ -42,6 +44,8 @@ export const CopyIngredientsModal = ({
       }
       listAllProduct()
    }, [])
+
+   useEffect(() => {}, [])
 
    const filterList = (text: string) => {
       const searchText = text.toLowerCase().trim()

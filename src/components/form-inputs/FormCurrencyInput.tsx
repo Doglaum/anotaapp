@@ -15,7 +15,7 @@ export const FormCurrencyInput = ({
    name: string
    onChange: (name: string, text: any) => void
 }) => {
-   const [localValue, setLocalValue] = useState(value)
+   const [localValue, setLocalValue] = useState(0)
    const [isFocus, setIsFocus] = useState(false)
    const onChangeText = (value: number) => {
       setLocalValue(value)
@@ -23,7 +23,9 @@ export const FormCurrencyInput = ({
    }
 
    useEffect(() => {
-      setLocalValue(value)
+      if (!value) {
+         setLocalValue(value)
+      }
    }, [value])
    return (
       <View style={formStyle.formGroup}>

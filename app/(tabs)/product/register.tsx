@@ -42,7 +42,11 @@ export default function RegisterProduct({
       if (!product.price) {
          setProduct(prev => ({ ...prev, price: 0 }))
       }
-      await productService.save(product as Product)
+      if (editProductId) {
+         await productService.update(editProductId, product)
+      } else {
+         await productService.save(product as Product)
+      }
       router.push('/product/list')
    }
 
@@ -74,7 +78,6 @@ export default function RegisterProduct({
          ...prev,
          ingredients: [...(prev.ingredients || []), ...ingredients]
       }))
-      console.log(ingredients)
    }
 
    return (
@@ -131,6 +134,7 @@ export default function RegisterProduct({
                </View>
                <View style={{ flexDirection: 'row', gap: 5 }}>
                   <CopyIngredientsModal
+                     currentProductId={product.id}
                      buttonStyle={commonStyles.circleCopyButton}
                      onSelect={copyIngredients}
                   />
@@ -193,10 +197,17 @@ export default function RegisterProduct({
             </View>
          </ScrollView>
          <TouchableOpacity
-            style={[commonStyles.saveButton, { marginTop: 'auto' }]}
+            style={[
+               !editProductId
+                  ? commonStyles.saveButton
+                  : commonStyles.editButton,
+               { marginTop: 'auto' }
+            ]}
             onPress={handleSubmit}
          >
-            <Text style={commonStyles.saveButtonText}>Salvar</Text>
+            <Text style={commonStyles.saveButtonText}>
+               {!editProductId ? 'Salvar' : 'Editar'}
+            </Text>
          </TouchableOpacity>
       </View>
    )

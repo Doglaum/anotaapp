@@ -16,7 +16,7 @@ export const FormTextInput = ({
    onChange: (name: string, text: any) => void
    style?: StyleProp<ViewStyle>
 }) => {
-   const [localValue, setLocalValue] = useState(value)
+   const [localValue, setLocalValue] = useState('')
    const [isFocus, setIsFocus] = useState(false)
    const onChangeText = (text: string) => {
       setLocalValue(text)
@@ -24,7 +24,9 @@ export const FormTextInput = ({
    }
 
    useEffect(() => {
-      setLocalValue(value)
+      if (!localValue) {
+         setLocalValue(value)
+      }
    }, [value])
 
    return (

@@ -62,8 +62,8 @@ export default function Products() {
             label="Pesquisar produto..."
             onChange={handleSearch}
             rota="/product/register/"
+            style={{ marginBottom: 10 }}
          />
-         <Text>{JSON.stringify(products)}</Text>
          <FlatList<Product>
             data={filteredProducts}
             keyExtractor={item => item.id.toString()}
