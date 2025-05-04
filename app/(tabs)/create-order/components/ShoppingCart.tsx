@@ -5,7 +5,8 @@ import {
    FlatList,
    Modal,
    Button,
-   TouchableOpacity
+   TouchableOpacity,
+   ScrollView
 } from 'react-native'
 import { Order } from '@/database/models/Order'
 import { MaterialIcons } from '@expo/vector-icons'
@@ -34,7 +35,7 @@ export default function ShoppingCart({
       <Modal
          visible={visible}
          transparent={true}
-         animationType="slide"
+         animationType="fade"
          onRequestClose={onClose}
       >
          <View style={styles.modalContainer}>
@@ -44,35 +45,41 @@ export default function ShoppingCart({
                      ? `Carrinho de ${order.client.name}`
                      : 'Carrinho'}
                </Text>
-               <FlatList
-                  data={order.orderProducts}
-                  keyExtractor={(item, index) => index.toString()}
-                  renderItem={({ item, index }) => (
-                     <View style={styles.cartItem}>
-                        <View style={styles.cartItemInfo}>
-                           <Text style={styles.cartItemText}>
-                              {item.product.name} - R$
-                              {item.product.price.toFixed(2)}
-                           </Text>
-                           <Text style={styles.cartItemText}>
-                              {item.details}
-                           </Text>
+               <View style={{ maxHeight: '80%' }}>
+                  <FlatList
+                     data={order.orderProducts}
+                     keyExtractor={(item, index) => index.toString()}
+                     renderItem={({ item, index }) => (
+                        <View style={styles.cartItem}>
+                           <View style={styles.cartItemInfo}>
+                              <Text style={styles.cartItemText}>
+                                 {item.product.name} - R$
+                                 {item.product.price.toFixed(2)}
+                              </Text>
+                              <Text style={styles.cartItemText}>
+                                 {item.details}
+                              </Text>
+                           </View>
+                           <TouchableOpacity
+                              style={styles.removeButton}
+                              onPress={() => onRemoveItem(index)}
+                           >
+                              <MaterialIcons
+                                 name="close"
+                                 size={24}
+                                 color="red"
+                              />
+                           </TouchableOpacity>
                         </View>
-                        <TouchableOpacity
-                           style={styles.removeButton}
-                           onPress={() => onRemoveItem(index)}
-                        >
-                           <MaterialIcons name="close" size={24} color="red" />
-                        </TouchableOpacity>
-                     </View>
-                  )}
-                  ListEmptyComponent={
-                     <EmptyList
-                        iconName="shopping-cart"
-                        text="O carrinho está vazio."
-                     />
-                  }
-               />
+                     )}
+                     ListEmptyComponent={
+                        <EmptyList
+                           iconName="shopping-cart"
+                           text="O carrinho está vazio."
+                        />
+                     }
+                  />
+               </View>
                <View style={{ marginTop: 16 }}>
                   {order.orderProducts && order.orderProducts.length > 1 && (
                      <Text style={styles.modalTitle}>

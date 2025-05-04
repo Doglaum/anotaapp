@@ -3,8 +3,7 @@ import {
    Text,
    StyleSheet,
    FlatList,
-   TouchableOpacity,
-   TextInput
+   TouchableOpacity
 } from 'react-native'
 import { commonStyles, theme } from '@/theme'
 import { useEffect, useState } from 'react'
@@ -13,7 +12,6 @@ import { ClientService } from '@/services/ClientService'
 import { useFocusEffect } from '@react-navigation/native'
 import { useCallback } from 'react'
 import { EmptyList } from '@/components/EmptyList'
-import { router } from 'expo-router'
 import { FormSearchInput } from '@/components/form-inputs/FormSearchInput'
 import CreateClientModal from '../components/CreateClientModal'
 

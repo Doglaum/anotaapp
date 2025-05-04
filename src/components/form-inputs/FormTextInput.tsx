@@ -9,7 +9,8 @@ export const FormTextInput = ({
    name,
    onChange,
    style,
-   onBlur
+   onBlur,
+   maxLength
 }: {
    label: string
    value: any
@@ -17,20 +18,12 @@ export const FormTextInput = ({
    onChange: (name: string, text: any) => void
    onBlur?: () => void
    style?: StyleProp<ViewStyle>
+   maxLength?: number
 }) => {
-   const [localValue, setLocalValue] = useState(value)
    const [isFocus, setIsFocus] = useState(false)
    const onChangeText = (text: string) => {
-      setLocalValue(text)
       onChange(name, text)
    }
-
-   useEffect(() => {
-      console.log(value)
-      if (!localValue) {
-         setLocalValue(value)
-      }
-   }, [value])
 
    return (
       <View style={[formStyle.formGroup, style]}>
@@ -51,7 +44,7 @@ export const FormTextInput = ({
                },
                { fontSize: 12 }
             ]}
-            value={localValue}
+            value={value}
             onChangeText={onChangeText}
             onFocus={() => setIsFocus(true)}
             onBlur={() => {
@@ -60,6 +53,7 @@ export const FormTextInput = ({
                }
                setIsFocus(false)
             }}
+            maxLength={maxLength}
          />
       </View>
    )

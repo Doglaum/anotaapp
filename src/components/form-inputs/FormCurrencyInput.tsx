@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native'
 import CurrencyInput from 'react-native-currency-input'
 import { formStyle } from './styles'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { theme } from '@/theme'
 
 export const FormCurrencyInput = ({
@@ -15,18 +15,11 @@ export const FormCurrencyInput = ({
    name: string
    onChange: (name: string, text: any) => void
 }) => {
-   const [localValue, setLocalValue] = useState(0)
    const [isFocus, setIsFocus] = useState(false)
    const onChangeText = (value: number) => {
-      setLocalValue(value)
       onChange(name, value)
    }
 
-   useEffect(() => {
-      if (!value) {
-         setLocalValue(value)
-      }
-   }, [value])
    return (
       <View style={formStyle.formGroup}>
          <Text
@@ -45,14 +38,13 @@ export const FormCurrencyInput = ({
                   borderColor: theme.colors.primary
                }
             ]}
-            value={localValue}
+            value={value}
             onChangeValue={onChangeText}
             minValue={0}
             delimiter="."
             separator=","
             placeholder="0"
-            keyboardType="decimal-pad"
-            inputMode="decimal"
+            keyboardType="number-pad"
             onFocus={() => setIsFocus(true)}
             onBlur={() => setIsFocus(false)}
          />

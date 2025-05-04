@@ -3,50 +3,33 @@ import {
    Text,
    StyleSheet,
    TouchableOpacity,
-   FlatList,
-   ScrollView,
-   Dimensions
+   FlatList
 } from 'react-native'
 import { useEffect, useState } from 'react'
 import { commonStyles, theme } from '@/theme'
 import { Address, Client } from '@/database/models'
 import { ClientService } from '@/services/ClientService'
 import { useRouter } from 'expo-router'
-import { EmptyList, errorToast, FormTextInput } from '@/components'
+import { EmptyList, FormTextInput } from '@/components'
 import { formStyle } from '@/components/form-inputs/styles'
-import { Button } from 'react-native-paper'
+import CreateAddressModal from './components/CreateAddressModal'
+import { MaterialIcons } from '@expo/vector-icons'
 
-const i18n = {
-   city: 'Cidade',
-   complement: 'Complemento',
-   neighborhood: 'Bairro',
-   number: 'Número',
-   street: 'Rua',
-   zipCode: 'CEP'
-}
-
-export default function RegisterClient() {
+const RegisterClient = ({ editClientId }: { editClientId: number }) => {
    const router = useRouter()
    const clientService = new ClientService()
-   const [showForm, setShowForm] = useState(false)
 
    useEffect(() => {
-      const buscarCep = async () => {
-         console.log('zeca')
+      if (editClientId) {
+         const searchProduct = async () => {
+            const editClient = await clientService.findById(editClientId)
+            setClient(editClient || {})
+            console.log(editClient)
+         }
+         searchProduct()
       }
-      buscarCep()
    }, [])
 
-   const numColumns = 3 // Número de colunas na grid
-   const screenWidth = Dimensions.get('window').width
-   const [address, setAddress] = useState<Partial<Address>>({
-      city: '',
-      complement: '',
-      neighborhood: '',
-      number: '',
-      street: '',
-      zipCode: ''
-   })
    const [client, setClient] = useState<Partial<Client>>({
       name: '',
       phoneNumber: '',
@@ -55,6 +38,7 @@ export default function RegisterClient() {
 
    const handleSubmit = async () => {
       await clientService.save(client as Client)
+      console.log(client)
       router.back()
    }
 
@@ -65,131 +49,69 @@ export default function RegisterClient() {
       }))
    }
 
-   const handleAddressChance = (name: string, value: any) => {
-      setAddress(prev => ({
-         ...prev,
-         [name]: value
-      }))
-   }
-
-   const handleCepBlur = async () => {
-      if (address.zipCode && address.zipCode.length >= 8) {
-         try {
-            const result = await fetch(
-               `https://viacep.com.br/ws/${address.zipCode}/json/`
-            ).then(response => response.json())
-            console.log(result)
-            setAddress({
-               city: '',
-               complement: '',
-               neighborhood: '',
-               number: '',
-               street: '',
-               zipCode: ''
-            })
-            setAddress(prev => ({
-               ...prev,
-               neighborhood: result.bairro,
-               city: result.localidade,
-               street: result.logradouro
-            }))
-         } catch (error) {
-            errorToast('CEP digitado incorreto')
-            console.log(error)
-         }
-      }
-   }
-
-   const handleSaveAddress = () => {
+   const saveAddress = (address: Partial<Address>) => {
       setClient(prev => ({
          ...prev,
          addresses: [...(prev.addresses || []), address as Address]
       }))
-      setAddress({
-         city: '',
-         complement: '',
-         neighborhood: '',
-         number: '',
-         street: '',
-         zipCode: ''
-      })
-      setShowForm(false)
    }
 
-   const addressForm = () => (
-      //city: '',
-      //complement: '',
-      //neighborhood: '',
-      //number: '',
-      //street: '',
-      //zipCode: ''
-      <View style={{ flex: 1, gap: 10 }}>
-         <FormTextInput
-            label="CEP"
-            name="zipCode"
-            value={address.zipCode}
-            onChange={handleAddressChance}
-            onBlur={handleCepBlur}
-         />
-         <FormTextInput
-            label="Bairro"
-            name="neighborhood"
-            value={address.neighborhood}
-            onChange={handleAddressChance}
-         />
-         <FormTextInput
-            label="Rua"
-            name="street"
-            value={address.street}
-            onChange={handleAddressChance}
-         />
-         <FormTextInput
-            label="Número"
-            name="number"
-            value={address.number}
-            onChange={handleAddressChance}
-         />
-         <FormTextInput
-            label="Complemento"
-            name="complement"
-            value={address.complement}
-            onChange={handleAddressChance}
-         />
-         <FormTextInput
-            label="Cidade"
-            name="city"
-            value={address.city}
-            onChange={handleAddressChance}
-         />
-         <Button style={commonStyles.addButton} onPress={handleSaveAddress}>
-            <Text style={commonStyles.addButtonText}>Salvar Endereço</Text>
-         </Button>
-      </View>
-   )
+   const deleteAddress = (addressToRemove: Partial<Address>) => {
+      setClient(prev => ({
+         ...prev,
+         addresses: prev.addresses?.filter(
+            address => address !== addressToRemove
+         )
+      }))
+   }
 
-   const renderItem = ({ item }: { item: Address }) => (
+   const addressListItem = ({ item }: { item: Address }) => (
       <View
          style={{
             flex: 1,
             marginBottom: 5,
             backgroundColor: theme.colors.white,
-            justifyContent: 'center',
             borderRadius: 8,
             borderWidth: 1,
             borderColor: '#ddd',
             flexDirection: 'row',
-            padding: 10
+            padding: 5
          }}
       >
-         <View style={{ backgroundColor: 'red', flex: 1 }}>
-            <Text>teste</Text>
+         <View
+            style={{
+               flex: 1,
+               alignItems: 'center',
+               justifyContent: 'center'
+            }}
+         >
+            <MaterialIcons name="home" size={24} color={'lightgrey'} />
          </View>
-         <View style={{ backgroundColor: 'blue', flex: 4 }}>
-            <Text>{item.neighborhood}</Text>
-            <Text>{item.number}</Text>
+         <View style={{ flex: 7 }}>
+            {item.street && (
+               <Text style={{ fontWeight: 'bold', fontSize: 14 }}>
+                  {item.street}, {item.number}
+               </Text>
+            )}
+
+            {item.neighborhood && (
+               <Text style={{ fontSize: 12 }}>{item.neighborhood}</Text>
+            )}
+            {item.city && <Text style={{ fontSize: 12 }}>{item.city}</Text>}
+
+            {item.zipCode && (
+               <Text style={{ fontSize: 12 }}>{item.zipCode}</Text>
+            )}
          </View>
-         <View style={{ backgroundColor: 'red', flex: 1 }}>
-            <Text>Deletar</Text>
+         <View
+            style={{
+               flex: 1,
+               alignItems: 'flex-end'
+            }}
+         >
+            <TouchableOpacity onPress={() => deleteAddress(item)}>
+               <MaterialIcons name="delete" size={18} color={'red'} />
+            </TouchableOpacity>
          </View>
       </View>
    )
@@ -203,7 +125,7 @@ export default function RegisterClient() {
             onChange={handleChange}
          />
          <FormTextInput
-            label="Numero"
+            label="Numero para contato"
             name="phoneNumber"
             value={client.phoneNumber}
             onChange={handleChange}
@@ -224,57 +146,46 @@ export default function RegisterClient() {
                }}
             >
                <Text
-                  style={[formStyle.formLabel, { marginBottom: 10, flex: 1 }]}
+                  style={[
+                     formStyle.formLabel,
+                     {
+                        marginBottom: 10,
+                        flex: 1,
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                     }
+                  ]}
                >
                   Endereços
                </Text>
-               <TouchableOpacity
-                  onPress={() => setShowForm(!showForm)}
-                  style={{
-                     backgroundColor: theme.colors.primary,
-                     borderRadius: 8,
-                     padding: 5,
-                     alignItems: 'center',
-                     justifyContent: 'center'
-                  }}
-               >
-                  <Text
-                     style={[
-                        formStyle.formLabel,
-                        { color: theme.colors.white }
-                     ]}
-                  >
-                     {showForm ? 'Cancelar' : 'Cadastrar'}
-                  </Text>
-               </TouchableOpacity>
+               <CreateAddressModal onSave={saveAddress} />
             </View>
-
-            {showForm && <ScrollView>{addressForm()}</ScrollView>}
-            {!showForm && (
-               <FlatList<Address>
-                  data={client.addresses}
-                  renderItem={renderItem}
-                  contentContainerStyle={{ padding: 10 }}
-                  ListEmptyComponent={
-                     <View
-                        style={{
-                           backgroundColor: theme.colors.white,
-                           borderRadius: 8,
-                           borderWidth: 0.2
-                        }}
-                     >
-                        <EmptyList
-                           iconName="hourglass-empty"
-                           text="Sem endereço cadastrado"
-                        />
-                     </View>
-                  }
-               />
-            )}
+            <FlatList<Address>
+               keyExtractor={(item, index) => index.toString()}
+               data={client.addresses}
+               renderItem={addressListItem}
+               contentContainerStyle={{ padding: 10 }}
+               ListEmptyComponent={
+                  <View
+                     style={{
+                        backgroundColor: theme.colors.white,
+                        borderRadius: 8,
+                        borderWidth: 0.2
+                     }}
+                  >
+                     <EmptyList
+                        iconName="hourglass-empty"
+                        text="Sem endereço cadastrado"
+                     />
+                  </View>
+               }
+            />
          </View>
       </View>
    )
 }
+
+export default RegisterClient
 
 const styles = StyleSheet.create({
    container: {

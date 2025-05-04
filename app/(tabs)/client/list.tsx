@@ -74,15 +74,21 @@ export default function Clients() {
                      <Text style={[styles.clientName]}>
                         {item.name} {' - '} {item.phoneNumber}
                      </Text>
+                     {item.addresses && (
+                        <Text style={{ fontSize: 12, fontWeight: '400' }}>
+                           {item.addresses[0]?.street} {' - '}
+                           {item.addresses[0]?.number}
+                        </Text>
+                     )}
                   </View>
-                  <View style={styles.clienteActions}>
+                  <View style={[styles.clienteActions]}>
                      <TouchableOpacity
                         style={styles.actionButton}
                         onPress={() => router.push(`/client/${item.id}`)}
                      >
                         <MaterialIcons
                            name="edit"
-                           size={24}
+                           size={20}
                            color={theme.colors.edit}
                         />
                      </TouchableOpacity>
@@ -92,7 +98,7 @@ export default function Clients() {
                      >
                         <MaterialIcons
                            name="delete"
-                           size={24}
+                           size={20}
                            color={theme.colors.delete}
                         />
                      </TouchableOpacity>

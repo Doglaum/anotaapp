@@ -19,7 +19,7 @@ export const toastMessageConfig = {
             fontSize: 15,
             fontWeight: '400'
          }}
-         position={'bottom'}
+         position={'top'}
       />
    ),
    error: (props: any) => (
@@ -35,7 +35,7 @@ export const toastMessageConfig = {
             fontSize: 15,
             fontWeight: '400'
          }}
-         position={'bottom'}
+         position={'top'}
       />
    ),
    info: (props: any) => (
@@ -51,7 +51,7 @@ export const toastMessageConfig = {
             fontSize: 15,
             fontWeight: '400'
          }}
-         position={'bottom'}
+         position={'top'}
       />
    )
 }

@@ -1,4 +1,11 @@
-import { View, Text, StyleSheet, ScrollView } from 'react-native'
+import {
+   View,
+   Text,
+   StyleSheet,
+   ScrollView,
+   KeyboardAvoidingView,
+   Platform
+} from 'react-native'
 import { useState, useEffect } from 'react'
 import { commonStyles, theme } from '@/theme'
 import { PaymentMethod, OrderSituation, Order } from '@/database/models/'
@@ -6,7 +13,7 @@ import { OrderSituationService, PaymentMethodService } from '@/services'
 import { useFocusEffect } from '@react-navigation/native'
 import { useCallback } from 'react'
 import CurrencyInput from 'react-native-currency-input'
-import { FormCurrencyInput, FormSelectInput, SelectInput } from '@/components'
+import { FormCurrencyInput, FormSelectInput, FormTextInput } from '@/components'
 
 export const AdditionalInformationsStep = ({
    order,
@@ -74,6 +81,12 @@ export const AdditionalInformationsStep = ({
             name="deliveryFee"
             onChange={selectHandle}
             value={order.deliveryFee}
+         />
+         <FormTextInput
+            label="teste"
+            name="teste"
+            onChange={() => {}}
+            value={order.totalPrice}
          />
          <View style={{ marginTop: 16 }}>
             <Text style={styles.modalTitle}>

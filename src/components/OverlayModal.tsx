@@ -41,14 +41,14 @@ export const OverlayerModal: React.FC<OverlayModalProps> = ({
       <View>
          <PaperProvider>
             <Modal
-               animationType="fade"
+               animationType="slide"
                visible={overlayModalVisible}
                transparent
             >
                <View
                   style={{
                      flex: 1,
-                     justifyContent: 'center',
+                     justifyContent: 'flex-end',
                      alignItems: 'center',
                      backgroundColor: '#313131cf'
                   }}
@@ -56,8 +56,8 @@ export const OverlayerModal: React.FC<OverlayModalProps> = ({
                   <View
                      style={{
                         backgroundColor: theme.colors.appContainerColor,
-                        height: height * 0.8,
-                        width: '90%',
+                        height: height * 0.9,
+                        width: '100%',
                         borderRadius: 15,
                         borderColor: theme.colors.primary
                      }}

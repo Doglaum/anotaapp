@@ -8,9 +8,9 @@ export const AppToast = () => {
    return (
       <Toast
          config={toastMessageConfig}
-         position="bottom"
-         bottomOffset={60}
-         visibilityTime={2000}
+         position="top"
+         topOffset={60}
+         visibilityTime={1500}
       />
    )
 }

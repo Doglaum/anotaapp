@@ -8,13 +8,14 @@ import {
    Button,
    TextInput
 } from 'react-native'
-import { commonStyles } from '@/theme'
+import { commonStyles, theme } from '@/theme'
 import { useState, useCallback, useEffect } from 'react'
 import { Order, Product, OrderProduct } from '@/database/models'
 import { ProductService } from '@/services/ProductService'
 import { useFocusEffect } from '@react-navigation/native'
 import { EmptyList } from '@/components/EmptyList'
-import { FormSearchInput } from '@/components'
+import { FormSearchInput, successToast } from '@/components'
+import { MaterialIcons } from '@expo/vector-icons'
 
 export const OrdeProductStep = ({
    order,
@@ -49,6 +50,7 @@ export const OrdeProductStep = ({
       ])
       setSelectedProduct({} as Product)
       setDetails('')
+      successToast(`${selectedProduct.name} adicionado ao carrinho`)
       setModalVisible(false)
    }
 
@@ -89,6 +91,7 @@ export const OrdeProductStep = ({
             onChange={setFilterText}
             label="Nome, preço"
             value={filterText}
+            style={{ marginBottom: 10 }}
          />
          <FlatList<Product>
             data={filteredProducts}
@@ -97,11 +100,28 @@ export const OrdeProductStep = ({
                <TouchableOpacity onPress={() => handleOpenModal(item)}>
                   <View style={commonStyles.listItem}>
                      <View style={styles.productInfo}>
-                        <Text style={styles.productName}>{item.name}</Text>
                         <View>
+                           <Text style={styles.productName}>{item.name}</Text>
                            <Text style={styles.productPrice}>
                               R$ {item.price.toFixed(2)}
                            </Text>
+                        </View>
+                        <View
+                           style={{
+                              backgroundColor: theme.colors.primary,
+                              flexDirection: 'row',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              borderRadius: 8,
+                              borderWidth: 0.2,
+                              padding: 5
+                           }}
+                        >
+                           <MaterialIcons
+                              name="add-shopping-cart"
+                              size={16}
+                              color={theme.colors.white}
+                           ></MaterialIcons>
                         </View>
                      </View>
                   </View>
@@ -117,7 +137,7 @@ export const OrdeProductStep = ({
          <Modal
             visible={modalVisible}
             transparent={true}
-            animationType="slide"
+            animationType="fade"
             onRequestClose={() => setModalVisible(false)}
          >
             <View style={styles.modalContainer}>
@@ -150,13 +170,12 @@ const styles = StyleSheet.create({
       flex: 1
    },
    productName: {
-      fontSize: 16,
+      fontSize: 14,
       fontWeight: 'bold'
    },
    productPrice: {
-      fontSize: 14,
-      color: '#666',
-      marginTop: 4
+      fontSize: 13,
+      color: '#535353'
    },
    modalContainer: {
       flex: 1,
