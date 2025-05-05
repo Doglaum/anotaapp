@@ -98,7 +98,7 @@ export default function RegisterProduct({
          <FormCurrencyInput
             name="price"
             label="Preço"
-            value={product.name}
+            value={product.price}
             onChange={changeHandle}
          />
          <ScrollView
