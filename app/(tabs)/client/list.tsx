@@ -3,8 +3,7 @@ import {
    Text,
    StyleSheet,
    FlatList,
-   TouchableOpacity,
-   TextInput
+   TouchableOpacity
 } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
 import { commonStyles, theme } from '@/theme'
@@ -13,7 +12,7 @@ import { useState, useCallback } from 'react'
 import { Client } from '@/database/models/Client'
 import { ClientService } from '@/services/ClientService'
 import { EmptyList } from '@/components/EmptyList'
-import { useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect } from 'expo-router'
 import { FormSearchInput } from '@/components/form-inputs/FormSearchInput'
 
 export default function Clients() {
@@ -43,7 +42,7 @@ export default function Clients() {
 
    const handleDelete = async (id: number) => {
       await clientService.delete(id)
-      const newList = clients.filter(p => p.id !== id)
+      const newList = clients.filter(p => p.clientId !== id)
       setClients(() => newList)
       setFilteredClients(() => newList)
    }
@@ -67,7 +66,7 @@ export default function Clients() {
          />
          <FlatList<Client>
             data={filteredClients}
-            keyExtractor={item => item.id.toString()}
+            keyExtractor={item => item.clientId.toString()}
             renderItem={({ item }) => (
                <View style={commonStyles.listItem}>
                   <View>
@@ -84,7 +83,7 @@ export default function Clients() {
                   <View style={[styles.clienteActions]}>
                      <TouchableOpacity
                         style={styles.actionButton}
-                        onPress={() => router.push(`/client/${item.id}`)}
+                        onPress={() => router.push(`/client/${item.clientId}`)}
                      >
                         <MaterialIcons
                            name="edit"
@@ -94,7 +93,7 @@ export default function Clients() {
                      </TouchableOpacity>
                      <TouchableOpacity
                         style={styles.actionButton}
-                        onPress={() => handleDelete(item.id)}
+                        onPress={() => handleDelete(item.clientId)}
                      >
                         <MaterialIcons
                            name="delete"

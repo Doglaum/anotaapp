@@ -5,7 +5,7 @@ import { Client } from './Client';
 export class Address {
 
    @PrimaryGeneratedColumn()
-   id: number;
+   addressId: number;
 
    @Column('text', { nullable: true })
    city: string;

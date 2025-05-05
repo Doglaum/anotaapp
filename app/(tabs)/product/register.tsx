@@ -25,7 +25,7 @@ export default function RegisterProduct({
    const productService = new ProductService()
    const [product, setProduct] = useState<Partial<Product>>({
       name: '',
-      price: 0.0,
+      price: 0,
       ingredients: []
    })
    useEffect(() => {
@@ -39,15 +39,16 @@ export default function RegisterProduct({
    }, [])
 
    const handleSubmit = async () => {
-      if (!product.price) {
-         setProduct(prev => ({ ...prev, price: 0 }))
-      }
-      if (editProductId) {
-         await productService.update(editProductId, product)
-      } else {
-         await productService.save(product as Product)
-      }
-      router.push('/product/list')
+      console.log(JSON.stringify(product))
+      // if (!product.price) {
+      //    setProduct(prev => ({ ...prev, price: 0 }))
+      // }
+      // if (editProductId) {
+      //    await productService.update(editProductId, product)
+      // } else {
+      //    await productService.save(product as Product)
+      // }
+      // router.push('/product/list')
    }
 
    const changeHandle = (name: string, value: any) => {
@@ -97,7 +98,7 @@ export default function RegisterProduct({
          <FormCurrencyInput
             name="price"
             label="Preço"
-            value={product.price}
+            value={product.name}
             onChange={changeHandle}
          />
          <ScrollView
@@ -134,7 +135,7 @@ export default function RegisterProduct({
                </View>
                <View style={{ flexDirection: 'row', gap: 5 }}>
                   <CopyIngredientsModal
-                     currentProductId={product.id}
+                     currentProductId={product.productId}
                      buttonStyle={commonStyles.circleCopyButton}
                      onSelect={copyIngredients}
                   />

@@ -4,14 +4,15 @@ import {
    Column,
    CreateDateColumn,
    ManyToOne,
-   JoinColumn
+   JoinColumn,
+   DeleteDateColumn
 } from 'typeorm'
 import { Product } from './Product'
 
 @Entity('ingredient')
 export class Ingredient {
    @PrimaryGeneratedColumn()
-   id: number
+   ingredientId: number
 
    @Column('text')
    name: string
@@ -25,4 +26,7 @@ export class Ingredient {
    @ManyToOne(() => Product, {onDelete: 'CASCADE'})
    @JoinColumn({ name: 'productId' })
    product: Product
+
+   @DeleteDateColumn()
+   deletedAt: Date;
 }

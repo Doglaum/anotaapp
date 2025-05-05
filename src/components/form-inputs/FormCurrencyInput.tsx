@@ -1,5 +1,13 @@
-import { View, Text } from 'react-native'
-import CurrencyInput from 'react-native-currency-input'
+import {
+   View,
+   Text,
+   TextInput,
+   TouchableWithoutFeedback,
+   Keyboard,
+   KeyboardAvoidingView,
+   Platform
+} from 'react-native'
+import MaskInput, { Masks } from 'react-native-mask-input'
 import { formStyle } from './styles'
 import { useState } from 'react'
 import { theme } from '@/theme'
@@ -16,8 +24,14 @@ export const FormCurrencyInput = ({
    onChange: (name: string, text: any) => void
 }) => {
    const [isFocus, setIsFocus] = useState(false)
+   const [localValue, setLocalValue] = useState('')
    const onChangeText = (value: number) => {
       onChange(name, value)
+   }
+
+   const handleChangeText = (text: string) => {
+      console.log(text)
+      setLocalValue(text)
    }
 
    return (
@@ -30,23 +44,25 @@ export const FormCurrencyInput = ({
          >
             {label}
          </Text>
-         <CurrencyInput
+         <MaskInput
+            mask={Masks.BRL_CURRENCY}
+            value={localValue}
+            onChangeText={(masked, unmasked) => {
+               handleChangeText(masked)
+               onChangeText(Number(parseFloat(unmasked)))
+            }}
+            placeholder="R$ 0,00"
+            keyboardType="numeric"
+            onFocus={() => setIsFocus(true)}
+            onBlur={() => setIsFocus(false)}
             style={[
                formStyle.formInput,
                isFocus && {
                   color: theme.colors.primary,
                   borderColor: theme.colors.primary
-               }
+               },
+               { fontSize: 12 }
             ]}
-            value={value}
-            onChangeValue={onChangeText}
-            minValue={0}
-            delimiter="."
-            separator=","
-            placeholder="0"
-            keyboardType="number-pad"
-            onFocus={() => setIsFocus(true)}
-            onBlur={() => setIsFocus(false)}
          />
       </View>
    )

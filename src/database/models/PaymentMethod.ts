@@ -5,7 +5,7 @@ import { PaymentStatus } from './PaymentStatus';
 export class PaymentMethod {
   
   @PrimaryGeneratedColumn()
-  id: number;
+  paymentMethodId: number;
 
   @Column('text')
   name: string;

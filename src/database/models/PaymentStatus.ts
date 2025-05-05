@@ -4,7 +4,7 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeor
 export class PaymentStatus {
   
   @PrimaryGeneratedColumn()
-  id: number;
+  paymentStatusId: number;
 
   @Column('text')
   name: string;

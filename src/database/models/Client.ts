@@ -6,7 +6,7 @@ import { Order } from './Order';
 export class Client {
 
   @PrimaryGeneratedColumn()
-  id: number;
+  clientId: number;
 
   @Column('text')
   name: string;

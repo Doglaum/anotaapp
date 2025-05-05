@@ -9,7 +9,7 @@ import { commonStyles, theme } from '@/theme'
 import { useEffect, useState } from 'react'
 import { Client, Order } from '@/database/models/'
 import { ClientService } from '@/services/ClientService'
-import { useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect } from 'expo-router'
 import { useCallback } from 'react'
 import { EmptyList } from '@/components/EmptyList'
 import { FormSearchInput } from '@/components/form-inputs/FormSearchInput'
@@ -76,9 +76,9 @@ export const ClientStep = ({
          </View>
          <FlatList<Client>
             data={filteredClients}
-            keyExtractor={item => item.id.toString()}
+            keyExtractor={item => item.clientId.toString()}
             renderItem={({ item }: { item: Client }) => {
-               const isSelected = order.client?.id === item.id
+               const isSelected = order.client?.clientId === item.clientId
                return (
                   <TouchableOpacity
                      onPress={() => insertOrderData('client', item)}

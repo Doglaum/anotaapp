@@ -17,13 +17,13 @@ const renderItem = ({ item }: { item: Order }) => (
    <View
       style={[
          commonStyles.listItem,
-         item?.orderSituation?.id === 2
+         item?.orderSituation?.orderSituationId === 2
             ? { backgroundColor: theme.colors.edit }
             : { backgroundColor: theme.colors.edit }
       ]}
    >
       <Text style={styles.itemText}>
-         {item.id}
+         {item.orderId}
          {' - '}
          {item.client.name}
          {' - '}
@@ -58,7 +58,7 @@ export default function Lista() {
       <View style={commonStyles.container}>
          <FlatList<Order>
             data={orders}
-            keyExtractor={item => item.id.toString()}
+            keyExtractor={item => item.orderId.toString()}
             renderItem={renderItem}
             ListEmptyComponent={
                <EmptyList iconName="task" text="Nenhum produto cadastrado" />

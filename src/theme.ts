@@ -62,7 +62,7 @@ export const commonStyles = StyleSheet.create({
   },
   addButton: {
     backgroundColor: theme.colors.add,
-    padding: 12,
+    padding: 16,
     borderRadius: 8,
     alignItems: 'center'
   },
@@ -87,7 +87,7 @@ export const commonStyles = StyleSheet.create({
   editButton: {
     backgroundColor: theme.colors.edit,
     padding: 16,
-    borderRadius: 12,
+    borderRadius: 8,
     alignItems: 'center',
   },
   editButtonText: {

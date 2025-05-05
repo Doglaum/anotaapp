@@ -1,12 +1,13 @@
-import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn, ManyToMany, JoinTable } from 'typeorm';
 import { Order } from './Order';
 import { Product } from './Product';
+import { Ingredient } from './Ingredient';
 
 @Entity('order_product')
 export class OrderProduct {
 
   @PrimaryColumn('integer')
-  orderId: number;
+  orderProductId: number;
 
   @PrimaryColumn('integer')
   productId: number;
@@ -20,9 +21,18 @@ export class OrderProduct {
   @Column('decimal', { precision: 10, scale: 2 })
   unitPrice: number;
 
+  @ManyToMany(() => Ingredient, { eager: true })
+  @JoinTable({
+    name: 'order_product_ingredients',
+    joinColumn: {name: 'orderProductId', referencedColumnName: 'orderProductId'},
+    inverseJoinColumn: {name: 'ingredientId', referencedColumnName: 'ingredientId'}
+  })
+  selectedIngredients: Ingredient[];
+  
+
   @ManyToOne(() => Order, (order) => order.orderProducts, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'orderId' })
-  order: Order;
+  order: Order;  
 
   @ManyToOne(() => Product, { eager: true })
   @JoinColumn({ name: 'productId' })

@@ -18,8 +18,8 @@ export class OrderSituationRepository {
     return await this.repository.find();
   }
 
-  async findById(id: number): Promise<OrderSituation | null> {
-    return await this.repository.findOne({ where: { id } });
+  async findById(orderSituationId: number): Promise<OrderSituation | null> {
+    return await this.repository.findOne({ where: { orderSituationId } });
   }
 
   async update(id: number, orderSituation: Partial<OrderSituation>): Promise<OrderSituation | null> {

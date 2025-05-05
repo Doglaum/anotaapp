@@ -8,7 +8,10 @@ import {
    View,
    Text,
    StyleProp,
-   ViewStyle
+   ViewStyle,
+   Keyboard,
+   KeyboardAvoidingView,
+   Platform
 } from 'react-native'
 import { commonStyles, theme } from '@/theme'
 import { MaterialIcons } from '@expo/vector-icons'
@@ -91,15 +94,24 @@ export const OverlayerModal: React.FC<OverlayModalProps> = ({
                            />
                         </TouchableOpacity>
                      </View>
-                     <View
-                        style={{
-                           flex: 1,
-                           paddingVertical: 16,
-                           paddingHorizontal: 10
-                        }}
+                     <KeyboardAvoidingView
+                        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+                        style={commonStyles.container}
                      >
-                        {children}
-                     </View>
+                        <TouchableWithoutFeedback
+                           onPress={() => Keyboard.dismiss()}
+                        >
+                           <View
+                              style={{
+                                 flex: 1,
+                                 paddingVertical: 16,
+                                 paddingHorizontal: 10
+                              }}
+                           >
+                              {children}
+                           </View>
+                        </TouchableWithoutFeedback>
+                     </KeyboardAvoidingView>
                   </View>
                </View>
             </Modal>

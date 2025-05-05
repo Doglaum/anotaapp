@@ -9,7 +9,7 @@ import { OrderProduct } from './OrderProduct';
 export class Order {
 
   @PrimaryGeneratedColumn()
-  id: number;
+  orderId: number;
 
   @ManyToOne(() => Client, (client) => client.orders, { eager: true })
   @JoinColumn({ name: 'clienteId' })

@@ -1,10 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToMany, JoinTable, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToMany, JoinTable, OneToMany, DeleteDateColumn } from 'typeorm';
 import { Ingredient } from './Ingredient';
 
 @Entity('product')
 export class Product {
   @PrimaryGeneratedColumn()
-  id: number;
+  productId: number;
 
   @Column('text')
   name: string;
@@ -20,4 +20,8 @@ export class Product {
   
   @OneToMany(() => Ingredient, (ingredient) => ingredient.product, { cascade: true })
   ingredients: Ingredient[];
+
+  @DeleteDateColumn()
+  deletedAt: Date;
+  
 }

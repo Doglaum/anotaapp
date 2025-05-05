@@ -18,8 +18,8 @@ export class PaymentStatusRepository {
     return await this.repository.find();
   }
 
-  async findById(id: number): Promise<PaymentStatus | null> {
-    return await this.repository.findOne({ where: { id } });
+  async findById(paymentStatusId: number): Promise<PaymentStatus | null> {
+    return await this.repository.findOne({ where: { paymentStatusId } });
   }
 
   async update(id: number, paymentStatus: Partial<PaymentStatus>): Promise<PaymentStatus | null> {

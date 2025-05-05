@@ -23,8 +23,8 @@ export class ProductRepository {
     return await this.repository.find({relations: ['ingredients']});
   }
 
-  async findById(id: number): Promise<Product | null> {
-    return await this.repository.findOne({ where: { id }, relations: ['ingredients'] });
+  async findById(productId: number): Promise<Product | null> {
+    return await this.repository.findOne({ where: { productId }, relations: ['ingredients'] });
   }
 
   async update(id: number, updateData: Partial<Product>): Promise<Product | null> {

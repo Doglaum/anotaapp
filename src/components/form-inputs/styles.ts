@@ -15,7 +15,8 @@ export const formStyle = StyleSheet.create({
        ...inputCommonsStyles
      },
      dropdown: {
-      height: 50,
+      height: 40,
+      padding: 8,
       ...inputCommonsStyles
       },
      formLabel: {

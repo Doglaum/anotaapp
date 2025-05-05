@@ -42,7 +42,7 @@ export default function Products() {
 
    const handleDelete = async (id: number) => {
       await productService.delete(id)
-      const newList = products.filter(p => p.id !== id)
+      const newList = products.filter(p => p.productId !== id)
       setProducts(() => newList)
       setFilteredProducts(() => newList)
    }
@@ -66,7 +66,7 @@ export default function Products() {
          />
          <FlatList<Product>
             data={filteredProducts}
-            keyExtractor={item => item.id.toString()}
+            keyExtractor={item => item.productId.toString()}
             renderItem={({ item }) => (
                <View style={commonStyles.listItem}>
                   <View>
@@ -78,7 +78,9 @@ export default function Products() {
                   <View style={styles.productActions}>
                      <TouchableOpacity
                         style={styles.actionButton}
-                        onPress={() => router.push(`/product/${item.id}`)}
+                        onPress={() =>
+                           router.push(`/product/${item.productId}`)
+                        }
                      >
                         <MaterialIcons
                            name="edit"
@@ -88,7 +90,7 @@ export default function Products() {
                      </TouchableOpacity>
                      <TouchableOpacity
                         style={styles.actionButton}
-                        onPress={() => handleDelete(item.id)}
+                        onPress={() => handleDelete(item.productId)}
                      >
                         <MaterialIcons
                            name="delete"

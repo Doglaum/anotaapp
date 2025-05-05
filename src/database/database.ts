@@ -6,22 +6,22 @@ import { PaymentSituationEnum } from './enums/PaymentSituationEnums';
 
 
 const defaultPaymentMethods = [
-  { id: PaymentMethodEnum.DINHEIRO, name: 'Dinheiro'},
-  { id: PaymentMethodEnum.CARTAO_CREDITO, name: 'Cartão de Crédito' },
-  { id: PaymentMethodEnum.CARTAO_DEBITO, name: 'Cartão de Débito'},
-  { id: PaymentMethodEnum.PIX, name: 'PIX' },
+  { paymentMethodId: PaymentMethodEnum.DINHEIRO, name: 'Dinheiro'},
+  { paymentMethodId: PaymentMethodEnum.CARTAO_CREDITO, name: 'Cartão de Crédito' },
+  { paymentMethodId: PaymentMethodEnum.CARTAO_DEBITO, name: 'Cartão de Débito'},
+  { paymentMethodId: PaymentMethodEnum.PIX, name: 'PIX' },
 ];
 
 const defaultOrderSituations = [
-  { id: OrderSituationEnum.PREPARANDO, name: 'Preparando' },
-  { id: OrderSituationEnum.PENDENTE, name: 'Pendente' },
-  { id: OrderSituationEnum.CANCELADO, name: 'Cancelado' },
+  { orderSituationId: OrderSituationEnum.PREPARANDO, name: 'Preparando' },
+  { orderSituationId: OrderSituationEnum.PENDENTE, name: 'Pendente' },
+  { orderSituationId: OrderSituationEnum.CANCELADO, name: 'Cancelado' },
 ];
 
 const defaultPaymentStatus = [
-  { id: PaymentSituationEnum.PAGO, name: 'Pago' },
-  { id: PaymentSituationEnum.PENDENTE, name: 'Pendente' },
-  { id: PaymentSituationEnum.PAGAR_NA_ENTREGA, name: 'Pagar na entrega' },
+  { paymentStatusId: PaymentSituationEnum.PAGO, name: 'Pago' },
+  { paymentStatusId: PaymentSituationEnum.PENDENTE, name: 'Pendente' },
+  { paymentStatusId: PaymentSituationEnum.PAGAR_NA_ENTREGA, name: 'Pagar na entrega' },
 ]
 
 export const initDatabase = async (): Promise<void> => {

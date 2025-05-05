@@ -1,16 +1,9 @@
-import {
-   View,
-   StyleSheet,
-   TouchableOpacity,
-   Text,
-   Alert,
-   Button
-} from 'react-native'
+import { View, StyleSheet, TouchableOpacity, Text, Alert } from 'react-native'
 import { useEffect, useState } from 'react'
 import { commonStyles, theme } from '@/theme'
 import { Order } from '@/database/models/index'
 import { OrderService } from '@/services/OrderService'
-import { useRouter, Stack, router } from 'expo-router'
+import { Stack } from 'expo-router'
 import {
    ClientStep,
    OrdeProductStep,
@@ -49,7 +42,7 @@ export default function PedidoForm() {
 
    //TODO : adicionar forma de somar o valor do frete
    const handleSubmit = async () => {
-      console.log(JSON.stringify(order))
+      console.log(order)
       //await pedidoService.criarPedido(pedido)
       //setPedido({})
       //setStep(1)
@@ -69,6 +62,7 @@ export default function PedidoForm() {
       if (order.orderProducts) {
          totalOrder += order.orderProducts.reduce((total, orderProduct) => {
             const productPrice = orderProduct.product.price
+
             return total + productPrice
          }, 0)
       }
@@ -79,7 +73,12 @@ export default function PedidoForm() {
       <View style={commonStyles.container}>
          <Stack.Screen
             options={{
-               title: 'Selecionar tipo pedido',
+               title:
+                  step === 1
+                     ? 'Selecionar Cliente'
+                     : step === 2
+                     ? 'Selecionar Produto'
+                     : 'Mais Informações',
                headerStyle: {
                   backgroundColor: theme.colors.primary
                },
@@ -87,30 +86,102 @@ export default function PedidoForm() {
             }}
          />
          <View
-            style={{
-               alignItems: 'center',
-               justifyContent: 'center',
-               gap: 100,
-               flex: 1
-            }}
+            style={{ flexDirection: 'row', justifyContent: 'space-between' }}
          >
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+               {[1, 2, 3].map(num => (
+                  <View
+                     key={num}
+                     style={[
+                        styles.stepBox,
+                        step === num && styles.activeStepBox
+                     ]}
+                  >
+                     <Text
+                        style={[
+                           styles.stepText,
+                           step === num && styles.activeStepText
+                        ]}
+                     >
+                        {num}
+                     </Text>
+                  </View>
+               ))}
+            </View>
             <TouchableOpacity
-               style={[commonStyles.editButton, { width: '100%' }]}
-               onPress={() => router.push('(tabs)/create-order/pickupOrder')}
+               style={styles.cartButton}
+               onPress={() => setModalVisible(true)}
             >
-               <View>
-                  <Text style={commonStyles.editButtonText}>Balcão</Text>
-               </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-               style={[commonStyles.addButton, { width: '100%' }]}
-               onPress={() => router.push('(tabs)/create-order/deliveryOrder')}
-            >
-               <View>
-                  <Text style={commonStyles.addButtonText}>Entrega</Text>
-               </View>
+               <MaterialIcons name="shopping-cart" size={24} color="#fff" />
+               <Text style={styles.cartButtonText}>Carrinho</Text>
             </TouchableOpacity>
          </View>
+         <View style={{ flex: 1 }}>
+            <View style={{ display: step === 1 ? 'flex' : 'none', flex: 1 }}>
+               <ClientStep order={order} insertOrderData={insertOrderData} />
+            </View>
+            <View style={{ display: step === 2 ? 'flex' : 'none', flex: 1 }}>
+               <OrdeProductStep
+                  order={order}
+                  insertOrderData={insertOrderData}
+               />
+            </View>
+            <View style={{ display: step === 3 ? 'flex' : 'none', flex: 1 }}>
+               <AdditionalInformationsStep
+                  order={order}
+                  insertOrderData={insertOrderData}
+               />
+            </View>
+         </View>
+         <View
+            style={{
+               flexDirection: 'row',
+               justifyContent: 'space-around'
+            }}
+         >
+            <View>
+               <TouchableOpacity
+                  style={[
+                     styles.roundedButton,
+                     { opacity: step === 1 ? 0 : 1 }
+                  ]}
+                  onPress={handlePreviousStep}
+               >
+                  <MaterialIcons name="arrow-back" size={24} color="#fff" />
+               </TouchableOpacity>
+            </View>
+            <View>
+               {step < 3 && (
+                  <TouchableOpacity
+                     style={styles.roundedButton}
+                     onPress={handleNextStep}
+                  >
+                     <MaterialIcons
+                        name="arrow-forward"
+                        size={24}
+                        color="#fff"
+                     />
+                  </TouchableOpacity>
+               )}
+               {step === 3 && (
+                  <TouchableOpacity
+                     style={[
+                        styles.roundedButton,
+                        { backgroundColor: theme.colors.edit }
+                     ]}
+                     onPress={handleSubmit}
+                  >
+                     <MaterialIcons name="check" size={24} color="#ffffff" />
+                  </TouchableOpacity>
+               )}
+            </View>
+         </View>
+         <ShoppingCart
+            visible={modalVisible}
+            onClose={() => setModalVisible(false)}
+            order={order}
+            insertOrderData={insertOrderData}
+         />
       </View>
    )
 }

@@ -12,7 +12,7 @@ import { commonStyles, theme } from '@/theme'
 import { useState, useCallback, useEffect } from 'react'
 import { Order, Product, OrderProduct } from '@/database/models'
 import { ProductService } from '@/services/ProductService'
-import { useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect } from 'expo-router'
 import { EmptyList } from '@/components/EmptyList'
 import { FormSearchInput, successToast } from '@/components'
 import { MaterialIcons } from '@expo/vector-icons'
@@ -95,7 +95,7 @@ export const OrdeProductStep = ({
          />
          <FlatList<Product>
             data={filteredProducts}
-            keyExtractor={item => item.id.toString()}
+            keyExtractor={item => item.productId.toString()}
             renderItem={({ item }) => (
                <TouchableOpacity onPress={() => handleOpenModal(item)}>
                   <View style={commonStyles.listItem}>

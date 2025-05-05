@@ -19,14 +19,14 @@ export class OrderRepository {
 
   async findAll(): Promise<Order[]> {
     return await this.repository.find({
-      relations: ['client', 'paymentMethod', 'orderSituation', 'orderProducts.product', 'address']
+      relations: ['client']
     });
   }
 
-  async findById(id: number): Promise<Order | null> {
+  async findById(orderId: number): Promise<Order | null> {
     return await this.repository.findOne({
-      where: { id },
-      relations: ['client', 'paymentMethod', 'orderSituation', 'orderProducts.product', 'address']
+      where: { orderId },
+      relations: ['client']
     });
   }
 
@@ -37,21 +37,5 @@ export class OrderRepository {
 
   async delete(id: number): Promise<void> {
     await this.repository.delete(id);
-  }
-
-  async addProduto(orderId: number, productId: number, details?: string): Promise<void> {
-    const orderProduct = this.orderProductRepository.create({
-      orderId,
-      productId,
-      details
-    });
-    await this.orderProductRepository.save(orderProduct);
-  }
-
-  async removeOrderProduct(orderId: number, productId: number): Promise<void> {
-    await this.orderProductRepository.delete({
-      orderId,
-      productId
-    });
   }
 } 

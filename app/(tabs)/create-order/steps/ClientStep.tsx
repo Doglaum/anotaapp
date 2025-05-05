@@ -10,7 +10,7 @@ import { commonStyles, theme } from '@/theme'
 import { useEffect, useState } from 'react'
 import { Client, Order } from '@/database/models/'
 import { ClientService } from '@/services/ClientService'
-import { useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect } from 'expo-router'
 import { useCallback } from 'react'
 import { EmptyList } from '@/components/EmptyList'
 import { router } from 'expo-router'
@@ -61,8 +61,8 @@ export const ClientStep = ({
    }, [filterText])
 
    const handleOnSaveClient = (client: Client) => {
-      setClients(prev => [...prev, client])
-      setFilteredClients(prev => [...prev, client])
+      setClients(prev => [client, ...prev])
+      setFilteredClients(prev => [client, ...prev])
    }
    return (
       <View style={commonStyles.container}>
@@ -78,9 +78,9 @@ export const ClientStep = ({
          </View>
          <FlatList<Client>
             data={filteredClients}
-            keyExtractor={item => item.id.toString()}
+            keyExtractor={item => item.clientId.toString()}
             renderItem={({ item }: { item: Client }) => {
-               const isSelected = order.client?.id === item.id
+               const isSelected = order.client?.clientId === item.clientId
                return (
                   <TouchableOpacity
                      onPress={() => insertOrderData('client', item)}

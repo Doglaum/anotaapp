@@ -18,8 +18,8 @@ export class ClientRepository {
     return await this.repository.find({relations: ['addresses']});
   }
 
-  async findById(id: number): Promise<Client | null> {
-    return await this.repository.findOne({ where: { id }, relations: ['addresses'] });
+  async findById(clientId: number): Promise<Client | null> {
+    return await this.repository.findOne({ where: { clientId }, relations: ['addresses'] });
   }
 
   async update(id: number, client: Partial<Client>): Promise<Client | null> {

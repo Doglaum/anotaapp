@@ -1,19 +1,11 @@
-import {
-   View,
-   Text,
-   StyleSheet,
-   ScrollView,
-   KeyboardAvoidingView,
-   Platform
-} from 'react-native'
-import { useState, useEffect } from 'react'
-import { commonStyles, theme } from '@/theme'
+import { View, Text, StyleSheet } from 'react-native'
+import { useState } from 'react'
+import { theme } from '@/theme'
 import { PaymentMethod, OrderSituation, Order } from '@/database/models/'
 import { OrderSituationService, PaymentMethodService } from '@/services'
-import { useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect } from 'expo-router'
 import { useCallback } from 'react'
-import CurrencyInput from 'react-native-currency-input'
-import { FormCurrencyInput, FormSelectInput, FormTextInput } from '@/components'
+import { FormCurrencyInput, FormSelectInput } from '@/components'
 
 export const AdditionalInformationsStep = ({
    order,
@@ -51,47 +43,43 @@ export const AdditionalInformationsStep = ({
    }
 
    return (
-      <View style={{ marginTop: 10, gap: 10 }}>
-         <FormSelectInput<Order>
-            onChange={selectHandle}
-            data={paymentMethods || []}
-            label="Forma de pagamento"
-            labelField="name"
-            valueField="id"
-            name="paymentMethod"
-            placeholder="PIX, Crédito, Débito, Dinheiro"
-         />
-         <FormSelectInput<Order>
-            onChange={selectHandle}
-            data={orderSituations || []}
-            label="Situação do pedido"
-            labelField="name"
-            valueField="id"
-            name="orderSituation"
-            placeholder="Pago, Pedente, Cancelado"
-         />
-         <FormCurrencyInput
-            label="Troco"
-            name="changeFor"
-            onChange={selectHandle}
-            value={order.changeFor}
-         />
-         <FormCurrencyInput
-            label="Tx. Entrega"
-            name="deliveryFee"
-            onChange={selectHandle}
-            value={order.deliveryFee}
-         />
-         <FormTextInput
-            label="teste"
-            name="teste"
-            onChange={() => {}}
-            value={order.totalPrice}
-         />
-         <View style={{ marginTop: 16 }}>
-            <Text style={styles.modalTitle}>
-               Valor total: R${order.totalPrice?.toFixed(2)}
-            </Text>
+      <View style={{ flex: 1 }}>
+         <View style={{ marginTop: 10, gap: 10 }}>
+            <FormSelectInput<Order>
+               onChange={selectHandle}
+               data={paymentMethods || []}
+               label="Forma de pagamento"
+               labelField="name"
+               valueField="id"
+               name="paymentMethod"
+               placeholder="PIX, Crédito, Débito, Dinheiro"
+            />
+            <FormSelectInput<Order>
+               onChange={selectHandle}
+               data={orderSituations || []}
+               label="Situação do pedido"
+               labelField="name"
+               valueField="id"
+               name="orderSituation"
+               placeholder="Pago, Pedente, Cancelado"
+            />
+            <FormCurrencyInput
+               label="Troco"
+               name="changeFor"
+               onChange={selectHandle}
+               value={order.changeFor}
+            />
+            <FormCurrencyInput
+               label="Tx. Entrega"
+               name="deliveryFee"
+               onChange={selectHandle}
+               value={order.deliveryFee}
+            />
+            <View style={{ marginTop: 16 }}>
+               <Text style={styles.modalTitle}>
+                  Valor total: R${order.totalPrice?.toFixed(2)}
+               </Text>
+            </View>
          </View>
       </View>
    )
