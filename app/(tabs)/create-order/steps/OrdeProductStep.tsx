@@ -10,7 +10,7 @@ import {
 } from 'react-native'
 import { commonStyles, theme } from '@/theme'
 import { useState, useCallback, useEffect } from 'react'
-import { Order, Product, OrderProduct } from '@/database/models'
+import { Order, Product, OrderProduct, Ingredient } from '@/database/models'
 import { ProductService } from '@/services/ProductService'
 import { useFocusEffect } from 'expo-router'
 import { EmptyList } from '@/components/EmptyList'
@@ -33,6 +33,9 @@ export const OrdeProductStep = ({
    )
    const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
    const [filterText, setFilterText] = useState<string>('')
+   const [selectedIngredients, setSelectedIngredients] = useState<Ingredient[]>(
+      []
+   )
 
    const handleOpenModal = (product: Product) => {
       setSelectedProduct(product)
@@ -44,14 +47,28 @@ export const OrdeProductStep = ({
       orderProduct.details = details
       orderProduct.product = selectedProduct
       orderProduct.unitPrice = selectedProduct.price
+      let ingredientsTotalPrice = selectedIngredients.reduce(
+         (total, orderProductIngredient) => {
+            const price = orderProductIngredient.price
+            return total + price
+         },
+         0
+      )
+      orderProduct.totalPrice = selectedProduct.price + ingredientsTotalPrice
+      orderProduct.selectedIngredients = selectedIngredients
       insertOrderData('orderProducts', [
          ...(order?.orderProducts || []),
          orderProduct
       ])
-      setSelectedProduct({} as Product)
-      setDetails('')
+      resetState()
       successToast(`${selectedProduct.name} adicionado ao carrinho`)
       setModalVisible(false)
+   }
+
+   const resetState = () => {
+      setSelectedProduct({} as Product)
+      setSelectedIngredients([] as Ingredient[])
+      setDetails('')
    }
 
    useFocusEffect(
@@ -148,10 +165,62 @@ export const OrdeProductStep = ({
                      placeholder="Detalhes"
                      onChangeText={setDetails}
                   />
+                  <FlatList<Ingredient>
+                     data={selectedProduct.ingredients}
+                     renderItem={({ item }) => {
+                        const isSelected = selectedIngredients.some(
+                           item => item.ingredientId === item.ingredientId
+                        )
+                        let count = 0
+                        return (
+                           <TouchableOpacity
+                              onPress={() => {
+                                 count += 1
+                                 setSelectedIngredients(prev => [...prev, item])
+                              }}
+                           >
+                              <View
+                                 style={[
+                                    commonStyles.listItem,
+                                    isSelected && {
+                                       backgroundColor: theme.colors.primary
+                                    }
+                                 ]}
+                              >
+                                 <Text
+                                    style={
+                                       isSelected && {
+                                          color: theme.colors.white
+                                       }
+                                    }
+                                 >
+                                    {' '}
+                                    {item.name}
+                                 </Text>
+                                 <Text
+                                    style={
+                                       isSelected && {
+                                          color: theme.colors.white
+                                       }
+                                    }
+                                 >
+                                    {item.price
+                                       ? `R$ ${item.price.toFixed(2)}`
+                                       : ''}
+                                    {count}x
+                                 </Text>
+                              </View>
+                           </TouchableOpacity>
+                        )
+                     }}
+                  />
                   <View style={styles.modalActions}>
                      <Button
                         title="Cancelar"
-                        onPress={() => setModalVisible(false)}
+                        onPress={() => {
+                           setModalVisible(false)
+                           resetState()
+                        }}
                      />
                      <Button title="Salvar" onPress={handleSave} />
                   </View>

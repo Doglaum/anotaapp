@@ -21,10 +21,14 @@ import { MaterialIcons } from '@expo/vector-icons'
 import { errorToast, infoToast } from '@/components'
 import { ClientNameStep } from './steps/ClientNameStep'
 import { Keyboard } from 'react-native'
+import OrderSummaryStep from './steps/OrderSummaryStep'
 
 export default function PedidoForm() {
    const orderService = new OrderService()
-   const [order, setOrder] = useState<Partial<Order>>({})
+   const [order, setOrder] = useState<Partial<Order>>({
+      changeFor: 0,
+      deliveryFee: 0
+   })
    const insertOrderData = <K extends keyof Order>(
       attribute: K,
       value: Order[K]
@@ -38,7 +42,7 @@ export default function PedidoForm() {
       } else if (step === 2 && order?.orderProducts?.length === 0) {
          errorToast('Adicione pelo menos 1 produto ao pedido')
          return
-      } else if (step === 3) return
+      } else if (step === 4) return
       setStep(step + 1)
    }
    const handlePreviousStep = () => {
@@ -92,7 +96,9 @@ export default function PedidoForm() {
                         ? 'Cliente'
                         : step === 2
                         ? 'Selecionar Produto'
-                        : 'Mais Informações',
+                        : step === 3
+                        ? 'Mais Informações'
+                        : 'Resumo do pedido',
                   headerStyle: {
                      backgroundColor: theme.colors.primary
                   },
@@ -103,7 +109,7 @@ export default function PedidoForm() {
                style={{ flexDirection: 'row', justifyContent: 'space-between' }}
             >
                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  {[1, 2, 3].map(num => (
+                  {[1, 2, 3, 4].map(num => (
                      <View
                         key={num}
                         style={[
@@ -149,6 +155,9 @@ export default function PedidoForm() {
                      insertOrderData={insertOrderData}
                   />
                </View>
+               <View style={{ display: step === 4 ? 'flex' : 'none', flex: 1 }}>
+                  <OrderSummaryStep order={order} />
+               </View>
             </View>
             <View
                style={{
@@ -168,7 +177,7 @@ export default function PedidoForm() {
                   </TouchableOpacity>
                </View>
                <View>
-                  {step < 3 && (
+                  {step < 4 && (
                      <TouchableOpacity
                         style={styles.roundedButton}
                         onPress={handleNextStep}
@@ -180,7 +189,7 @@ export default function PedidoForm() {
                         />
                      </TouchableOpacity>
                   )}
-                  {step === 3 && (
+                  {step === 4 && (
                      <TouchableOpacity
                         style={[
                            styles.roundedButton,

@@ -1,8 +1,17 @@
 import { View, Text, StyleSheet } from 'react-native'
 import { useState } from 'react'
 import { theme } from '@/theme'
-import { PaymentMethod, OrderSituation, Order } from '@/database/models/'
-import { OrderSituationService, PaymentMethodService } from '@/services'
+import {
+   PaymentMethod,
+   OrderSituation,
+   Order,
+   PaymentStatus
+} from '@/database/models/'
+import {
+   OrderSituationService,
+   PaymentMethodService,
+   PaymentStatusService
+} from '@/services'
 import { useFocusEffect } from 'expo-router'
 import { useCallback } from 'react'
 import { FormCurrencyInput, FormSelectInput } from '@/components'
@@ -15,18 +24,19 @@ export const AdditionalInformationsStep = ({
    insertOrderData: <K extends keyof Order>(campo: K, valor: Order[K]) => void
 }) => {
    const paymentMethodService = new PaymentMethodService()
-   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>()
-   const orderSituationService = new OrderSituationService()
-   const [orderSituations, setOrderSituations] = useState<OrderSituation[]>()
+   const [paymentMethodsList, setPaymentMethodsList] =
+      useState<PaymentMethod[]>()
+   const paymentStatusService = new PaymentStatusService()
+   const [paymenStatusList, setPaymentStatusList] = useState<PaymentStatus[]>()
 
    useFocusEffect(
       useCallback(() => {
          const loadSelectData = async () => {
             try {
                const paymentMethods = await paymentMethodService.listAll()
-               setPaymentMethods(paymentMethods)
-               const orderSituations = await orderSituationService.listAll()
-               setOrderSituations(orderSituations)
+               setPaymentMethodsList(paymentMethods)
+               const paymentStatusList = await paymentStatusService.listAll()
+               setPaymentStatusList(paymentStatusList)
             } catch (error) {
                console.error('Erro ao carregar formas de pagamento:', error)
             }
@@ -39,6 +49,11 @@ export const AdditionalInformationsStep = ({
    )
 
    const selectHandle = (name: any, text: any) => {
+      console.log(text)
+      insertOrderData(name, text)
+   }
+
+   const changeHandle = (name: any, text: any) => {
       insertOrderData(name, text)
    }
 
@@ -47,7 +62,7 @@ export const AdditionalInformationsStep = ({
          <View style={{ marginTop: 10, gap: 10 }}>
             <FormSelectInput<Order>
                onChange={selectHandle}
-               data={paymentMethods || []}
+               data={paymentMethodsList || []}
                label="Forma de pagamento"
                labelField="name"
                valueField="id"
@@ -56,23 +71,23 @@ export const AdditionalInformationsStep = ({
             />
             <FormSelectInput<Order>
                onChange={selectHandle}
-               data={orderSituations || []}
-               label="Situação do pedido"
+               data={paymenStatusList || []}
+               label="Situação do pagamento"
                labelField="name"
                valueField="id"
-               name="orderSituation"
+               name="paymentMethod"
                placeholder="Pago, Pedente, Cancelado"
             />
             <FormCurrencyInput
                label="Troco"
                name="changeFor"
-               onChange={selectHandle}
+               onChange={changeHandle}
                value={order.changeFor}
             />
             <FormCurrencyInput
                label="Tx. Entrega"
                name="deliveryFee"
-               onChange={selectHandle}
+               onChange={changeHandle}
                value={order.deliveryFee}
             />
             <View style={{ marginTop: 16 }}>

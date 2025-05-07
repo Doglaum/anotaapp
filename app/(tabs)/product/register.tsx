@@ -39,16 +39,15 @@ export default function RegisterProduct({
    }, [])
 
    const handleSubmit = async () => {
-      console.log(JSON.stringify(product))
-      // if (!product.price) {
-      //    setProduct(prev => ({ ...prev, price: 0 }))
-      // }
-      // if (editProductId) {
-      //    await productService.update(editProductId, product)
-      // } else {
-      //    await productService.save(product as Product)
-      // }
-      // router.push('/product/list')
+      if (!product.price) {
+         setProduct(prev => ({ ...prev, price: 0 }))
+      }
+      if (editProductId) {
+         await productService.update(editProductId, product)
+      } else {
+         await productService.save(product as Product)
+      }
+      router.push('/product/list')
    }
 
    const changeHandle = (name: string, value: any) => {
