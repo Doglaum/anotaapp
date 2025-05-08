@@ -17,7 +17,7 @@ import { EmptyList } from '@/components/EmptyList'
 import { FormSearchInput, successToast } from '@/components'
 import { MaterialIcons } from '@expo/vector-icons'
 
-export const OrdeProductStep = ({
+const OrderProductStep = ({
    order,
    insertOrderData
 }: {
@@ -102,6 +102,11 @@ export const OrdeProductStep = ({
       handleSearch(filterText)
    }, [filterText])
 
+   const getIngredientCount = (ingredientId: number) => {
+      return selectedIngredients.reduce((count, ingredient) => {
+         return ingredient.ingredientId === ingredientId ? count + 1 : count
+      }, 0)
+   }
    return (
       <View style={commonStyles.container}>
          <FormSearchInput
@@ -171,11 +176,10 @@ export const OrdeProductStep = ({
                         const isSelected = selectedIngredients.some(
                            item => item.ingredientId === item.ingredientId
                         )
-                        let count = 0
+                        const count = getIngredientCount(item.ingredientId)
                         return (
                            <TouchableOpacity
                               onPress={() => {
-                                 count += 1
                                  setSelectedIngredients(prev => [...prev, item])
                               }}
                            >
@@ -194,7 +198,6 @@ export const OrdeProductStep = ({
                                        }
                                     }
                                  >
-                                    {' '}
                                     {item.name}
                                  </Text>
                                  <Text
@@ -204,10 +207,10 @@ export const OrdeProductStep = ({
                                        }
                                     }
                                  >
+                                    {' ' + count + 'X '}
                                     {item.price
                                        ? `R$ ${item.price.toFixed(2)}`
                                        : ''}
-                                    {count}x
                                  </Text>
                               </View>
                            </TouchableOpacity>
@@ -277,3 +280,5 @@ const styles = StyleSheet.create({
       justifyContent: 'space-between'
    }
 })
+
+export default OrderProductStep

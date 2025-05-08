@@ -6,7 +6,7 @@ import { OrderService } from '@/services/OrderService'
 import { Stack } from 'expo-router'
 import {
    ClientStep,
-   OrdeProductStep,
+   OrderProductStep,
    AdditionalInformationsStep
 } from './steps'
 import ShoppingCart from './components/ShoppingCart'
@@ -121,7 +121,7 @@ export default function PedidoForm() {
                <ClientStep order={order} insertOrderData={insertOrderData} />
             </View>
             <View style={{ display: step === 2 ? 'flex' : 'none', flex: 1 }}>
-               <OrdeProductStep
+               <OrderProductStep
                   order={order}
                   insertOrderData={insertOrderData}
                />

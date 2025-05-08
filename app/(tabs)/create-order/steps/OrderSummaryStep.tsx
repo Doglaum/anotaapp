@@ -1,6 +1,6 @@
 import { View, Text } from 'react-native'
-import React from 'react'
 import { Order } from '@/database/models'
+import { StyleSheet } from 'react-native'
 
 const OrderSummaryStep = ({ order }: { order: Partial<Order> }) => {
    return (
@@ -74,13 +74,13 @@ const OrderSummaryStep = ({ order }: { order: Partial<Order> }) => {
             <Text style={commonStyles.title}>Pagamento</Text>
             <View>
                <Text style={[commonStyles.title, { color: 'red' }]}>
-                  {order.paymentMethod?.name.toUpperCase()}
+                  {order.paymentStatus?.name.toUpperCase()}
                </Text>
                <Text style={commonStyles.text}>
                   <Text style={commonStyles.highlightedText}>
                      Situação do pagamento:{' '}
                   </Text>
-                  {order.paymentMethod?.paymentStatus?.name}
+                  {order.paymentMethod?.name}
                </Text>
                <Text style={commonStyles.text}>
                   <Text style={commonStyles.highlightedText}>Troco: </Text>
@@ -134,12 +134,7 @@ const OrderSummaryStep = ({ order }: { order: Partial<Order> }) => {
    )
 }
 
-export default OrderSummaryStep
-
-import { StyleSheet } from 'react-native'
-import { theme } from '@/theme'
-
-export const commonStyles = StyleSheet.create({
+const commonStyles = StyleSheet.create({
    container: {
       flex: 1,
       padding: 16,
@@ -181,3 +176,5 @@ export const commonStyles = StyleSheet.create({
       padding: 2
    }
 })
+
+export default OrderSummaryStep

@@ -16,7 +16,7 @@ import { useFocusEffect } from 'expo-router'
 import { useCallback } from 'react'
 import { FormCurrencyInput, FormSelectInput } from '@/components'
 
-export const AdditionalInformationsStep = ({
+const AdditionalInformationsStep = ({
    order,
    insertOrderData
 }: {
@@ -62,21 +62,21 @@ export const AdditionalInformationsStep = ({
          <View style={{ marginTop: 10, gap: 10 }}>
             <FormSelectInput<Order>
                onChange={selectHandle}
+               data={paymenStatusList || []}
+               label="Situação do pagamento"
+               labelField="name"
+               valueField="id"
+               name="paymentStatus"
+               placeholder="Pago, Pedente, Cancelado"
+            />
+            <FormSelectInput<Order>
+               onChange={selectHandle}
                data={paymentMethodsList || []}
                label="Forma de pagamento"
                labelField="name"
                valueField="id"
                name="paymentMethod"
                placeholder="PIX, Crédito, Débito, Dinheiro"
-            />
-            <FormSelectInput<Order>
-               onChange={selectHandle}
-               data={paymenStatusList || []}
-               label="Situação do pagamento"
-               labelField="name"
-               valueField="id"
-               name="paymentMethod"
-               placeholder="Pago, Pedente, Cancelado"
             />
             <FormCurrencyInput
                label="Troco"
@@ -116,3 +116,5 @@ const styles = StyleSheet.create({
       marginBottom: 16
    }
 })
+
+export default AdditionalInformationsStep

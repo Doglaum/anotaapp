@@ -17,7 +17,7 @@ import { router } from 'expo-router'
 import { FormSearchInput } from '@/components/form-inputs/FormSearchInput'
 import CreateClientModal from '../components/CreateClientModal'
 
-export const ClientStep = ({
+const ClientStep = ({
    order,
    insertOrderData
 }: {
@@ -132,3 +132,5 @@ const styles = StyleSheet.create({
       fontWeight: 'bold'
    }
 })
+
+export default ClientStep

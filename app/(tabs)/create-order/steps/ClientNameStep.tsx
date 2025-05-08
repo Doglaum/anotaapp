@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Client, Order } from '@/database/models/'
 import { FormTextInput } from '@/components'
 
-export const ClientNameStep = ({
+const ClientNameStep = ({
    order,
    insertOrderData
 }: {
@@ -42,3 +42,5 @@ const styles = StyleSheet.create({
       fontWeight: 'bold'
    }
 })
+
+export default ClientNameStep

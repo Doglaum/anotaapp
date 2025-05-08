@@ -15,7 +15,7 @@ import { EmptyList } from '@/components/EmptyList'
 import { FormSearchInput } from '@/components/form-inputs/FormSearchInput'
 import CreateClientModal from '../components/CreateClientModal'
 
-export const ClientStep = ({
+const SelectAddressStep = ({
    order,
    insertOrderData
 }: {
@@ -130,3 +130,5 @@ const styles = StyleSheet.create({
       fontWeight: 'bold'
    }
 })
+
+export default SelectAddressStep

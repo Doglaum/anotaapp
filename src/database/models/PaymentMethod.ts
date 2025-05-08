@@ -1,19 +1,18 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { PaymentStatus } from './PaymentStatus';
+import {
+   Entity,
+   PrimaryGeneratedColumn,
+   Column,
+   CreateDateColumn
+} from 'typeorm'
 
 @Entity('payment_method')
 export class PaymentMethod {
-  
-  @PrimaryGeneratedColumn()
-  paymentMethodId: number;
+   @PrimaryGeneratedColumn()
+   paymentMethodId: number
 
-  @Column('text')
-  name: string;
+   @Column('text')
+   name: string
 
-  @ManyToOne(() => PaymentStatus, { eager: true })
-  @JoinColumn({ name: 'paymentStatusId' })
-  paymentStatus: PaymentStatus;
-
-  @CreateDateColumn()
-  created_at: Date;
-} 
+   @CreateDateColumn()
+   created_at: Date
+}

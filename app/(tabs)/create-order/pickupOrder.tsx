@@ -3,25 +3,23 @@ import {
    StyleSheet,
    TouchableOpacity,
    Text,
-   Alert,
    TouchableWithoutFeedback
 } from 'react-native'
 import { useEffect, useState } from 'react'
 import { commonStyles, theme } from '@/theme'
 import { Order } from '@/database/models/index'
 import { OrderService } from '@/services/OrderService'
-import { useRouter, Stack } from 'expo-router'
+import { Stack } from 'expo-router'
 import {
-   ClientStep,
-   OrdeProductStep,
-   AdditionalInformationsStep
+   OrderProductStep,
+   AdditionalInformationsStep,
+   ClientNameStep,
+   OrderSummaryStep
 } from './steps'
 import ShoppingCart from './components/ShoppingCart'
 import { MaterialIcons } from '@expo/vector-icons'
 import { errorToast, infoToast } from '@/components'
-import { ClientNameStep } from './steps/ClientNameStep'
 import { Keyboard } from 'react-native'
-import OrderSummaryStep from './steps/OrderSummaryStep'
 
 export default function PedidoForm() {
    const orderService = new OrderService()
@@ -73,8 +71,7 @@ export default function PedidoForm() {
       }
       if (order.orderProducts) {
          totalOrder += order.orderProducts.reduce((total, orderProduct) => {
-            const productPrice = orderProduct.product.price
-
+            const productPrice = orderProduct.totalPrice
             return total + productPrice
          }, 0)
       }
@@ -144,7 +141,7 @@ export default function PedidoForm() {
                   />
                </View>
                <View style={{ display: step === 2 ? 'flex' : 'none', flex: 1 }}>
-                  <OrdeProductStep
+                  <OrderProductStep
                      order={order}
                      insertOrderData={insertOrderData}
                   />

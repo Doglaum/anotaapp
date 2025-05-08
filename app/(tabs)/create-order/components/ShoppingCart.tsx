@@ -11,6 +11,8 @@ import {
 import { Order } from '@/database/models/Order'
 import { MaterialIcons } from '@expo/vector-icons'
 import { EmptyList } from '@/components/EmptyList'
+import { Ingredient } from '@/database/models'
+import { theme } from '@/theme'
 
 export default function ShoppingCart({
    visible,
@@ -52,13 +54,57 @@ export default function ShoppingCart({
                      renderItem={({ item, index }) => (
                         <View style={styles.cartItem}>
                            <View style={styles.cartItemInfo}>
-                              <Text style={styles.cartItemText}>
-                                 {item.product.name} - R$
-                                 {item.product.price.toFixed(2)}
-                              </Text>
-                              <Text style={styles.cartItemText}>
-                                 {item.details}
-                              </Text>
+                              <View
+                                 style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between'
+                                 }}
+                              >
+                                 <Text style={styles.cartItemText}>
+                                    {item.product.name}{' '}
+                                 </Text>
+                                 <Text style={styles.cartItemText}>
+                                    {'R$' + item.unitPrice.toFixed(2)}
+                                 </Text>
+                              </View>
+                              {item.details ? (
+                                 <Text>{item.details}</Text>
+                              ) : null}
+                              <FlatList<Ingredient>
+                                 data={item.selectedIngredients}
+                                 keyExtractor={(item, index) =>
+                                    index.toString()
+                                 }
+                                 renderItem={({ item, index }) => (
+                                    <View
+                                       style={[
+                                          {
+                                             flexDirection: 'row',
+                                             justifyContent: 'space-between',
+                                             borderColor: theme.colors.gray
+                                          }
+                                       ]}
+                                    >
+                                       <Text style={{ fontWeight: '400' }}>
+                                          {item.name}
+                                       </Text>
+                                       <Text>R${item.price.toFixed(2)}</Text>
+                                    </View>
+                                 )}
+                              />
+                              {item.totalPrice != item.unitPrice ? (
+                                 <View
+                                    style={{
+                                       flexDirection: 'row',
+                                       justifyContent: 'space-between'
+                                    }}
+                                 >
+                                    <Text>Total</Text>
+                                    <Text>
+                                       {'R$' + item.totalPrice.toFixed(2)}
+                                    </Text>
+                                 </View>
+                              ) : null}
                            </View>
                            <TouchableOpacity
                               style={styles.removeButton}
@@ -83,7 +129,7 @@ export default function ShoppingCart({
                <View style={{ marginTop: 16 }}>
                   {order.orderProducts && order.orderProducts.length > 1 && (
                      <Text style={styles.modalTitle}>
-                        Total produtos: R${' ' + order.totalPrice}
+                        Total produtos: R${' ' + order.totalPrice?.toFixed(2)}
                      </Text>
                   )}
                </View>
@@ -125,7 +171,8 @@ const styles = StyleSheet.create({
       flex: 1
    },
    cartItemText: {
-      fontSize: 16
+      fontSize: 18,
+      fontWeight: 'bold'
    },
    removeButton: {
       marginLeft: 8
