@@ -1,32 +1,39 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { Client } from './Client';
+import {
+   Entity,
+   PrimaryGeneratedColumn,
+   Column,
+   ManyToOne,
+   JoinColumn
+} from 'typeorm'
+import { Client } from './Client'
 
 @Entity('address')
 export class Address {
-
    @PrimaryGeneratedColumn()
-   addressId: number;
+   addressId: number
 
    @Column('text', { nullable: true })
-   city: string;
+   city: string
 
    @Column('text', { nullable: true })
-   neighborhood: string;
+   neighborhood: string
 
    @Column('text', { nullable: true })
-   street: string;
+   street: string
 
    @Column('text', { nullable: true })
-   number: string;
+   number: string
 
    @Column('text', { nullable: true })
-   complement: string;
+   complement: string
 
    @Column('text', { nullable: true })
-   zipCode: string;
+   zipCode: string
 
-   @ManyToOne(() => Client, {onDelete: 'SET NULL'})
+   @ManyToOne(() => Client, client => client.addresses, {
+      onDelete: 'SET NULL',
+      nullable: true
+   })
    @JoinColumn({ name: 'clientId' })
-   client: Client;
-
+   client: Client
 }

@@ -1,29 +1,27 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet } from 'react-native'
 
 const inputCommonsStyles = {
-  borderWidth: 2,
-  borderRadius: 8,  
-  borderColor: '#dfdfdf',
-  backgroundColor: '#fff',
+   borderWidth: 2,
+   borderRadius: 8,
+   borderColor: '#dfdfdf',
+   backgroundColor: '#fff'
 }
 
 export const formStyle = StyleSheet.create({
-   formGroup: {
-     },
-     formInput: {
+   formGroup: {},
+   formInput: {
       padding: 8,
-       ...inputCommonsStyles
-     },
-     dropdown: {
+      ...inputCommonsStyles
+   },
+   dropdown: {
       height: 40,
       padding: 8,
       ...inputCommonsStyles
-      },
-     formLabel: {
-       marginLeft: 5,
-       marginRight:5,
-       fontSize: 12,
-       fontWeight: 'bold'
-     },
+   },
+   formLabel: {
+      marginLeft: 5,
+      marginRight: 5,
+      fontSize: 16,
+      fontWeight: 'bold'
+   }
 })
-

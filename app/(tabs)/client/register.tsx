@@ -75,7 +75,9 @@ const RegisterClient = ({ editClientId }: { editClientId: number }) => {
             borderWidth: 1,
             borderColor: '#ddd',
             flexDirection: 'row',
-            padding: 5
+            padding: 5,
+            paddingTop: 15,
+            paddingBottom: 15
          }}
       >
          <View
@@ -130,12 +132,6 @@ const RegisterClient = ({ editClientId }: { editClientId: number }) => {
             value={client.phoneNumber}
             onChange={handleChange}
          />
-         <TouchableOpacity
-            style={commonStyles.saveButton}
-            onPress={handleSubmit}
-         >
-            <Text style={commonStyles.saveButtonText}>Salvar</Text>
-         </TouchableOpacity>
          <View>
             <View
                style={{
@@ -181,6 +177,12 @@ const RegisterClient = ({ editClientId }: { editClientId: number }) => {
                }
             />
          </View>
+         <TouchableOpacity
+            style={[commonStyles.saveButton, { marginTop: 'auto' }]}
+            onPress={handleSubmit}
+         >
+            <Text style={commonStyles.saveButtonText}>Salvar</Text>
+         </TouchableOpacity>
       </View>
    )
 }

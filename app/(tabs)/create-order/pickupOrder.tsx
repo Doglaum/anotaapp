@@ -35,14 +35,19 @@ export default function PedidoForm() {
    }
    const [step, setStep] = useState(1)
    const handleNextStep = () => {
+      console.log(order)
       if (step === 1 && !order.client) {
          infoToast('Nome do cliente não informado')
-      } else if (step === 2 && order?.orderProducts?.length === 0) {
+      } else if (
+         (step === 2 && !order?.orderProducts) ||
+         order?.orderProducts?.length == 0
+      ) {
          errorToast('Adicione pelo menos 1 produto ao pedido')
          return
       } else if (step === 4) return
       setStep(step + 1)
    }
+
    const handlePreviousStep = () => {
       if (step === 1) return
       setStep(step - 1)
@@ -79,134 +84,148 @@ export default function PedidoForm() {
    }
 
    return (
-      <TouchableWithoutFeedback
-         onPress={() => {
-            console.log('tas')
-            Keyboard.dismiss()
-         }}
-      >
-         <View style={commonStyles.container}>
-            <Stack.Screen
-               options={{
-                  title:
-                     step === 1
-                        ? 'Cliente'
-                        : step === 2
-                        ? 'Selecionar Produto'
-                        : step === 3
-                        ? 'Mais Informações'
-                        : 'Resumo do pedido',
-                  headerStyle: {
-                     backgroundColor: theme.colors.primary
-                  },
-                  headerTintColor: theme.colors.white
-               }}
-            />
-            <View
-               style={{ flexDirection: 'row', justifyContent: 'space-between' }}
-            >
-               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  {[1, 2, 3, 4].map(num => (
-                     <View
-                        key={num}
-                        style={[
-                           styles.stepBox,
-                           step === num && styles.activeStepBox
-                        ]}
-                     >
-                        <Text
-                           style={[
-                              styles.stepText,
-                              step === num && styles.activeStepText
-                           ]}
-                        >
-                           {num}
-                        </Text>
-                     </View>
-                  ))}
-               </View>
-               <TouchableOpacity
-                  style={styles.cartButton}
-                  onPress={() => setModalVisible(true)}
-               >
-                  <MaterialIcons name="shopping-cart" size={24} color="#fff" />
-                  <Text style={styles.cartButtonText}>Carrinho</Text>
-               </TouchableOpacity>
-            </View>
-            <View style={{ flex: 1 }}>
-               <View style={{ display: step === 1 ? 'flex' : 'none', flex: 1 }}>
-                  <ClientNameStep
-                     order={order}
-                     insertOrderData={insertOrderData}
-                  />
-               </View>
-               <View style={{ display: step === 2 ? 'flex' : 'none', flex: 1 }}>
-                  <OrderProductStep
-                     order={order}
-                     insertOrderData={insertOrderData}
-                  />
-               </View>
-               <View style={{ display: step === 3 ? 'flex' : 'none', flex: 1 }}>
-                  <AdditionalInformationsStep
-                     order={order}
-                     insertOrderData={insertOrderData}
-                  />
-               </View>
-               <View style={{ display: step === 4 ? 'flex' : 'none', flex: 1 }}>
-                  <OrderSummaryStep order={order} />
-               </View>
-            </View>
+      <View style={{ flex: 1 }}>
+         <Stack.Screen
+            options={{
+               title:
+                  step === 1
+                     ? 'Cliente'
+                     : step === 2
+                     ? 'Selecionar Produto'
+                     : step === 3
+                     ? 'Mais Informações'
+                     : 'Resumo do pedido',
+               headerStyle: {
+                  backgroundColor: theme.colors.primary
+               },
+               headerTintColor: theme.colors.white
+            }}
+         />
+         <View
+            style={[
+               {
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  zIndex: 999,
+                  backgroundColor: theme.colors.appContainerColor,
+                  padding: 16
+               }
+            ]}
+         >
             <View
                style={{
                   flexDirection: 'row',
-                  justifyContent: 'space-around'
+                  alignItems: 'center'
                }}
             >
-               <View>
+               {[1, 2, 3, 4].map(num => (
+                  <View
+                     key={num}
+                     style={[
+                        styles.stepBox,
+                        step === num && styles.activeStepBox
+                     ]}
+                  >
+                     <Text
+                        style={[
+                           styles.stepText,
+                           step === num && styles.activeStepText
+                        ]}
+                     >
+                        {num}
+                     </Text>
+                  </View>
+               ))}
+            </View>
+            <TouchableOpacity
+               style={styles.cartButton}
+               onPress={() => setModalVisible(true)}
+            >
+               <MaterialIcons name="shopping-cart" size={22} color="#fff" />
+               <Text style={styles.cartButtonText}>Carrinho</Text>
+            </TouchableOpacity>
+         </View>
+         <View style={{ flex: 1 }}>
+            <View style={{ display: step === 1 ? 'flex' : 'none', flex: 1 }}>
+               <ClientNameStep
+                  order={order}
+                  insertOrderData={insertOrderData}
+               />
+            </View>
+            <View style={{ display: step === 2 ? 'flex' : 'none', flex: 1 }}>
+               <OrderProductStep
+                  order={order}
+                  insertOrderData={insertOrderData}
+               />
+            </View>
+            <View style={{ display: step === 3 ? 'flex' : 'none', flex: 1 }}>
+               <AdditionalInformationsStep
+                  order={order}
+                  insertOrderData={insertOrderData}
+               />
+            </View>
+            <View
+               style={{
+                  display: step === 4 ? 'flex' : 'none',
+                  flex: 1,
+                  backgroundColor: 'red'
+               }}
+            >
+               <OrderSummaryStep order={order} />
+            </View>
+         </View>
+         <View
+            style={{
+               flexDirection: 'row',
+               justifyContent: 'space-around',
+               paddingBottom: 10,
+               paddingTop: 10
+            }}
+         >
+            <View>
+               <TouchableOpacity
+                  style={[
+                     styles.roundedButton,
+                     { opacity: step === 1 ? 0 : 1 }
+                  ]}
+                  onPress={handlePreviousStep}
+               >
+                  <MaterialIcons name="arrow-back" size={24} color="#fff" />
+               </TouchableOpacity>
+            </View>
+            <View style={{}}>
+               {step < 4 && (
+                  <TouchableOpacity
+                     style={styles.roundedButton}
+                     onPress={handleNextStep}
+                  >
+                     <MaterialIcons
+                        name="arrow-forward"
+                        size={24}
+                        color="#fff"
+                     />
+                  </TouchableOpacity>
+               )}
+               {step === 4 && (
                   <TouchableOpacity
                      style={[
                         styles.roundedButton,
-                        { opacity: step === 1 ? 0 : 1 }
+                        { backgroundColor: theme.colors.edit }
                      ]}
-                     onPress={handlePreviousStep}
+                     onPress={handleSubmit}
                   >
-                     <MaterialIcons name="arrow-back" size={24} color="#fff" />
+                     <MaterialIcons name="check" size={24} color="#ffffff" />
                   </TouchableOpacity>
-               </View>
-               <View>
-                  {step < 4 && (
-                     <TouchableOpacity
-                        style={styles.roundedButton}
-                        onPress={handleNextStep}
-                     >
-                        <MaterialIcons
-                           name="arrow-forward"
-                           size={24}
-                           color="#fff"
-                        />
-                     </TouchableOpacity>
-                  )}
-                  {step === 4 && (
-                     <TouchableOpacity
-                        style={[
-                           styles.roundedButton,
-                           { backgroundColor: theme.colors.edit }
-                        ]}
-                        onPress={handleSubmit}
-                     >
-                        <MaterialIcons name="check" size={24} color="#ffffff" />
-                     </TouchableOpacity>
-                  )}
-               </View>
+               )}
             </View>
-            <ShoppingCart
-               visible={modalVisible}
-               onClose={() => setModalVisible(false)}
-               order={order}
-               insertOrderData={insertOrderData}
-            />
          </View>
-      </TouchableWithoutFeedback>
+         <ShoppingCart
+            visible={modalVisible}
+            onClose={() => setModalVisible(false)}
+            order={order}
+            insertOrderData={insertOrderData}
+         />
+      </View>
    )
 }
 
@@ -254,7 +273,6 @@ const styles = StyleSheet.create({
    },
    cartButtonText: {
       color: '#fff',
-      marginLeft: 8,
       fontWeight: 'bold'
    },
    roundedButton: {

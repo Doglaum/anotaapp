@@ -3,14 +3,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { PaperProvider } from 'react-native-paper'
 import { theme } from '../src/theme'
 import { useEffect, useState } from 'react'
-import {
-   View,
-   ActivityIndicator,
-   Text,
-   TouchableWithoutFeedback,
-   TouchableWithoutFeedbackBase,
-   Keyboard
-} from 'react-native'
+import { View, ActivityIndicator, Text, StatusBar } from 'react-native'
 import { initDatabase } from '../src/database/database'
 import { AppToast } from '@/components/AppToast'
 
@@ -43,6 +36,7 @@ export default function RootLayout() {
 
    return (
       <SafeAreaProvider>
+         <StatusBar barStyle={'light-content'} />
          <PaperProvider theme={theme}>
             <Stack>
                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

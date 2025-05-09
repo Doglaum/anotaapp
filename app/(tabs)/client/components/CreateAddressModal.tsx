@@ -152,7 +152,7 @@ const CreateAddressModal = ({
             style={{
                backgroundColor: theme.colors.primary,
                borderRadius: 8,
-               padding: 5,
+               padding: 10,
                alignItems: 'center',
                justifyContent: 'center',
                flexDirection: 'row'
