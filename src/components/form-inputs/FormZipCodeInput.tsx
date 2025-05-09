@@ -1,9 +1,10 @@
 import { StyleProp, Text, TextInput, View, ViewStyle } from 'react-native'
 import { formStyle } from './styles'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { theme } from '@/theme'
+import MaskInput, { Masks } from 'react-native-mask-input'
 
-export const FormTextInput = ({
+export const FormZipCodeInput = ({
    label,
    value,
    name,
@@ -15,14 +16,14 @@ export const FormTextInput = ({
    label: string
    value: any
    name: string
-   onChange: (name: string, text: any) => void
+   onChange: (name: string, text: any, unmaskedValue: string) => void
    onBlur?: () => void
    style?: StyleProp<ViewStyle>
    maxLength?: number
 }) => {
    const [isFocus, setIsFocus] = useState(false)
-   const onChangeText = (text: string) => {
-      onChange(name, text)
+   const onChangeText = (text: string, unmaskedValue: string) => {
+      onChange(name, text, unmaskedValue)
    }
 
    return (
@@ -35,18 +36,21 @@ export const FormTextInput = ({
          >
             {label}
          </Text>
-         <TextInput
+         <MaskInput
             style={[
                formStyle.formInput,
                isFocus && {
                   color: theme.colors.primary,
                   borderColor: theme.colors.primary
-               }
+               },
+               { fontSize: 16 }
             ]}
             value={value}
+            mask={Masks.ZIP_CODE}
             onChangeText={onChangeText}
             onFocus={() => setIsFocus(true)}
             onBlur={() => {
+               console.log('blur')
                if (onBlur) {
                   onBlur()
                }

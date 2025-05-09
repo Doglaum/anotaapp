@@ -81,7 +81,7 @@ const CreateClientModal = ({
             style={{
                backgroundColor: theme.colors.primary,
                borderRadius: 8,
-               padding: 5,
+               padding: 8,
                alignItems: 'center',
                justifyContent: 'center',
                flexDirection: 'row'

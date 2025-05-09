@@ -14,6 +14,7 @@ import { EmptyList, FormTextInput } from '@/components'
 import { formStyle } from '@/components/form-inputs/styles'
 import CreateAddressModal from './components/CreateAddressModal'
 import { MaterialIcons } from '@expo/vector-icons'
+import { FormPhoneInput } from '@/components/form-inputs'
 
 const RegisterClient = ({ editClientId }: { editClientId: number }) => {
    const router = useRouter()
@@ -126,7 +127,7 @@ const RegisterClient = ({ editClientId }: { editClientId: number }) => {
             value={client.name}
             onChange={handleChange}
          />
-         <FormTextInput
+         <FormPhoneInput
             label="Numero para contato"
             name="phoneNumber"
             value={client.phoneNumber}

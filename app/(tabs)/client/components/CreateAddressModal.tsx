@@ -9,7 +9,7 @@ import { commonStyles, theme } from '@/theme'
 import { OverlayerModal } from '@/components/OverlayModal'
 import { Address } from '@/database/models'
 import { useState } from 'react'
-import { FormTextInput } from '@/components/form-inputs'
+import { FormTextInput, FormZipCodeInput } from '@/components/form-inputs'
 import { errorToast } from '@/components'
 import { formStyle } from '@/components/form-inputs/styles'
 import { MaterialIcons } from '@expo/vector-icons'
@@ -53,11 +53,11 @@ const CreateAddressModal = ({
    }
 
    const handleCepBlur = async () => {
-      if (address.zipCode && address.zipCode.length == 8) {
-         console.log(address)
+      if (address.zipCode && address.zipCode.length == 9) {
+         const formatedZipCode = address.zipCode.replace('-', '')
          try {
             const result = await fetch(
-               `https://viacep.com.br/ws/${address.zipCode}/json/`
+               `https://viacep.com.br/ws/${formatedZipCode}/json/`
             ).then(response => response.json())
             console.log(result)
             setAddress(prev => ({
@@ -98,13 +98,12 @@ const CreateAddressModal = ({
          >
             <View style={commonStyles.container}>
                <View style={{ flex: 1, gap: 10 }}>
-                  <FormTextInput
+                  <FormZipCodeInput
                      label="CEP"
                      name="zipCode"
                      value={address.zipCode}
                      onChange={changeHandle}
                      onBlur={handleCepBlur}
-                     maxLength={8}
                   />
                   <FormTextInput
                      label="Bairro"

@@ -10,7 +10,8 @@ const inputCommonsStyles = {
 export const formStyle = StyleSheet.create({
    formGroup: {},
    formInput: {
-      padding: 8,
+      padding: 10,
+      fontSize: 16,
       ...inputCommonsStyles
    },
    dropdown: {

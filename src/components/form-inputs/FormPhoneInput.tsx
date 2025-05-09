@@ -1,9 +1,10 @@
 import { StyleProp, Text, TextInput, View, ViewStyle } from 'react-native'
 import { formStyle } from './styles'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { theme } from '@/theme'
+import MaskInput, { Masks } from 'react-native-mask-input'
 
-export const FormTextInput = ({
+export const FormPhoneInput = ({
    label,
    value,
    name,
@@ -35,15 +36,17 @@ export const FormTextInput = ({
          >
             {label}
          </Text>
-         <TextInput
+         <MaskInput
             style={[
                formStyle.formInput,
                isFocus && {
                   color: theme.colors.primary,
                   borderColor: theme.colors.primary
-               }
+               },
+               { fontSize: 16 }
             ]}
             value={value}
+            mask={Masks.BRL_PHONE}
             onChangeText={onChangeText}
             onFocus={() => setIsFocus(true)}
             onBlur={() => {
