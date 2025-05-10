@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet } from 'react-native'
 import { useState } from 'react'
-import { theme } from '@/theme'
+import { commonStyles, theme } from '@/theme'
 import {
    PaymentMethod,
    OrderSituation,
@@ -58,7 +58,7 @@ const AdditionalInformationsStep = ({
    }
 
    return (
-      <View style={{ flex: 1 }}>
+      <View style={commonStyles.container}>
          <View style={{ marginTop: 10, gap: 10 }}>
             <FormSelectInput<Order>
                onChange={selectHandle}

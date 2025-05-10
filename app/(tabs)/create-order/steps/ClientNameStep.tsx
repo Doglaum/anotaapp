@@ -1,7 +1,7 @@
 import { View, StyleSheet } from 'react-native'
 import { commonStyles } from '@/theme'
 import { useState } from 'react'
-import { Client, Order } from '@/database/models/'
+import { Order } from '@/database/models/'
 import { FormTextInput } from '@/components'
 
 const ClientNameStep = ({
@@ -11,16 +11,11 @@ const ClientNameStep = ({
    order: Partial<Order>
    insertOrderData: <K extends keyof Order>(campo: K, valor: Order[K]) => void
 }) => {
-   const [client, setClient] = useState<Partial<Client>>({
-      name: ''
-   })
+   const [clientName, setClientName] = useState<string>('')
 
-   const handleClientName = (field: string, textName: string) => {
-      setClient(prev => ({
-         ...prev,
-         [field]: textName
-      }))
-      insertOrderData('client', { name: textName } as Client)
+   const handleClientName = (field: string, clientName: string) => {
+      setClientName(clientName)
+      insertOrderData('clientName', clientName)
    }
    return (
       <View style={commonStyles.container}>
@@ -28,7 +23,7 @@ const ClientNameStep = ({
             <FormTextInput
                label="Nome"
                name="name"
-               value={client.name}
+               value={order.clientName}
                onChange={handleClientName}
             />
          </View>

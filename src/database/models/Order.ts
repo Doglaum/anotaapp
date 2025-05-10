@@ -20,9 +20,16 @@ export class Order {
    @PrimaryGeneratedColumn()
    orderId: number
 
-   @ManyToOne(() => Client, client => client.orders, { eager: true })
+   @Column('text', { nullable: false })
+   clientName: string
+
+   @ManyToOne(() => Client, client => client.orders, {
+      eager: true,
+      cascade: false,
+      nullable: true
+   })
    @JoinColumn({ name: 'clienteId' })
-   client: Client
+   deliveryClient: Client
 
    @Column('decimal', { precision: 10, scale: 2 })
    totalPrice: number
@@ -30,27 +37,28 @@ export class Order {
    @Column('decimal', { precision: 10, scale: 2, nullable: true })
    deliveryFee: number
 
-   @ManyToOne(() => PaymentMethod, { eager: true })
+   @ManyToOne(() => PaymentMethod, { eager: true, nullable: true })
    @JoinColumn({ name: 'paymentMethodId' })
    paymentMethod: PaymentMethod
 
    @Column('decimal', { precision: 10, scale: 2, nullable: true })
    changeFor: number
 
-   @ManyToOne(() => OrderSituation, { eager: true })
+   @ManyToOne(() => OrderSituation, { eager: true, nullable: true })
    @JoinColumn({ name: 'orderSituationId' })
    orderSituation: OrderSituation
 
    @OneToMany(() => OrderProduct, orderProduct => orderProduct.order, {
-      cascade: true
+      cascade: true,
+      eager: true
    })
    orderProducts: OrderProduct[]
 
-   @ManyToOne(() => Address, { nullable: true })
+   @ManyToOne(() => Address, { nullable: true, eager: true })
    @JoinColumn({ name: 'addressId' })
    address: Address
 
-   @ManyToOne(() => PaymentStatus, { eager: true })
+   @ManyToOne(() => PaymentStatus, { eager: true, nullable: true })
    @JoinColumn({ name: 'paymentStatusId' })
    paymentStatus: PaymentStatus
 

@@ -1,6 +1,14 @@
-import { StyleProp, Text, TextInput, View, ViewStyle } from 'react-native'
+import {
+   KeyboardAvoidingView,
+   Platform,
+   StyleProp,
+   Text,
+   TextInput,
+   View,
+   ViewStyle
+} from 'react-native'
 import { formStyle } from './styles'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { theme } from '@/theme'
 
 export const FormTextInput = ({
@@ -44,6 +52,7 @@ export const FormTextInput = ({
                }
             ]}
             value={value}
+            returnKeyType="done"
             onChangeText={onChangeText}
             onFocus={() => setIsFocus(true)}
             onBlur={() => {

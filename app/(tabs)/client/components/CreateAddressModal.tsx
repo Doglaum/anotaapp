@@ -3,7 +3,10 @@ import {
    TouchableOpacity,
    View,
    ViewStyle,
-   StyleProp
+   StyleProp,
+   ActivityIndicator,
+   KeyboardAvoidingView,
+   Platform
 } from 'react-native'
 import { commonStyles, theme } from '@/theme'
 import { OverlayerModal } from '@/components/OverlayModal'
@@ -59,7 +62,9 @@ const CreateAddressModal = ({
             const result = await fetch(
                `https://viacep.com.br/ws/${formatedZipCode}/json/`
             ).then(response => response.json())
-            console.log(result)
+            if (result.erro) {
+               throw new Error()
+            }
             setAddress(prev => ({
                ...prev,
                neighborhood: result.bairro,
@@ -67,6 +72,12 @@ const CreateAddressModal = ({
                street: result.logradouro
             }))
          } catch (error) {
+            setAddress(prev => ({
+               ...prev,
+               neighborhood: '',
+               city: '',
+               street: ''
+            }))
             errorToast('CEP incorreto')
             console.log(error)
          }

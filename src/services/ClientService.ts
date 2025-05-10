@@ -48,9 +48,18 @@ export class ClientService {
    }
 
    private validate(cliente: Partial<Client> | Client) {
-      if (!cliente.name && !cliente.phoneNumber) {
-         infoToast('É necessário informar nome ou telefone')
-         throw new Error('É necessário informar nome ou telefone')
+      if (!cliente.name || cliente.phoneNumber) {
+         console.log(cliente.phoneNumber)
+         if (!cliente.name) {
+            const text = 'Nome é obrigatório'
+            errorToast(text)
+            throw new Error(text)
+         }
+         if ((cliente.phoneNumber?.length || 0) < 14) {
+            const text = 'Número inválido'
+            infoToast(text)
+            throw new Error(text)
+         }
       }
    }
 }

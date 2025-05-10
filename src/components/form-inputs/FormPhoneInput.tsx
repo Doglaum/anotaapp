@@ -46,6 +46,7 @@ export const FormPhoneInput = ({
                { fontSize: 16 }
             ]}
             value={value}
+            returnKeyType="done"
             mask={Masks.BRL_PHONE}
             onChangeText={onChangeText}
             onFocus={() => setIsFocus(true)}

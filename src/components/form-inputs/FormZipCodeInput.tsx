@@ -46,6 +46,8 @@ export const FormZipCodeInput = ({
                { fontSize: 16 }
             ]}
             value={value}
+            returnKeyType="done"
+            keyboardType="numeric"
             mask={Masks.ZIP_CODE}
             onChangeText={onChangeText}
             onFocus={() => setIsFocus(true)}

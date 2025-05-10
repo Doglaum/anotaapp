@@ -14,13 +14,13 @@ const OrderSummaryStep = ({ order }: { order: Partial<Order> }) => {
                      <Text style={commonStyles.highlightedText}>
                         Nome do cliente:{' '}
                      </Text>
-                     {order.client?.name}
+                     {order.clientName}
                   </Text>
                   <Text style={commonStyles.text}>
                      <Text style={commonStyles.highlightedText}>
                         Telefone:{' '}
                      </Text>
-                     {order.client?.phoneNumber}
+                     {order.deliveryClient?.phoneNumber}
                   </Text>
                </View>
             </View>
@@ -98,13 +98,13 @@ const OrderSummaryStep = ({ order }: { order: Partial<Order> }) => {
                   </Text>
                   <Text style={commonStyles.text}>
                      <Text style={commonStyles.highlightedText}>
-                        Taxa de entrega:
+                        Taxa de entrega:{' '}
                      </Text>
                      R${order.deliveryFee?.toFixed(2)}
                   </Text>
                   <Text style={commonStyles.text}>
                      <Text style={commonStyles.highlightedText}>
-                        Valor total do pedido:
+                        Valor total do pedido:{' '}
                      </Text>
                      R${order.totalPrice?.toFixed(2)}
                   </Text>
@@ -195,7 +195,7 @@ const commonStyles = StyleSheet.create({
    },
    ingredientText: {
       fontWeight: '300',
-      fontSize: 11,
+      fontSize: 14,
       color: '#000'
    }
 })

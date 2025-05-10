@@ -40,6 +40,7 @@ export const FormSearchInput = ({
                { flex: 1 },
                rota && { borderRightWidth: 0 }
             ]}
+            returnKeyType="done"
             value={localValue}
             placeholder={label}
             onChangeText={onChangeText}

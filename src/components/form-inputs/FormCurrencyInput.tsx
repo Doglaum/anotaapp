@@ -44,7 +44,8 @@ export const FormCurrencyInput = ({
             delimiter="."
             separator=","
             placeholder="0"
-            keyboardType="number-pad"
+            keyboardType="numeric"
+            returnKeyType="done"
             prefix="R$"
             onFocus={() => setIsFocus(true)}
             onBlur={() => setIsFocus(false)}

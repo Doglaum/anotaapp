@@ -3,7 +3,8 @@ import {
    Text,
    StyleSheet,
    TouchableOpacity,
-   ScrollView
+   ScrollView,
+   FlatList
 } from 'react-native'
 import { useEffect, useState } from 'react'
 import { commonStyles, theme } from '@/theme'
@@ -100,102 +101,85 @@ export default function RegisterProduct({
             value={product.price}
             onChange={changeHandle}
          />
-         <ScrollView
-            style={[
-               styles.formGroup,
-               {
-                  backgroundColor: 'white',
-                  borderWidth: 0.8,
-                  borderRadius: 8,
-                  borderColor: theme.colors.primary,
-                  flex: 1,
-                  overflow: 'scroll'
-               }
-            ]}
+         <View
+            style={{
+               flexDirection: 'row',
+               alignItems: 'center',
+               marginBottom: 10,
+               padding: 10
+            }}
          >
-            <View
-               style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginBottom: 10,
-                  padding: 10
-               }}
-            >
-               <View style={{ flex: 1 }}>
-                  <Text
-                     style={{
-                        fontSize: 18,
-                        fontWeight: 'bold',
-                        color: theme.colors.primary
-                     }}
-                  >
-                     Ingredientes
-                  </Text>
-               </View>
-               <View style={{ flexDirection: 'row', gap: 5 }}>
-                  <CopyIngredientsModal
-                     currentProductId={product.productId}
-                     buttonStyle={commonStyles.circleCopyButton}
-                     onSelect={copyIngredients}
-                  />
-                  <CreateIngredientsModal
-                     buttonStyle={commonStyles.circleAddButton}
-                     onSave={saveIngredient}
-                  />
-               </View>
+            <View style={{ flex: 1 }}>
+               <Text
+                  style={{
+                     fontSize: 18,
+                     fontWeight: 'bold',
+                     color: theme.colors.primary
+                  }}
+               >
+                  Ingredientes
+               </Text>
             </View>
-            <View
-               style={{
-                  flexDirection: 'row',
-                  flexWrap: 'wrap',
-                  justifyContent: 'center',
-                  gap: 4
-               }}
-            >
-               {product.ingredients?.map((ingredient, index) => (
-                  <TouchableOpacity
-                     key={index}
-                     style={styles.selectedStyle}
-                     onPress={() => {
-                        removeIngredient(ingredient)
+            <View style={{ flexDirection: 'row', gap: 5 }}>
+               <CopyIngredientsModal
+                  currentProductId={product.productId}
+                  buttonStyle={commonStyles.circleCopyButton}
+                  onSelect={copyIngredients}
+               />
+               <CreateIngredientsModal
+                  buttonStyle={commonStyles.circleAddButton}
+                  onSave={saveIngredient}
+               />
+            </View>
+         </View>
+         <FlatList<Partial<Ingredient>>
+            keyExtractor={(item, index) => index.toString()}
+            data={product.ingredients}
+            renderItem={({ item, index }) => (
+               <TouchableOpacity
+                  key={index}
+                  style={commonStyles.listItem}
+                  onPress={() => {
+                     removeIngredient(item)
+                  }}
+               >
+                  <View
+                     style={{
+                        flexDirection: 'row',
+                        alignItems: 'center'
                      }}
                   >
                      <View
-                        style={{ flexDirection: 'row', alignItems: 'center' }}
+                        style={{
+                           alignItems: 'center',
+                           flexDirection: 'column'
+                        }}
                      >
-                        <View
+                        <Text
                            style={{
-                              alignItems: 'center',
-                              flexDirection: 'column'
+                              fontSize: 16
                            }}
                         >
-                           <Text
-                              style={{
-                                 fontSize: 12,
-                                 color: theme.colors.white
-                              }}
-                           >
-                              {`${ingredient.name}`}
+                           {`${item.name}`}
 
-                              <Text>
-                                 {`${
-                                    ingredient.price
-                                       ? ` R$:${ingredient.price.toFixed(2)}`
-                                       : ''
-                                 }`}
-                              </Text>
+                           <Text>
+                              {`${
+                                 item.price
+                                    ? ` R$:${item.price.toFixed(2)}`
+                                    : ''
+                              }`}
                            </Text>
-                        </View>
-                        <MaterialIcons
-                           name="delete"
-                           size={14}
-                           color={theme.colors.white}
-                        />
+                        </Text>
                      </View>
-                  </TouchableOpacity>
-               ))}
-            </View>
-         </ScrollView>
+                     <MaterialIcons
+                        name="delete"
+                        size={14}
+                        color={theme.colors.white}
+                     />
+                  </View>
+               </TouchableOpacity>
+            )}
+         />
          <TouchableOpacity
             style={[
                !editProductId

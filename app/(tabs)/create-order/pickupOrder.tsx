@@ -1,12 +1,6 @@
-import {
-   View,
-   StyleSheet,
-   TouchableOpacity,
-   Text,
-   TouchableWithoutFeedback
-} from 'react-native'
+import { View, StyleSheet, TouchableOpacity, Text } from 'react-native'
 import { useEffect, useState } from 'react'
-import { commonStyles, theme } from '@/theme'
+import { theme } from '@/theme'
 import { Order } from '@/database/models/index'
 import { OrderService } from '@/services/OrderService'
 import { Stack } from 'expo-router'
@@ -19,8 +13,6 @@ import {
 import ShoppingCart from './components/ShoppingCart'
 import { MaterialIcons } from '@expo/vector-icons'
 import { errorToast, infoToast } from '@/components'
-import { Keyboard } from 'react-native'
-
 export default function PedidoForm() {
    const orderService = new OrderService()
    const [order, setOrder] = useState<Partial<Order>>({
@@ -36,7 +28,7 @@ export default function PedidoForm() {
    const [step, setStep] = useState(1)
    const handleNextStep = () => {
       console.log(order)
-      if (step === 1 && !order.client) {
+      if (step === 1 && !order.clientName) {
          infoToast('Nome do cliente não informado')
       } else if (
          (step === 2 && !order?.orderProducts) ||

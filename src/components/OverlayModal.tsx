@@ -15,6 +15,8 @@ import {
 } from 'react-native'
 import { commonStyles, theme } from '@/theme'
 import { MaterialIcons } from '@expo/vector-icons'
+import Toast from 'react-native-toast-message'
+import { AppToast } from './AppToast'
 
 type OverlayModalProps = {
    children: React.ReactNode
@@ -56,10 +58,11 @@ export const OverlayerModal: React.FC<OverlayModalProps> = ({
                      backgroundColor: '#313131cf'
                   }}
                >
+                  <AppToast />
                   <View
                      style={{
                         backgroundColor: theme.colors.appContainerColor,
-                        height: height * 0.9,
+                        height: height * 0.85,
                         width: '100%',
                         borderRadius: 15,
                         borderColor: theme.colors.primary
@@ -94,24 +97,16 @@ export const OverlayerModal: React.FC<OverlayModalProps> = ({
                            />
                         </TouchableOpacity>
                      </View>
-                     <KeyboardAvoidingView
-                        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-                        style={commonStyles.container}
+
+                     <View
+                        style={{
+                           flex: 1,
+                           paddingVertical: 16,
+                           paddingHorizontal: 10
+                        }}
                      >
-                        <TouchableWithoutFeedback
-                           onPress={() => Keyboard.dismiss()}
-                        >
-                           <View
-                              style={{
-                                 flex: 1,
-                                 paddingVertical: 16,
-                                 paddingHorizontal: 10
-                              }}
-                           >
-                              {children}
-                           </View>
-                        </TouchableWithoutFeedback>
-                     </KeyboardAvoidingView>
+                        {children}
+                     </View>
                   </View>
                </View>
             </Modal>

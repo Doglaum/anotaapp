@@ -71,12 +71,15 @@ export default function Clients() {
                <View style={commonStyles.listItem}>
                   <View>
                      <Text style={[styles.clientName]}>
-                        {item.name} {' - '} {item.phoneNumber}
+                        {item.name}
+                        {item.phoneNumber ? ' - ' + item.phoneNumber : null}
                      </Text>
                      {item.addresses && (
                         <Text style={{ fontSize: 12, fontWeight: '400' }}>
-                           {item.addresses[0]?.street} {' - '}
-                           {item.addresses[0]?.number}
+                           {item.addresses[0]?.street}
+                           {item.addresses[0]?.number
+                              ? ' - ' + item.addresses[0]?.number
+                              : null}
                         </Text>
                      )}
                   </View>
