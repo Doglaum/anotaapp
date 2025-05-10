@@ -14,7 +14,7 @@ import { OverlayerModal } from '@/components/OverlayModal'
 import { Ingredient, Product } from '@/database/models'
 import { useEffect, useState } from 'react'
 import { FormSearchInput, FormTextInput } from '@/components/form-inputs'
-import { EmptyList } from '@/components'
+import { EmptyList, successToast } from '@/components'
 import { ProductService } from '@/services'
 import { MaterialIcons } from '@expo/vector-icons'
 
@@ -27,7 +27,7 @@ export const CopyIngredientsModal = ({
    onClose?: () => void
    buttonStyle?: StyleProp<ViewStyle>
    onSelect: (ingredient: Ingredient[]) => void
-   currentProductId: number | undefined
+   currentProductId: number
 }) => {
    const productService = new ProductService()
    const [productList, setProductList] = useState<Product[]>([])
@@ -36,16 +36,23 @@ export const CopyIngredientsModal = ({
    const [selectProduct, setSelectedProduct] = useState<Product>({} as Product)
    const [overlayModalVisible, setOverlayModalVisible] =
       useState<boolean>(false)
-   useEffect(() => {
-      const listAllProduct = async () => {
-         const products = await productService.listAllWithIngredients()
-         setProductList(products)
-         setFilteredProducts(products)
-      }
-      listAllProduct()
-   }, [])
 
-   useEffect(() => {}, [])
+   const listAllProduct = async () => {
+      console.log('zeca')
+      const products = await productService.listAllWithIngredients(
+         currentProductId
+      )
+
+      console.log(products)
+      setProductList(products)
+      setFilteredProducts(products)
+   }
+
+   useEffect(() => {
+      if (overlayModalVisible) {
+         listAllProduct()
+      }
+   }, [overlayModalVisible])
 
    const filterList = (text: string) => {
       const searchText = text.toLowerCase().trim()
@@ -57,6 +64,7 @@ export const CopyIngredientsModal = ({
    }
 
    const copyIngredients = (ingredients: Ingredient[]) => {
+      successToast('Ingredientes copiados!')
       const ingredientsWithoutId = ingredients.map(
          item =>
             ({

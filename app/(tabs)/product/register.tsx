@@ -4,7 +4,8 @@ import {
    StyleSheet,
    TouchableOpacity,
    ScrollView,
-   FlatList
+   FlatList,
+   Alert
 } from 'react-native'
 import { useEffect, useState } from 'react'
 import { commonStyles, theme } from '@/theme'
@@ -66,12 +67,20 @@ export default function RegisterProduct({
    }
 
    const removeIngredient = (removeIngredient: Partial<Ingredient>) => {
-      setProduct(prev => ({
-         ...prev,
-         ingredients: prev.ingredients?.filter(
-            ingredient => ingredient !== removeIngredient
-         )
-      }))
+      Alert.alert('Atenção!', `Deseja remover ${removeIngredient.name}`, [
+         {
+            text: 'Sim',
+            onPress: () => {
+               setProduct(prev => ({
+                  ...prev,
+                  ingredients: prev.ingredients?.filter(
+                     ingredient => ingredient !== removeIngredient
+                  )
+               }))
+            }
+         },
+         { text: 'Não' }
+      ])
    }
 
    const copyIngredients = (ingredients: Ingredient[]) => {
@@ -122,7 +131,7 @@ export default function RegisterProduct({
             </View>
             <View style={{ flexDirection: 'row', gap: 5 }}>
                <CopyIngredientsModal
-                  currentProductId={product.productId}
+                  currentProductId={product.productId || 0}
                   buttonStyle={commonStyles.circleCopyButton}
                   onSelect={copyIngredients}
                />
@@ -138,44 +147,36 @@ export default function RegisterProduct({
             renderItem={({ item, index }) => (
                <TouchableOpacity
                   key={index}
-                  style={commonStyles.listItem}
+                  style={[commonStyles.listItem]}
                   onPress={() => {
                      removeIngredient(item)
                   }}
                >
                   <View
                      style={{
+                        alignItems: 'center',
                         flexDirection: 'row',
-                        alignItems: 'center'
+                        gap: 10
                      }}
                   >
-                     <View
-                        style={{
-                           alignItems: 'center',
-                           flexDirection: 'column'
-                        }}
-                     >
-                        <Text
-                           style={{
-                              fontSize: 16
-                           }}
-                        >
-                           {`${item.name}`}
-
-                           <Text>
-                              {`${
-                                 item.price
-                                    ? ` R$:${item.price.toFixed(2)}`
-                                    : ''
-                              }`}
-                           </Text>
-                        </Text>
-                     </View>
                      <MaterialIcons
                         name="delete"
-                        size={14}
-                        color={theme.colors.white}
+                        size={18}
+                        color={theme.colors.delete}
                      />
+                     <Text
+                        style={{
+                           fontSize: 16,
+                           fontWeight: 'bold'
+                        }}
+                     >
+                        {`${item.name}`}
+                     </Text>
+                  </View>
+                  <View style={{ flexDirection: 'row' }}>
+                     <Text style={{ fontWeight: 'bold' }}>
+                        {`${item.price ? ` R$:${item.price.toFixed(2)}` : ''}`}
+                     </Text>
                   </View>
                </TouchableOpacity>
             )}

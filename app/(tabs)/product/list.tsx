@@ -3,7 +3,8 @@ import {
    Text,
    StyleSheet,
    FlatList,
-   TouchableOpacity
+   TouchableOpacity,
+   Alert
 } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
 import { commonStyles, theme } from '@/theme'
@@ -40,9 +41,21 @@ export default function Products() {
       }, [])
    )
 
-   const handleDelete = async (id: number) => {
-      await productService.delete(id)
-      const newList = products.filter(p => p.productId !== id)
+   const handleDelete = async (product: Product) => {
+      Alert.alert('Atenção!', `Deseja remover ${product.name}`, [
+         {
+            text: 'Sim',
+            onPress: () => {
+               deleteProduct(product)
+            }
+         },
+         { text: 'Não' }
+      ])
+   }
+
+   const deleteProduct = async (product: Product) => {
+      await productService.delete(product.productId)
+      const newList = products.filter(p => p.productId !== product.productId)
       setProducts(() => newList)
       setFilteredProducts(() => newList)
    }
@@ -90,7 +103,7 @@ export default function Products() {
                      </TouchableOpacity>
                      <TouchableOpacity
                         style={styles.actionButton}
-                        onPress={() => handleDelete(item.productId)}
+                        onPress={() => handleDelete(item)}
                      >
                         <MaterialIcons
                            name="delete"
