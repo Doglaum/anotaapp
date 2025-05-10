@@ -20,7 +20,7 @@ const OrderSummaryStep = ({ order }: { order: Partial<Order> }) => {
                      <Text style={commonStyles.highlightedText}>
                         Telefone:{' '}
                      </Text>
-                     {order.deliveryClient?.phoneNumber}
+                     {order.client?.phoneNumber}
                   </Text>
                </View>
             </View>

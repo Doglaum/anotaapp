@@ -1,21 +1,26 @@
-import { View, StyleSheet, TouchableOpacity, Text, Alert } from 'react-native'
+import { View, StyleSheet, TouchableOpacity, Text } from 'react-native'
 import { useEffect, useState } from 'react'
-import { commonStyles, theme } from '@/theme'
+import { theme } from '@/theme'
 import { Order } from '@/database/models/index'
 import { OrderService } from '@/services/OrderService'
-import { Stack } from 'expo-router'
+import { router, Stack } from 'expo-router'
 import {
-   ClientStep,
    OrderProductStep,
-   AdditionalInformationsStep
+   AdditionalInformationsStep,
+   ClientNameStep,
+   OrderSummaryStep,
+   ClientStep,
+   AddressStep
 } from './steps'
 import ShoppingCart from './components/ShoppingCart'
 import { MaterialIcons } from '@expo/vector-icons'
-import { errorToast } from '@/components'
-
+import { errorToast, infoToast } from '@/components'
 export default function PedidoForm() {
    const orderService = new OrderService()
-   const [order, setOrder] = useState<Partial<Order>>({})
+   const [order, setOrder] = useState<Partial<Order>>({
+      changeFor: 0,
+      deliveryFee: 0
+   })
    const insertOrderData = <K extends keyof Order>(
       attribute: K,
       value: Order[K]
@@ -24,15 +29,22 @@ export default function PedidoForm() {
    }
    const [step, setStep] = useState(1)
    const handleNextStep = () => {
-      if (step === 1 && !order.client) {
-         errorToast('Selecione um cliente')
+      console.log(order)
+      if (step === 1 && !order.clientName) {
+         infoToast('Nome do cliente não informado')
+      } else if (step === 2 && !order?.address) {
+         errorToast('Escolha ou cria um endereço de entrega')
          return
-      } else if (step === 2 && order?.orderProducts?.length === 0) {
+      } else if (
+         (step === 3 && !order?.orderProducts) ||
+         order?.orderProducts?.length == 0
+      ) {
          errorToast('Adicione pelo menos 1 produto ao pedido')
          return
-      } else if (step === 3) return
+      } else if (step === 5) return
       setStep(step + 1)
    }
+
    const handlePreviousStep = () => {
       if (step === 1) return
       setStep(step - 1)
@@ -42,11 +54,9 @@ export default function PedidoForm() {
 
    //TODO : adicionar forma de somar o valor do frete
    const handleSubmit = async () => {
-      console.log(order)
-      //await pedidoService.criarPedido(pedido)
-      //setPedido({})
-      //setStep(1)
-      //router.push('/pedidos/lista')
+      console.log(JSON.stringify(order))
+      await orderService.createOrder(order)
+      router.push('(tabs)/create-order')
    }
 
    useEffect(() => {
@@ -61,8 +71,7 @@ export default function PedidoForm() {
       }
       if (order.orderProducts) {
          totalOrder += order.orderProducts.reduce((total, orderProduct) => {
-            const productPrice = orderProduct.product.price
-
+            const productPrice = orderProduct.totalPrice
             return total + productPrice
          }, 0)
       }
@@ -70,15 +79,19 @@ export default function PedidoForm() {
    }
 
    return (
-      <View style={commonStyles.container}>
+      <View style={{ flex: 1 }}>
          <Stack.Screen
             options={{
                title:
                   step === 1
-                     ? 'Selecionar Cliente'
+                     ? 'Cliente'
                      : step === 2
+                     ? 'Selecionar Endereço'
+                     : step === 3
                      ? 'Selecionar Produto'
-                     : 'Mais Informações',
+                     : step === 4
+                     ? 'Mais Informações'
+                     : 'Resumo do pedido',
                headerStyle: {
                   backgroundColor: theme.colors.primary
                },
@@ -86,10 +99,23 @@ export default function PedidoForm() {
             }}
          />
          <View
-            style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+            style={[
+               {
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  zIndex: 999,
+                  backgroundColor: theme.colors.appContainerColor,
+                  padding: 16
+               }
+            ]}
          >
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-               {[1, 2, 3].map(num => (
+            <View
+               style={{
+                  flexDirection: 'row',
+                  alignItems: 'center'
+               }}
+            >
+               {[1, 2, 3, 4, 5].map(num => (
                   <View
                      key={num}
                      style={[
@@ -112,7 +138,7 @@ export default function PedidoForm() {
                style={styles.cartButton}
                onPress={() => setModalVisible(true)}
             >
-               <MaterialIcons name="shopping-cart" size={24} color="#fff" />
+               <MaterialIcons name="shopping-cart" size={22} color="#fff" />
                <Text style={styles.cartButtonText}>Carrinho</Text>
             </TouchableOpacity>
          </View>
@@ -121,22 +147,36 @@ export default function PedidoForm() {
                <ClientStep order={order} insertOrderData={insertOrderData} />
             </View>
             <View style={{ display: step === 2 ? 'flex' : 'none', flex: 1 }}>
+               <AddressStep order={order} insertOrderData={insertOrderData} />
+            </View>
+            <View style={{ display: step === 3 ? 'flex' : 'none', flex: 1 }}>
                <OrderProductStep
                   order={order}
                   insertOrderData={insertOrderData}
                />
             </View>
-            <View style={{ display: step === 3 ? 'flex' : 'none', flex: 1 }}>
+            <View style={{ display: step === 4 ? 'flex' : 'none', flex: 1 }}>
                <AdditionalInformationsStep
                   order={order}
                   insertOrderData={insertOrderData}
                />
             </View>
+            <View
+               style={{
+                  display: step === 5 ? 'flex' : 'none',
+                  flex: 1,
+                  backgroundColor: 'red'
+               }}
+            >
+               <OrderSummaryStep order={order} />
+            </View>
          </View>
          <View
             style={{
                flexDirection: 'row',
-               justifyContent: 'space-around'
+               justifyContent: 'space-around',
+               paddingBottom: 10,
+               paddingTop: 10
             }}
          >
             <View>
@@ -150,8 +190,8 @@ export default function PedidoForm() {
                   <MaterialIcons name="arrow-back" size={24} color="#fff" />
                </TouchableOpacity>
             </View>
-            <View>
-               {step < 3 && (
+            <View style={{}}>
+               {step < 5 && (
                   <TouchableOpacity
                      style={styles.roundedButton}
                      onPress={handleNextStep}
@@ -163,7 +203,7 @@ export default function PedidoForm() {
                      />
                   </TouchableOpacity>
                )}
-               {step === 3 && (
+               {step === 5 && (
                   <TouchableOpacity
                      style={[
                         styles.roundedButton,
@@ -230,7 +270,6 @@ const styles = StyleSheet.create({
    },
    cartButtonText: {
       color: '#fff',
-      marginLeft: 8,
       fontWeight: 'bold'
    },
    roundedButton: {

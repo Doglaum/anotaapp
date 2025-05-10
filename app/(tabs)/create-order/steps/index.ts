@@ -3,7 +3,7 @@ import ClientNameStep from './ClientNameStep'
 import ClientStep from './ClientStep'
 import OrderProductStep from './OrderProductStep'
 import OrderSummaryStep from './OrderSummaryStep'
-import SelectAddressStep from './SelectAddressStep'
+import AddressStep from './AddressStep'
 
 export {
    AdditionalInformationsStep,
@@ -11,5 +11,5 @@ export {
    ClientStep,
    OrderProductStep,
    OrderSummaryStep,
-   SelectAddressStep
+   AddressStep
 }

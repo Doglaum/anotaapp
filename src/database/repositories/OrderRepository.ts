@@ -2,6 +2,8 @@ import { Repository } from 'typeorm'
 import { AppDataSource } from '../../config/orm-config'
 import { Order } from '../models/Order'
 import { OrderProduct } from '../models/OrderProduct'
+import { error } from 'console'
+import { errorToast, successToast } from '@/components'
 
 export class OrderRepository {
    private repository: Repository<Order>
@@ -13,20 +15,27 @@ export class OrderRepository {
    }
 
    async create(order: Partial<Order>): Promise<Order> {
-      const newOrder = this.repository.create(order)
-      return await this.repository.save(newOrder)
+      try {
+         let newOrder = this.repository.create(order)
+         newOrder = await this.repository.save(newOrder)
+         successToast('Pedido criado com sucesso, verifique a impressão!')
+         return newOrder
+      } catch (e) {
+         console.log(e)
+      }
+      return {} as Order
    }
 
    async findAll(): Promise<Order[]> {
       return await this.repository.find({
-         relations: ['deliveryClient']
+         relations: ['client']
       })
    }
 
    async findById(orderId: number): Promise<Order | null> {
       return await this.repository.findOne({
          where: { orderId },
-         relations: ['deliveryClient']
+         relations: ['client']
       })
    }
 

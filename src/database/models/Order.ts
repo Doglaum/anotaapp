@@ -29,7 +29,7 @@ export class Order {
       nullable: true
    })
    @JoinColumn({ name: 'clienteId' })
-   deliveryClient: Client
+   client: Client
 
    @Column('decimal', { precision: 10, scale: 2 })
    totalPrice: number

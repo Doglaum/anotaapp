@@ -3,7 +3,8 @@ import {
    PrimaryGeneratedColumn,
    Column,
    ManyToOne,
-   JoinColumn
+   JoinColumn,
+   DeleteDateColumn
 } from 'typeorm'
 import { Client } from './Client'
 
@@ -36,4 +37,7 @@ export class Address {
    })
    @JoinColumn({ name: 'clientId' })
    client: Client
+
+   @DeleteDateColumn()
+   deletedAt: Date
 }

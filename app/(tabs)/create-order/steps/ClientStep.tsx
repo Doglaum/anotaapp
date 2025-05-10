@@ -83,7 +83,10 @@ const ClientStep = ({
                const isSelected = order.client?.clientId === item.clientId
                return (
                   <TouchableOpacity
-                     onPress={() => insertOrderData('client', item)}
+                     onPress={() => {
+                        insertOrderData('client', item)
+                        insertOrderData('clientName', item.name)
+                     }}
                   >
                      <View
                         style={[
