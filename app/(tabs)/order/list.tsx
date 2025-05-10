@@ -25,7 +25,7 @@ const renderItem = ({ item }: { item: Order }) => (
       <Text style={styles.itemText}>
          {item.orderId}
          {' - '}
-         {item.client.name}
+         {item.clientName}
          {' - '}
          {item?.orderSituation?.name}
          {' - '}

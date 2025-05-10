@@ -58,7 +58,6 @@ export const OverlayerModal: React.FC<OverlayModalProps> = ({
                      backgroundColor: '#313131cf'
                   }}
                >
-                  <AppToast />
                   <View
                      style={{
                         backgroundColor: theme.colors.appContainerColor,
@@ -109,6 +108,7 @@ export const OverlayerModal: React.FC<OverlayModalProps> = ({
                      </View>
                   </View>
                </View>
+               <AppToast />
             </Modal>
          </PaperProvider>
       </View>

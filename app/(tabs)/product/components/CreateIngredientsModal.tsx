@@ -12,6 +12,8 @@ import { Ingredient } from '@/database/models'
 import { useState } from 'react'
 import { FormCurrencyInput, FormTextInput } from '@/components/form-inputs'
 import { MaterialIcons } from '@expo/vector-icons'
+import { errorToast, successToast } from '@/components'
+import { error } from 'console'
 
 export const CreateIngredientsModal = ({
    onClose,
@@ -30,6 +32,11 @@ export const CreateIngredientsModal = ({
    })
 
    const saveIngredient = async () => {
+      if (!ingredient.name) {
+         errorToast('Nome é obrigatório')
+         return
+      }
+      successToast(`${ingredient.name} cadastrado`)
       onSave(Object.assign(ingredient, {}))
       setIngredient({ name: '', price: 0.0 })
    }

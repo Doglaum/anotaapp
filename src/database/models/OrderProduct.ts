@@ -1,6 +1,6 @@
 import {
    Entity,
-   PrimaryColumn,
+   PrimaryGeneratedColumn,
    Column,
    ManyToOne,
    JoinColumn,
@@ -13,10 +13,10 @@ import { Ingredient } from './Ingredient'
 
 @Entity('order_product')
 export class OrderProduct {
-   @PrimaryColumn('integer')
+   @PrimaryGeneratedColumn('increment') // Gera automaticamente um ID único
    orderProductId: number
 
-   @PrimaryColumn('integer')
+   @Column('integer')
    productId: number
 
    @Column('text', { nullable: true })
@@ -31,15 +31,15 @@ export class OrderProduct {
    @Column('decimal', { precision: 10, scale: 2 })
    totalPrice: number
 
-   @ManyToMany(() => Ingredient, { eager: true })
+   @ManyToMany(() => Ingredient, { eager: true }) // Relação Many-to-Many com Ingredient
    @JoinTable({
-      name: 'order_product_ingredients',
+      name: 'order_product_ingredients', // Nome da tabela intermediária
       joinColumn: {
-         name: 'orderProductId',
+         name: 'orderProductId', // Coluna que referencia OrderProduct
          referencedColumnName: 'orderProductId'
       },
       inverseJoinColumn: {
-         name: 'ingredientId',
+         name: 'ingredientId', // Coluna que referencia Ingredient
          referencedColumnName: 'ingredientId'
       }
    })
@@ -51,7 +51,7 @@ export class OrderProduct {
    @JoinColumn({ name: 'orderId' })
    order: Order
 
-   @ManyToOne(() => Product, { eager: false })
+   @ManyToOne(() => Product, { eager: true })
    @JoinColumn({ name: 'productId' })
    product: Product
 }

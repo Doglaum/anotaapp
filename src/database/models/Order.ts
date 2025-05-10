@@ -20,7 +20,7 @@ export class Order {
    @PrimaryGeneratedColumn()
    orderId: number
 
-   @Column('text', { nullable: false })
+   @Column('text', { nullable: true })
    clientName: string
 
    @ManyToOne(() => Client, client => client.orders, {

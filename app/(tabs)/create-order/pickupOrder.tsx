@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { theme } from '@/theme'
 import { Order } from '@/database/models/index'
 import { OrderService } from '@/services/OrderService'
-import { Stack } from 'expo-router'
+import { router, Stack } from 'expo-router'
 import {
    OrderProductStep,
    AdditionalInformationsStep,
@@ -50,10 +50,8 @@ export default function PedidoForm() {
    //TODO : adicionar forma de somar o valor do frete
    const handleSubmit = async () => {
       console.log(JSON.stringify(order))
-      //await pedidoService.criarPedido(pedido)
-      //setPedido({})
-      //setStep(1)
-      //router.push('/pedidos/lista')
+      await orderService.createOrder(order)
+      router.push('(tabs)/create-order')
    }
 
    useEffect(() => {

@@ -83,7 +83,7 @@ export const CopyIngredientsModal = ({
                      label="Pesquisar por nome"
                   />
                   <FlatList<Product>
-                     keyExtractor={item => item.id.toString()}
+                     keyExtractor={item => item.productId.toString()}
                      data={filteredProducts}
                      renderItem={({ item }) => (
                         <TouchableOpacity
