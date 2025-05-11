@@ -12,6 +12,8 @@ import { commonStyles, theme } from '@/theme'
 import { useFocusEffect } from 'expo-router'
 import { useCallback } from 'react'
 import { EmptyList } from '@/components/EmptyList'
+import DateTimePicker from 'react-native-ui-datepicker'
+import DatePicker from '@/components'
 
 const renderItem = ({ item }: { item: Order }) => (
    <View
@@ -56,6 +58,7 @@ export default function Lista() {
    )
    return (
       <View style={commonStyles.container}>
+         <DatePicker style={{ marginBottom: 10 }} />
          <FlatList<Order>
             data={orders}
             keyExtractor={item => item.orderId.toString()}
