@@ -10,11 +10,14 @@ import { commonStyles, theme } from '@/theme'
 import { Address, Client } from '@/database/models'
 import { ClientService } from '@/services/ClientService'
 import { useRouter } from 'expo-router'
-import { EmptyList, FormTextInput } from '@/components'
+import {
+   EmptyList,
+   FormTextInput,
+   FormPhoneInput,
+   CreateAddressModal
+} from '@/components'
 import { formStyle } from '@/components/form-inputs/styles'
-import CreateAddressModal from './components/CreateAddressModal'
 import { MaterialIcons } from '@expo/vector-icons'
-import { FormPhoneInput } from '@/components/form-inputs'
 
 const RegisterClient = ({ editClientId }: { editClientId: number }) => {
    const router = useRouter()

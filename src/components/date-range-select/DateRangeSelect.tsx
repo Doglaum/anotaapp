@@ -2,33 +2,57 @@
 import { theme } from '@/theme'
 import { useState } from 'react'
 import {
-   Button,
    StyleProp,
    Text,
    TouchableOpacity,
-   TouchableWithoutFeedback,
    View,
    ViewStyle
 } from 'react-native'
 import DateTimePicker, {
+   CalendarComponents,
    DateType,
    useDefaultStyles
 } from 'react-native-ui-datepicker'
+import { MaterialIcons } from '@expo/vector-icons'
 import dayjs from 'dayjs'
+import calendarComponents from './CalendarComponents'
 
-const DatePicker = ({ style }: { style: StyleProp<ViewStyle> }) => {
+const DateRangeSelect = ({
+   style,
+   onClose
+}: {
+   style: StyleProp<ViewStyle>
+   onClose: (startDate: DateType, endDate: DateType) => void
+}) => {
    const defaultStyles = useDefaultStyles()
-   const [selectedStartDate, setSelectedStartDate] = useState<DateType>()
+   const [selectedStartDate, setSelectedStartDate] = useState<DateType>(
+      new Date()
+   )
    const [selectedEndDate, setSelectedEndDate] = useState<DateType>()
    const [visible, setVisible] = useState(false)
    const formatDate = (date: DateType) => {
       return date?.toLocaleString('pt-BR').replace(/,.*/, '') || ''
    }
 
+   const handleSelectedDate = (startDate: DateType, endDate: DateType) => {
+      if (!startDate) {
+         startDate = new Date()
+      }
+      setSelectedStartDate(startDate)
+      setSelectedEndDate(endDate)
+   }
+
+   const handleButtonPress = () => {
+      setVisible(!visible)
+      if (!visible) {
+         onClose(selectedStartDate, selectedEndDate)
+      }
+   }
+
    return (
       <View style={style}>
          <TouchableOpacity
-            onPress={() => setVisible(!visible)}
+            onPress={() => handleButtonPress()}
             style={{
                flexDirection: 'row',
                alignItems: 'center',
@@ -55,7 +79,7 @@ const DatePicker = ({ style }: { style: StyleProp<ViewStyle> }) => {
                   >
                      {formatDate(selectedStartDate)}
                   </Text>
-                  {formatDate(selectedEndDate) && (
+                  {formatDate(selectedEndDate) ? (
                      <Text
                         style={{
                            fontWeight: 'bold',
@@ -66,7 +90,7 @@ const DatePicker = ({ style }: { style: StyleProp<ViewStyle> }) => {
                         {' '}
                         -{' '}
                      </Text>
-                  )}
+                  ) : null}
                   <Text
                      style={{
                         fontWeight: 'bold',
@@ -87,18 +111,17 @@ const DatePicker = ({ style }: { style: StyleProp<ViewStyle> }) => {
                      flex: 1
                   }}
                >
-                  Selecione uma data
+                  {}
                </Text>
             )}
          </TouchableOpacity>
-         {visible && (
+         {visible ? (
             <View
                style={{
                   position: 'absolute',
                   zIndex: 999,
                   top: 35,
-                  backgroundColor: theme.colors.appContainerColor,
-                  borderWidth: 0.2,
+                  backgroundColor: theme.colors.whiteGray,
                   borderBottomRightRadius: 40,
                   borderBottomLeftRadius: 40
                }}
@@ -107,13 +130,14 @@ const DatePicker = ({ style }: { style: StyleProp<ViewStyle> }) => {
                   date={'dayjs'}
                   calendar="gregory"
                   mode="range"
-                  locale="pt_BR"
+                  locale="pt"
                   startDate={selectedStartDate}
                   endDate={selectedEndDate}
-                  onChange={({ startDate, endDate }) => {
-                     setSelectedStartDate(startDate)
-                     setSelectedEndDate(endDate)
-                  }}
+                  onChange={({ startDate, endDate }) =>
+                     handleSelectedDate(startDate, endDate)
+                  }
+                  components={calendarComponents}
+                  navigationPosition="around"
                   styles={{
                      ...defaultStyles,
                      today: {
@@ -140,10 +164,9 @@ const DatePicker = ({ style }: { style: StyleProp<ViewStyle> }) => {
                   }}
                />
             </View>
-         )}
-         )
+         ) : null}
       </View>
    )
 }
 
-export default DatePicker
+export default DateRangeSelect

@@ -1,19 +1,12 @@
 import { useState } from 'react'
-import {
-   View,
-   Text,
-   StyleSheet,
-   FlatList,
-   TouchableOpacity
-} from 'react-native'
+import { View, Text, StyleSheet, FlatList } from 'react-native'
 import { Order } from '@/database/models'
 import { OrderService } from '@/services'
 import { commonStyles, theme } from '@/theme'
 import { useFocusEffect } from 'expo-router'
 import { useCallback } from 'react'
 import { EmptyList } from '@/components/EmptyList'
-import DateTimePicker from 'react-native-ui-datepicker'
-import DatePicker from '@/components'
+import DateRangeSelect from '@/components'
 
 const renderItem = ({ item }: { item: Order }) => (
    <View
@@ -58,13 +51,16 @@ export default function Lista() {
    )
    return (
       <View style={commonStyles.container}>
-         <DatePicker style={{ marginBottom: 10 }} />
+         <DateRangeSelect style={{ marginBottom: 10 }} onClose={() => {}} />
          <FlatList<Order>
             data={orders}
             keyExtractor={item => item.orderId.toString()}
             renderItem={renderItem}
             ListEmptyComponent={
-               <EmptyList iconName="task" text="Nenhum produto cadastrado" />
+               <EmptyList
+                  iconName="task"
+                  text="Nenhum pedido para ser exibido"
+               />
             }
          />
       </View>

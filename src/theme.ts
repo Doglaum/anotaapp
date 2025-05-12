@@ -16,7 +16,7 @@ export const theme = {
       add: '#007AFF',
       copy: '#cecece',
       white: '#ffffff',
-      whiteGray: '#f2f2f2',
+      whiteGray: '#ececec',
       gray: '#818181',
       success: '#26e030',
       error: '#FF3B30',
