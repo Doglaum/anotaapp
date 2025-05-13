@@ -7,6 +7,7 @@ import { useFocusEffect } from 'expo-router'
 import { useCallback } from 'react'
 import { EmptyList } from '@/components/EmptyList'
 import DateRangeSelect from '@/components'
+import { DateType } from 'react-native-ui-datepicker'
 
 const renderItem = ({ item }: { item: Order }) => (
    <View
@@ -35,12 +36,8 @@ export default function Lista() {
    useFocusEffect(
       useCallback(() => {
          const loadOrders = async () => {
-            try {
-               const orders = await orderService.listAll()
-               setOrders(orders)
-            } catch (error) {
-               console.error('Erro ao carregar pedidos:', error)
-            }
+            const orders = await orderService.listAllWithRangeDate(null, null)
+            setOrders(orders)
          }
 
          loadOrders()
@@ -49,9 +46,20 @@ export default function Lista() {
          }
       }, [])
    )
+
+   const handleDateSelect = async (startDate: DateType, endDate: DateType) => {
+      console.log(startDate)
+      console.log(endDate)
+      const orders = await orderService.listAllWithRangeDate(startDate, endDate)
+      setOrders(orders)
+   }
+
    return (
       <View style={commonStyles.container}>
-         <DateRangeSelect style={{ marginBottom: 10 }} onClose={() => {}} />
+         <DateRangeSelect
+            style={{ marginBottom: 10 }}
+            onClose={handleDateSelect}
+         />
          <FlatList<Order>
             data={orders}
             keyExtractor={item => item.orderId.toString()}

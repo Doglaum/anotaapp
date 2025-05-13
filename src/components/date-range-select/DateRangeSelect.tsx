@@ -31,20 +31,18 @@ const DateRangeSelect = ({
    const [selectedEndDate, setSelectedEndDate] = useState<DateType>()
    const [visible, setVisible] = useState(false)
    const formatDate = (date: DateType) => {
-      return date?.toLocaleString('pt-BR').replace(/,.*/, '') || ''
+      return dayjs(date).format('DD/MM/YYYY')
    }
 
    const handleSelectedDate = (startDate: DateType, endDate: DateType) => {
-      if (!startDate) {
-         startDate = new Date()
-      }
       setSelectedStartDate(startDate)
       setSelectedEndDate(endDate)
    }
 
    const handleButtonPress = () => {
       setVisible(!visible)
-      if (!visible) {
+      console.log(visible)
+      if (visible) {
          onClose(selectedStartDate, selectedEndDate)
       }
    }
@@ -111,7 +109,7 @@ const DateRangeSelect = ({
                      flex: 1
                   }}
                >
-                  {}
+                  {dayjs(new Date()).format('DD/MM/YYYY')}
                </Text>
             )}
          </TouchableOpacity>
@@ -143,19 +141,19 @@ const DateRangeSelect = ({
                      today: {
                         borderColor: theme.colors.primary,
                         borderWidth: 1
-                     }, // Add a border to today's date
+                     },
                      today_label: { fontWeight: 'bold' },
-                     selected: { backgroundColor: theme.colors.primary }, // Highlight the selected day
+                     selected: { backgroundColor: theme.colors.primary },
                      selected_label: {
                         color: theme.colors.white,
                         fontWeight: 'bold'
-                     }, // Highlight the selected day label
+                     },
                      selected_month: { backgroundColor: theme.colors.primary },
                      active_year: { backgroundColor: theme.colors.primary },
                      active_year_label: {
                         color: theme.colors.white,
                         fontWeight: 'bold'
-                     }, // Highlight the selected day label,
+                     },
                      range_middle: { backgroundColor: theme.colors.primary },
                      range_middle_label: {
                         color: theme.colors.white,

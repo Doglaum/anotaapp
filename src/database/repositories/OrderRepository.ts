@@ -2,8 +2,8 @@ import { Repository } from 'typeorm'
 import { AppDataSource } from '../../config/orm-config'
 import { Order } from '../models/Order'
 import { OrderProduct } from '../models/OrderProduct'
-import { error } from 'console'
-import { errorToast, successToast } from '@/components'
+import { successToast } from '@/components'
+import { DateType } from 'react-native-ui-datepicker'
 
 export class OrderRepository {
    private repository: Repository<Order>
@@ -46,5 +46,26 @@ export class OrderRepository {
 
    async delete(id: number): Promise<void> {
       await this.repository.delete(id)
+   }
+
+   async findAllWithDateRange(
+      startDate: DateType,
+      endDate: DateType
+   ): Promise<Order[]> {
+      const query = this.repository
+         .createQueryBuilder('o')
+         .leftJoinAndSelect('o.orderSituation', 'orderSituation')
+         .select([
+            'o.orderId',
+            'o.totalPrice',
+            'o.created_at',
+            'o.clientName',
+            'orderSituation.orderSituationId'
+         ])
+         .where('o.created_at >= :startDate', { startDate })
+      if (endDate) {
+         query.andWhere('o.created_at <= :endDate', { endDate })
+      }
+      return query.getMany()
    }
 }

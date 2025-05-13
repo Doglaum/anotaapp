@@ -1,7 +1,7 @@
-export { ClientService } from './ClientService';
-export { ProductService } from './ProductService';
-export { OrderService } from './OrderService';
-export { PaymentMethodService } from './PaymentMethodService';
-export { OrderSituationService } from './OrderSituationService';
-export { IngredientService } from './IngredientService';
-export { PaymentStatusService } from './PaymentStatusService';
+export { ClientService } from './ClientService'
+export { ProductService } from './ProductService'
+export { OrderService } from './OrderService'
+export { PaymentMethodService } from './PaymentMethodService'
+export { OrderSituationService } from './OrderSituationService'
+export { IngredientService } from './IngredientService'
+export { PaymentStatusService } from './PaymentStatusService'
