@@ -1,6 +1,7 @@
 import { Tabs } from 'expo-router'
-import { MaterialIcons } from '@expo/vector-icons'
+import { Entypo, MaterialIcons } from '@expo/vector-icons'
 import { theme } from '@/theme'
+import { AntDesign } from '@expo/vector-icons'
 
 export default function TabLayout() {
    return (
@@ -15,7 +16,7 @@ export default function TabLayout() {
             options={{
                tabBarLabel: 'Pedidos',
                tabBarIcon: ({ color, size }) => (
-                  <MaterialIcons name="home" size={size} color={color} />
+                  <Entypo name="ticket" size={size} color={color} />
                ),
                headerShown: false
             }}
@@ -35,7 +36,7 @@ export default function TabLayout() {
             options={{
                tabBarLabel: 'Produtos',
                tabBarIcon: ({ color, size }) => (
-                  <MaterialIcons name="restaurant" size={size} color={color} />
+                  <Entypo name="shop" size={size} color={color} />
                ),
                headerShown: false
             }}
@@ -45,7 +46,7 @@ export default function TabLayout() {
             options={{
                tabBarLabel: 'Tirar Pedido',
                tabBarIcon: ({ color, size }) => (
-                  <MaterialIcons name="add" size={size} color={color} />
+                  <Entypo name="new-message" size={size} color={color} />
                ),
                headerShown: false
             }}

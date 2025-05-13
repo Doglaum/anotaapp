@@ -8,6 +8,7 @@ import { useCallback } from 'react'
 import { EmptyList } from '@/components/EmptyList'
 import DateRangeSelect from '@/components'
 import { DateType } from 'react-native-ui-datepicker'
+import dayjs from 'dayjs'
 
 const renderItem = ({ item }: { item: Order }) => (
    <View
@@ -15,17 +16,31 @@ const renderItem = ({ item }: { item: Order }) => (
          commonStyles.listItem,
          item?.orderSituation?.orderSituationId === 2
             ? { backgroundColor: theme.colors.edit }
-            : { backgroundColor: theme.colors.edit }
+            : { backgroundColor: theme.colors.edit },
+         {
+            flexDirection: 'column',
+            justifyContent: 'flex-start',
+            alignItems: 'flex-start'
+         }
       ]}
    >
-      <Text style={styles.itemText}>
-         {item.orderId}
-         {' - '}
-         {item.clientName}
-         {' - '}
-         {item?.orderSituation?.name}
-         {' - '}
-      </Text>
+      <View style={{ flexDirection: 'row' }}>
+         <Text style={{ fontWeight: 'bold' }}>{`#${item.orderId
+            .toString()
+            .padStart(4, '0')}`}</Text>
+         <Text style={styles.itemText}>
+            {' - '}
+            {item.clientName}
+            {' - '}
+            {item?.orderSituation?.name}
+            {' - '}
+            {`R$${item.totalPrice.toFixed(2)}`}
+            {' - '}
+         </Text>
+      </View>
+      <Text>{`Data do pedido: ${dayjs(item.created_at).format(
+         'DD/MM/YYYY HH:mm'
+      )}`}</Text>
    </View>
 )
 

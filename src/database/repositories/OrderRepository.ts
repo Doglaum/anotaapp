@@ -60,7 +60,8 @@ export class OrderRepository {
             'o.totalPrice',
             'o.created_at',
             'o.clientName',
-            'orderSituation.orderSituationId'
+            'orderSituation.orderSituationId',
+            'orderSituation.name'
          ])
          .where('o.created_at >= :startDate', { startDate })
       if (endDate) {
