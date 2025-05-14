@@ -15,6 +15,7 @@ import { MaterialIcons } from '@expo/vector-icons'
 import { errorToast, infoToast } from '@/components'
 export default function PedidoForm() {
    const orderService = new OrderService()
+   const [modalVisible, setModalVisible] = useState(false)
    const [order, setOrder] = useState<Partial<Order>>({
       changeFor: 0,
       deliveryFee: 0
@@ -27,7 +28,6 @@ export default function PedidoForm() {
    }
    const [step, setStep] = useState(1)
    const handleNextStep = () => {
-      console.log(order)
       if (step === 1 && !order.clientName) {
          infoToast('Nome do cliente não informado')
       } else if (
@@ -45,11 +45,7 @@ export default function PedidoForm() {
       setStep(step - 1)
    }
 
-   const [modalVisible, setModalVisible] = useState(false)
-
-   //TODO : adicionar forma de somar o valor do frete
    const handleSubmit = async () => {
-      console.log(JSON.stringify(order))
       await orderService.createOrder(order)
       router.push('(tabs)/create-order')
    }

@@ -14,8 +14,8 @@ export class ClientService {
       let newClient = {} as Client
       try {
          newClient = await this.repository.create(client)
-      } catch (e) {
-         console.log(e)
+      } catch (error) {
+         console.error(error)
          throw new Error('Erro ao cadastrar cliente')
       }
       successToast('Cliente cadastrado com sucesso')
@@ -49,7 +49,6 @@ export class ClientService {
 
    private validate(cliente: Partial<Client> | Client) {
       if (!cliente.name || cliente.phoneNumber) {
-         console.log(cliente.phoneNumber)
          if (!cliente.name) {
             const text = 'Nome é obrigatório'
             errorToast(text)

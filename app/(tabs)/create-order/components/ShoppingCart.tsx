@@ -6,7 +6,8 @@ import {
    Modal,
    Button,
    TouchableOpacity,
-   ScrollView
+   ScrollView,
+   Dimensions
 } from 'react-native'
 import { Order } from '@/database/models/Order'
 import { MaterialIcons } from '@expo/vector-icons'
@@ -25,6 +26,7 @@ export default function ShoppingCart({
    order: Partial<Order>
    insertOrderData: <K extends keyof Order>(campo: K, valor: Order[K]) => void
 }) {
+   const { height } = Dimensions.get('window')
    function onRemoveItem(index: number) {
       if (order.orderProducts) {
          const filteredOrderProducts = order.orderProducts.filter(
@@ -33,6 +35,7 @@ export default function ShoppingCart({
          insertOrderData('orderProducts', filteredOrderProducts)
       }
    }
+
    return (
       <Modal
          visible={visible}
@@ -47,7 +50,7 @@ export default function ShoppingCart({
                      ? `Carrinho de ${order.client.name}`
                      : 'Carrinho'}
                </Text>
-               <View style={{ maxHeight: '80%' }}>
+               <View style={{ maxHeight: height * 0.6 }}>
                   <FlatList
                      data={order.orderProducts}
                      keyExtractor={(item, index) => index.toString()}
@@ -61,11 +64,13 @@ export default function ShoppingCart({
                                  }}
                               >
                                  <Text style={styles.cartItemText}>
-                                    {item.product.name}{' '}
+                                    {item.product.name}
                                  </Text>
-                                 <Text style={styles.cartItemText}>
-                                    {'R$' + item.unitPrice.toFixed(2)}
-                                 </Text>
+                                 {item.unitPrice ? (
+                                    <Text style={styles.cartItemText}>
+                                       {` R$${item.unitPrice.toFixed(2)}`}
+                                    </Text>
+                                 ) : null}
                               </View>
                               {item.details ? (
                                  <Text>{item.details}</Text>
@@ -88,7 +93,11 @@ export default function ShoppingCart({
                                        <Text style={{ fontWeight: '400' }}>
                                           {item.name}
                                        </Text>
-                                       <Text>R${item.price.toFixed(2)}</Text>
+                                       {item.price ? (
+                                          <Text style={styles.cartItemText}>
+                                             {` R$${item.price.toFixed(2)}`}
+                                          </Text>
+                                       ) : null}
                                     </View>
                                  )}
                               />

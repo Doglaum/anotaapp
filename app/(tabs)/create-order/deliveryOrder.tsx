@@ -7,14 +7,13 @@ import { router, Stack } from 'expo-router'
 import {
    OrderProductStep,
    AdditionalInformationsStep,
-   ClientNameStep,
    OrderSummaryStep,
    ClientStep,
    AddressStep
 } from './steps'
 import ShoppingCart from './components/ShoppingCart'
 import { MaterialIcons } from '@expo/vector-icons'
-import { errorToast, infoToast } from '@/components'
+import { infoToast } from '@/components'
 export default function PedidoForm() {
    const orderService = new OrderService()
    const [order, setOrder] = useState<Partial<Order>>({
@@ -29,17 +28,17 @@ export default function PedidoForm() {
    }
    const [step, setStep] = useState(1)
    const handleNextStep = () => {
-      console.log(order)
       if (step === 1 && !order.clientName) {
          infoToast('Nome do cliente não informado')
+         return
       } else if (step === 2 && !order?.address) {
-         errorToast('Escolha ou cria um endereço de entrega')
+         infoToast('Escolha ou crie um endereço de entrega')
          return
       } else if (
          (step === 3 && !order?.orderProducts) ||
          order?.orderProducts?.length == 0
       ) {
-         errorToast('Adicione pelo menos 1 produto ao pedido')
+         infoToast('Adicione pelo menos 1 produto ao pedido')
          return
       } else if (step === 5) return
       setStep(step + 1)
@@ -52,9 +51,7 @@ export default function PedidoForm() {
 
    const [modalVisible, setModalVisible] = useState(false)
 
-   //TODO : adicionar forma de somar o valor do frete
    const handleSubmit = async () => {
-      console.log(JSON.stringify(order))
       await orderService.createOrder(order)
       router.push('(tabs)/create-order')
    }

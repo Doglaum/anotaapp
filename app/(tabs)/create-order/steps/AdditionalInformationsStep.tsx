@@ -49,7 +49,6 @@ const AdditionalInformationsStep = ({
    )
 
    const selectHandle = (name: any, text: any) => {
-      console.log(text)
       insertOrderData(name, text)
    }
 

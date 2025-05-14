@@ -41,7 +41,6 @@ const DateRangeSelect = ({
 
    const handleButtonPress = () => {
       setVisible(!visible)
-      console.log(visible)
       if (visible) {
          onClose(selectedStartDate, selectedEndDate)
       }

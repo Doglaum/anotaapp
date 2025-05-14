@@ -79,7 +79,7 @@ const CreateAddressModal = ({
                street: ''
             }))
             errorToast('CEP incorreto')
-            console.log(error)
+            console.error(error)
          }
       }
    }

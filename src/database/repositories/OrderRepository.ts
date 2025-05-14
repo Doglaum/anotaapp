@@ -2,7 +2,7 @@ import { Repository } from 'typeorm'
 import { AppDataSource } from '../../config/orm-config'
 import { Order } from '../models/Order'
 import { OrderProduct } from '../models/OrderProduct'
-import { successToast } from '@/components'
+import { errorToast, successToast } from '@/components'
 import { DateType } from 'react-native-ui-datepicker'
 
 export class OrderRepository {
@@ -21,7 +21,8 @@ export class OrderRepository {
          successToast('Pedido criado com sucesso, verifique a impressão!')
          return newOrder
       } catch (e) {
-         console.log(e)
+         errorToast('Ocorreu um problema ao criar o pedido!')
+         console.error(e)
       }
       return {} as Order
    }
@@ -54,15 +55,18 @@ export class OrderRepository {
    ): Promise<Order[]> {
       const query = this.repository
          .createQueryBuilder('o')
+         .leftJoinAndSelect('o.client', 'client')
+         .leftJoinAndSelect('o.orderProducts', 'orderProducts')
+         .leftJoinAndSelect('orderProducts.product', 'product')
+         .leftJoinAndSelect(
+            'orderProducts.selectedIngredients',
+            'selectedIngredients'
+         )
+         .leftJoinAndSelect('o.address', 'address')
          .leftJoinAndSelect('o.orderSituation', 'orderSituation')
-         .select([
-            'o.orderId',
-            'o.totalPrice',
-            'o.created_at',
-            'o.clientName',
-            'orderSituation.orderSituationId',
-            'orderSituation.name'
-         ])
+         .leftJoinAndSelect('o.paymentMethod', 'paymentMethod')
+         .leftJoinAndSelect('o.paymentStatus', 'paymentStatus')
+         .orderBy('o.orderId', 'DESC')
          .where('o.created_at >= :startDate', { startDate })
       if (endDate) {
          query.andWhere('o.created_at <= :endDate', { endDate })

@@ -52,7 +52,6 @@ export const FormZipCodeInput = ({
             onChangeText={onChangeText}
             onFocus={() => setIsFocus(true)}
             onBlur={() => {
-               console.log('blur')
                if (onBlur) {
                   onBlur()
                }

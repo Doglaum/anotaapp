@@ -16,6 +16,7 @@ import { useFocusEffect } from 'expo-router'
 import { EmptyList } from '@/components/EmptyList'
 import { FormSearchInput, successToast } from '@/components'
 import { MaterialIcons } from '@expo/vector-icons'
+import CreateOrderProduct from '../components/CreateOrderProduct'
 
 const OrderProductStep = ({
    order,
@@ -27,27 +28,27 @@ const OrderProductStep = ({
    const productService = new ProductService()
    const [products, setProducts] = useState<Product[]>([])
    const [modalVisible, setModalVisible] = useState(false)
-   const [details, setDetails] = useState('')
    const [selectedProduct, setSelectedProduct] = useState<Product>(
       {} as Product
    )
    const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
    const [filterText, setFilterText] = useState<string>('')
-   const [selectedIngredients, setSelectedIngredients] = useState<Ingredient[]>(
-      []
-   )
 
    const handleOpenModal = (product: Product) => {
       setSelectedProduct(product)
       setModalVisible(true)
    }
 
-   const handleSave = () => {
+   const handleClose = () => {
+      setModalVisible(false)
+   }
+
+   const handleSave = (ingredients: Ingredient[], details: string) => {
       const orderProduct = new OrderProduct()
       orderProduct.details = details
       orderProduct.product = selectedProduct
       orderProduct.unitPrice = selectedProduct.price
-      let ingredientsTotalPrice = selectedIngredients.reduce(
+      let ingredientsTotalPrice = ingredients.reduce(
          (total, orderProductIngredient) => {
             const price = orderProductIngredient.price
             return total + price
@@ -55,20 +56,14 @@ const OrderProductStep = ({
          0
       )
       orderProduct.totalPrice = selectedProduct.price + ingredientsTotalPrice
-      orderProduct.selectedIngredients = selectedIngredients
+      orderProduct.selectedIngredients = ingredients
       insertOrderData('orderProducts', [
          ...(order?.orderProducts || []),
          orderProduct
       ])
-      resetState()
       successToast(`${selectedProduct.name} adicionado ao carrinho`)
-      setModalVisible(false)
-   }
-
-   const resetState = () => {
       setSelectedProduct({} as Product)
-      setSelectedIngredients([] as Ingredient[])
-      setDetails('')
+      setModalVisible(false)
    }
 
    useFocusEffect(
@@ -102,11 +97,6 @@ const OrderProductStep = ({
       handleSearch(filterText)
    }, [filterText])
 
-   const getIngredientCount = (ingredientId: number) => {
-      return selectedIngredients.reduce((count, ingredient) => {
-         return ingredient.ingredientId === ingredientId ? count + 1 : count
-      }, 0)
-   }
    return (
       <View style={commonStyles.container}>
          <FormSearchInput
@@ -156,80 +146,12 @@ const OrderProductStep = ({
                />
             }
          />
-         <Modal
-            visible={modalVisible}
-            transparent={true}
-            animationType="fade"
-            onRequestClose={() => setModalVisible(false)}
-         >
-            <View style={styles.modalContainer}>
-               <View style={styles.modalContent}>
-                  <Text style={styles.modalTitle}>Adicionar Detalhes</Text>
-                  <TextInput
-                     style={styles.input}
-                     placeholder="Detalhes"
-                     onChangeText={setDetails}
-                  />
-                  <FlatList<Ingredient>
-                     data={selectedProduct.ingredients}
-                     renderItem={({ item }) => {
-                        const isSelected = selectedIngredients.some(
-                           item => item.ingredientId === item.ingredientId
-                        )
-                        const count = getIngredientCount(item.ingredientId)
-                        return (
-                           <TouchableOpacity
-                              onPress={() => {
-                                 setSelectedIngredients(prev => [...prev, item])
-                              }}
-                           >
-                              <View
-                                 style={[
-                                    commonStyles.listItem,
-                                    isSelected && {
-                                       backgroundColor: theme.colors.primary
-                                    }
-                                 ]}
-                              >
-                                 <Text
-                                    style={
-                                       isSelected && {
-                                          color: theme.colors.white
-                                       }
-                                    }
-                                 >
-                                    {item.name}
-                                 </Text>
-                                 <Text
-                                    style={
-                                       isSelected && {
-                                          color: theme.colors.white
-                                       }
-                                    }
-                                 >
-                                    {' ' + count + 'X '}
-                                    {item.price
-                                       ? `R$ ${item.price.toFixed(2)}`
-                                       : ''}
-                                 </Text>
-                              </View>
-                           </TouchableOpacity>
-                        )
-                     }}
-                  />
-                  <View style={styles.modalActions}>
-                     <Button
-                        title="Cancelar"
-                        onPress={() => {
-                           setModalVisible(false)
-                           resetState()
-                        }}
-                     />
-                     <Button title="Salvar" onPress={handleSave} />
-                  </View>
-               </View>
-            </View>
-         </Modal>
+         <CreateOrderProduct
+            modalVisible={modalVisible}
+            onClose={() => handleClose()}
+            product={selectedProduct}
+            save={handleSave}
+         />
       </View>
    )
 }

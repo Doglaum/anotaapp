@@ -11,7 +11,8 @@ import {
    ViewStyle,
    Keyboard,
    KeyboardAvoidingView,
-   Platform
+   Platform,
+   SafeAreaView
 } from 'react-native'
 import { commonStyles, theme } from '@/theme'
 import { MaterialIcons } from '@expo/vector-icons'
@@ -32,12 +33,9 @@ export const OverlayerModal: React.FC<OverlayModalProps> = ({
    overlayModalVisible
 }) => {
    const { height } = Dimensions.get('window')
-   const [visible, setVisible] = useState(false)
 
    const handleClose = () => {
-      setVisible(false)
       if (onClose) {
-         console.log('onclose')
          onClose()
       }
    }
@@ -46,7 +44,7 @@ export const OverlayerModal: React.FC<OverlayModalProps> = ({
       <View>
          <PaperProvider>
             <Modal
-               animationType="slide"
+               animationType="fade"
                visible={overlayModalVisible}
                transparent
             >
@@ -88,10 +86,13 @@ export const OverlayerModal: React.FC<OverlayModalProps> = ({
                         >
                            {title}
                         </Text>
-                        <TouchableOpacity onPress={handleClose}>
+                        <TouchableOpacity
+                           onPress={handleClose}
+                           style={{ padding: 5 }}
+                        >
                            <MaterialIcons
                               name="close"
-                              size={26}
+                              size={20}
                               color={theme.colors.white}
                            />
                         </TouchableOpacity>

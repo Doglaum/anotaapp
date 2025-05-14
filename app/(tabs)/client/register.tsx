@@ -3,7 +3,8 @@ import {
    Text,
    StyleSheet,
    TouchableOpacity,
-   FlatList
+   FlatList,
+   Alert
 } from 'react-native'
 import { useEffect, useState } from 'react'
 import { commonStyles, theme } from '@/theme'
@@ -14,7 +15,8 @@ import {
    EmptyList,
    FormTextInput,
    FormPhoneInput,
-   CreateAddressModal
+   CreateAddressModal,
+   successToast
 } from '@/components'
 import { formStyle } from '@/components/form-inputs/styles'
 import { MaterialIcons } from '@expo/vector-icons'
@@ -28,7 +30,6 @@ const RegisterClient = ({ editClientId }: { editClientId: number }) => {
          const searchProduct = async () => {
             const editClient = await clientService.findById(editClientId)
             setClient(editClient || {})
-            console.log(editClient)
          }
          searchProduct()
       }
@@ -42,7 +43,6 @@ const RegisterClient = ({ editClientId }: { editClientId: number }) => {
 
    const handleSubmit = async () => {
       await clientService.save(client as Client)
-      console.log(client)
       router.back()
    }
 
@@ -61,12 +61,21 @@ const RegisterClient = ({ editClientId }: { editClientId: number }) => {
    }
 
    const deleteAddress = (addressToRemove: Partial<Address>) => {
-      setClient(prev => ({
-         ...prev,
-         addresses: prev.addresses?.filter(
-            address => address !== addressToRemove
-         )
-      }))
+      Alert.alert('Atenção!', `Deseja remover o endereço?`, [
+         { text: 'Não' },
+         {
+            text: 'Sim',
+            onPress: () => {
+               setClient(prev => ({
+                  ...prev,
+                  addresses: prev.addresses?.filter(
+                     address => address !== addressToRemove
+                  )
+               }))
+               successToast('Endereço removido com sucesso!')
+            }
+         }
+      ])
    }
 
    const addressListItem = ({ item }: { item: Address }) => (
@@ -140,7 +149,7 @@ const RegisterClient = ({ editClientId }: { editClientId: number }) => {
             <View
                style={{
                   flexDirection: 'row',
-                  marginBottom: 10,
+                  marginBottom: 1,
                   alignItems: 'center',
                   justifyContent: 'center'
                }}
@@ -160,27 +169,27 @@ const RegisterClient = ({ editClientId }: { editClientId: number }) => {
                </Text>
                <CreateAddressModal onSave={saveAddress} />
             </View>
-            <FlatList<Address>
-               keyExtractor={(item, index) => index.toString()}
-               data={client.addresses}
-               renderItem={addressListItem}
-               contentContainerStyle={{ padding: 10 }}
-               ListEmptyComponent={
-                  <View
-                     style={{
-                        backgroundColor: theme.colors.white,
-                        borderRadius: 8,
-                        borderWidth: 0.2
-                     }}
-                  >
-                     <EmptyList
-                        iconName="hourglass-empty"
-                        text="Sem endereço cadastrado"
-                     />
-                  </View>
-               }
-            />
          </View>
+         <FlatList<Address>
+            keyExtractor={(item, index) => index.toString()}
+            data={client.addresses}
+            renderItem={addressListItem}
+            contentContainerStyle={{ padding: 10 }}
+            ListEmptyComponent={
+               <View
+                  style={{
+                     backgroundColor: theme.colors.white,
+                     borderRadius: 8,
+                     borderWidth: 0.2
+                  }}
+               >
+                  <EmptyList
+                     iconName="hourglass-empty"
+                     text="Sem endereço cadastrado"
+                  />
+               </View>
+            }
+         />
          <TouchableOpacity
             style={[commonStyles.saveButton, { marginTop: 'auto' }]}
             onPress={handleSubmit}

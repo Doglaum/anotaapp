@@ -10,9 +10,7 @@ export class ProductRepository {
    }
 
    async create(product: Partial<Product>): Promise<Product> {
-      console.log(product)
       const newProduct = this.repository.create(product)
-      console.log(newProduct)
       return await this.repository.save(newProduct)
    }
 
@@ -41,7 +39,7 @@ export class ProductRepository {
          await this.repository.softDelete(id)
       } catch (e) {
          errorToast('Ocorreu um erro ao tentar excluir produto')
-         console.log(e)
+         console.error(e)
       }
    }
 
@@ -56,7 +54,7 @@ export class ProductRepository {
             })
             .getMany()
       } catch (e) {
-         console.log(e)
+         console.error(e)
       }
    }
 }

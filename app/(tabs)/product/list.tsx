@@ -34,7 +34,6 @@ export default function Products() {
             }
          }
          loadProducts()
-         console.log(products)
          return () => {
             console.log('Saindo da aba Pedidos')
          }
@@ -82,15 +81,24 @@ export default function Products() {
             keyExtractor={item => item.productId.toString()}
             renderItem={({ item }) => (
                <View style={commonStyles.listItem}>
-                  <View>
+                  <View style={{ flex: 1, flexShrink: 1 }}>
                      <Text style={styles.productName}>{item.name}</Text>
+                     {item.description ? (
+                        <Text
+                           style={{ fontWeight: '300' }}
+                           ellipsizeMode="tail"
+                           numberOfLines={1}
+                        >
+                           {item.description}
+                        </Text>
+                     ) : null}
                      <Text style={styles.productPrice}>
                         R$ {item.price.toFixed(2)}
                      </Text>
                   </View>
-                  <View style={styles.productActions}>
+                  <View></View>
+                  <View style={[styles.productActions]}>
                      <TouchableOpacity
-                        style={styles.actionButton}
                         onPress={() =>
                            router.push(`/product/${item.productId}`)
                         }
@@ -101,10 +109,7 @@ export default function Products() {
                            color={theme.colors.edit}
                         />
                      </TouchableOpacity>
-                     <TouchableOpacity
-                        style={styles.actionButton}
-                        onPress={() => handleDelete(item)}
-                     >
+                     <TouchableOpacity onPress={() => handleDelete(item)}>
                         <MaterialIcons
                            name="delete"
                            size={24}

@@ -15,8 +15,9 @@ import { useRouter } from 'expo-router'
 import { CreateIngredientsModal } from './components/CreateIngredientsModal'
 import { Ingredient } from '@/database/models'
 import { FormTextInput, FormCurrencyInput } from '@/components/'
-import { MaterialIcons } from '@expo/vector-icons'
+import { AntDesign, MaterialIcons } from '@expo/vector-icons'
 import { CopyIngredientsModal } from './components/CopyIngredientsModal'
+import { successToast } from '../../../src/components/AppToast'
 
 export default function RegisterProduct({
    editProductId
@@ -77,6 +78,7 @@ export default function RegisterProduct({
                      ingredient => ingredient !== removeIngredient
                   )
                }))
+               successToast('Ingrediente removido com sucesso!')
             }
          },
          { text: 'Não' }
@@ -88,6 +90,26 @@ export default function RegisterProduct({
          ...prev,
          ingredients: [...(prev.ingredients || []), ...ingredients]
       }))
+   }
+
+   const removeAllIngredients = () => {
+      Alert.alert(
+         'Atenção!',
+         `Deseja remover todos os ingredientes do produto ?`,
+         [
+            {
+               text: 'Sim',
+               onPress: () => {
+                  setProduct(prev => ({
+                     ...prev,
+                     ingredients: []
+                  }))
+                  successToast('Ingrediente removido com sucesso!')
+               }
+            },
+            { text: 'Não' }
+         ]
+      )
    }
 
    return (
@@ -114,8 +136,8 @@ export default function RegisterProduct({
             style={{
                flexDirection: 'row',
                alignItems: 'center',
-               marginBottom: 10,
-               padding: 10
+               padding: 10,
+               paddingVertical: 6
             }}
          >
             <View style={{ flex: 1 }}>
@@ -129,14 +151,24 @@ export default function RegisterProduct({
                   Ingredientes
                </Text>
             </View>
-            <View style={{ flexDirection: 'row', gap: 5 }}>
+            <View style={{ flexDirection: 'row', gap: 10 }}>
+               <TouchableOpacity
+                  onPress={() => removeAllIngredients()}
+                  style={commonStyles.smallRemoveButton}
+               >
+                  <MaterialIcons
+                     name="playlist-remove"
+                     size={20}
+                     color={theme.colors.white}
+                  ></MaterialIcons>
+               </TouchableOpacity>
                <CopyIngredientsModal
                   currentProductId={product.productId || 0}
-                  buttonStyle={commonStyles.circleCopyButton}
+                  buttonStyle={commonStyles.smallCopyButton}
                   onSelect={copyIngredients}
                />
                <CreateIngredientsModal
-                  buttonStyle={commonStyles.circleAddButton}
+                  buttonStyle={commonStyles.smallAddButton}
                   onSave={saveIngredient}
                />
             </View>
@@ -145,25 +177,13 @@ export default function RegisterProduct({
             keyExtractor={(item, index) => index.toString()}
             data={product.ingredients}
             renderItem={({ item, index }) => (
-               <TouchableOpacity
-                  key={index}
-                  style={[commonStyles.listItem]}
-                  onPress={() => {
-                     removeIngredient(item)
-                  }}
-               >
+               <View style={[commonStyles.listItem]}>
                   <View
                      style={{
                         alignItems: 'center',
-                        flexDirection: 'row',
-                        gap: 10
+                        flexDirection: 'row'
                      }}
                   >
-                     <MaterialIcons
-                        name="delete"
-                        size={18}
-                        color={theme.colors.delete}
-                     />
                      <Text
                         style={{
                            fontSize: 16,
@@ -172,13 +192,26 @@ export default function RegisterProduct({
                      >
                         {`${item.name}`}
                      </Text>
-                  </View>
-                  <View style={{ flexDirection: 'row' }}>
                      <Text style={{ fontWeight: 'bold' }}>
-                        {`${item.price ? ` R$:${item.price.toFixed(2)}` : ''}`}
+                        {`${item.price ? ` - R$${item.price.toFixed(2)}` : ''}`}
                      </Text>
                   </View>
-               </TouchableOpacity>
+                  <View style={{ flexDirection: 'row', gap: 10 }}>
+                     <TouchableOpacity
+                        key={index}
+                        onPress={() => {
+                           removeIngredient(item)
+                        }}
+                        style={{ flexDirection: 'row' }}
+                     >
+                        <MaterialIcons
+                           name="delete"
+                           size={25}
+                           color={theme.colors.delete}
+                        />
+                     </TouchableOpacity>
+                  </View>
+               </View>
             )}
          />
          <TouchableOpacity

@@ -27,7 +27,7 @@ export class OrderService {
       await this.orderRepository.delete(id)
    }
 
-   async listAllWithRangeDate(
+   async listAllWithDateRange(
       startDate: DateType,
       endDate: DateType
    ): Promise<Order[]> {

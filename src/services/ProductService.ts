@@ -36,7 +36,7 @@ export class ProductService {
       try {
          return await this.repository.update(id, product)
       } catch (error) {
-         console.log(error)
+         console.error(error)
       }
    }
 

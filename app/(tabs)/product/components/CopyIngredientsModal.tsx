@@ -38,12 +38,9 @@ export const CopyIngredientsModal = ({
       useState<boolean>(false)
 
    const listAllProduct = async () => {
-      console.log('zeca')
       const products = await productService.listAllWithIngredients(
          currentProductId
       )
-
-      console.log(products)
       setProductList(products)
       setFilteredProducts(products)
    }

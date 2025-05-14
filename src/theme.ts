@@ -46,7 +46,7 @@ export const commonStyles = StyleSheet.create({
    },
    container: {
       flex: 1,
-      paddingVertical: 16,
+      paddingTop: 10,
       paddingHorizontal: 10,
       backgroundColor: theme.colors.appContainerColor
    },
@@ -66,16 +66,22 @@ export const commonStyles = StyleSheet.create({
       borderRadius: 8,
       alignItems: 'center'
    },
-   circleAddButton: {
-      backgroundColor: theme.colors.add,
-      padding: 4,
-      borderRadius: 50,
+   smallRemoveButton: {
+      backgroundColor: theme.colors.delete,
+      padding: 8,
+      borderRadius: 8,
       alignItems: 'center'
    },
-   circleCopyButton: {
+   smallAddButton: {
+      backgroundColor: theme.colors.add,
+      padding: 8,
+      borderRadius: 8,
+      alignItems: 'center'
+   },
+   smallCopyButton: {
       backgroundColor: theme.colors.copy,
-      padding: 4,
-      borderRadius: 50,
+      padding: 8,
+      borderRadius: 8,
       alignItems: 'center'
    },
    addButtonText: {

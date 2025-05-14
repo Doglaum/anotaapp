@@ -6,7 +6,7 @@ import { TouchableOpacity } from 'react-native'
 import { formStyle } from '@/components/form-inputs/styles'
 import { commonStyles, theme } from '@/theme'
 import { MaterialIcons } from '@expo/vector-icons'
-import { FormTextInput } from '@/components'
+import { FormPhoneInput, FormTextInput } from '@/components'
 import { Client } from '@/database/models'
 import { ClientService } from '@/services'
 
@@ -34,7 +34,6 @@ const CreateClientModal = ({
          addresses: []
       })
       setOverlayModalVisible(false)
-      console.log(client)
    }
 
    const handleChange = (name: string, value: any) => {
@@ -59,7 +58,7 @@ const CreateClientModal = ({
                      value={client.name}
                      onChange={handleChange}
                   />
-                  <FormTextInput
+                  <FormPhoneInput
                      label="Numero para contato"
                      name="phoneNumber"
                      value={client.phoneNumber}
