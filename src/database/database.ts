@@ -41,7 +41,7 @@ export const initDatabase = async (): Promise<void> => {
       if (!AppDataSource.isInitialized) {
          await AppDataSource.initialize()
       }
-      console.log('Banco de dados inicializado com sucesso!')
+      console.info('Banco de dados inicializado com sucesso!')
 
       await insertDefaultData(
          new PaymentMethodService(),
@@ -61,7 +61,7 @@ export const initDatabase = async (): Promise<void> => {
          'Situações de pagamento padrão verificadas e atualizadas.'
       )
 
-      console.log('Todos os dados padrão foram verificados e atualizados.')
+      console.info('Todos os dados padrão foram verificados e atualizados.')
    } catch (error) {
       console.error('Erro ao inicializar o banco de dados:', error)
       throw error
@@ -83,10 +83,10 @@ const insertDefaultData = async (
          await service.save(data).catch(error => {
             console.error(`Erro ao gravar "${data.name}":`, error)
          })
-         console.log(`"${data.name}" foi inserido.`)
+         console.info(`"${data.name}" foi inserido.`)
       }
    }
-   console.log(successMessage)
+   console.info(successMessage)
 }
 
 export default AppDataSource
