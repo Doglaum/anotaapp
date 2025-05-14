@@ -3,13 +3,10 @@ import {
    TouchableOpacity,
    View,
    ViewStyle,
-   StyleProp,
-   ActivityIndicator,
-   KeyboardAvoidingView,
-   Platform
+   StyleProp
 } from 'react-native'
 import { commonStyles, theme } from '@/theme'
-import { OverlayerModal } from '@/components/OverlayModal'
+import { OverlayerModal } from '@/components/modals/'
 import { Address } from '@/database/models'
 import { useState } from 'react'
 import { FormTextInput, FormZipCodeInput } from '@/components/form-inputs'
@@ -18,12 +15,8 @@ import { formStyle } from '@/components/form-inputs/styles'
 import { MaterialIcons } from '@expo/vector-icons'
 
 const CreateAddressModal = ({
-   onClose,
-   buttonStyle,
    onSave
 }: {
-   onClose?: () => void
-   buttonStyle?: StyleProp<ViewStyle>
    onSave: (address: Partial<Address>) => void
 }) => {
    const [overlayModalVisible, setOverlayModalVisible] =

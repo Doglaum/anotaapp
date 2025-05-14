@@ -3,17 +3,14 @@ import {
    TouchableOpacity,
    View,
    ViewStyle,
-   StyleProp,
-   TextInput
+   StyleProp
 } from 'react-native'
 import { commonStyles, theme } from '@/theme'
-import { OverlayerModal } from '@/components/OverlayModal'
 import { Ingredient } from '@/database/models'
 import { useState } from 'react'
-import { FormCurrencyInput, FormTextInput } from '@/components/form-inputs'
+import { FormCurrencyInput, FormTextInput, OverlayerModal } from '@/components/'
 import { MaterialIcons } from '@expo/vector-icons'
 import { errorToast, successToast } from '@/components'
-import { error } from 'console'
 
 export const CreateIngredientsModal = ({
    onClose,

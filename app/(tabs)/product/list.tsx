@@ -14,7 +14,7 @@ import { Product } from '@/database/models/Product'
 import { ProductService } from '@/services/ProductService'
 import { useFocusEffect } from 'expo-router'
 import { EmptyList } from '@/components/EmptyList'
-import { FormSearchInput } from '@/components/form-inputs/FormSearchInput'
+import { FormSearchInput } from '@/components/'
 
 export default function Products() {
    const router = useRouter()

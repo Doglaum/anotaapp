@@ -10,11 +10,10 @@ import {
    Button
 } from 'react-native'
 import { commonStyles, theme } from '@/theme'
-import { OverlayerModal } from '@/components/OverlayModal'
 import { Ingredient, Product } from '@/database/models'
 import { useEffect, useState } from 'react'
-import { FormSearchInput, FormTextInput } from '@/components/form-inputs'
-import { EmptyList, successToast } from '@/components'
+import { FormSearchInput } from '@/components'
+import { EmptyList, successToast, OverlayerModal } from '@/components'
 import { ProductService } from '@/services'
 import { MaterialIcons } from '@expo/vector-icons'
 

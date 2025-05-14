@@ -1,23 +1,8 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { Portal, PaperProvider } from 'react-native-paper'
-import {
-   Dimensions,
-   Modal,
-   TouchableOpacity,
-   TouchableWithoutFeedback,
-   View,
-   Text,
-   StyleProp,
-   ViewStyle,
-   Keyboard,
-   KeyboardAvoidingView,
-   Platform,
-   SafeAreaView
-} from 'react-native'
+import { PaperProvider } from 'react-native-paper'
+import { Dimensions, Modal, TouchableOpacity, View, Text } from 'react-native'
 import { commonStyles, theme } from '@/theme'
 import { MaterialIcons } from '@expo/vector-icons'
-import Toast from 'react-native-toast-message'
-import { AppToast } from './AppToast'
+import { AppToast } from '../AppToast'
 
 type OverlayModalProps = {
    children: React.ReactNode
@@ -26,7 +11,7 @@ type OverlayModalProps = {
    overlayModalVisible: boolean
 }
 
-export const OverlayerModal: React.FC<OverlayModalProps> = ({
+const OverlayerModal: React.FC<OverlayModalProps> = ({
    children,
    title,
    onClose,
@@ -115,3 +100,5 @@ export const OverlayerModal: React.FC<OverlayModalProps> = ({
       </View>
    )
 }
+
+export default OverlayerModal

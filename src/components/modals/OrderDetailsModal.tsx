@@ -1,7 +1,7 @@
 import { View } from 'react-native'
-import { OverlayerModal } from '@/components/OverlayModal'
+import { OverlayerModal } from '@/components/modals/'
 import { Order } from '@/database/models'
-import OrderInformation from './OrderInformation'
+import OrderInformation from '../OrderInformation'
 
 const OrderDetailsModal = ({
    onClose,

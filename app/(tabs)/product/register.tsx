@@ -3,21 +3,19 @@ import {
    Text,
    StyleSheet,
    TouchableOpacity,
-   ScrollView,
    FlatList,
    Alert
 } from 'react-native'
 import { useEffect, useState } from 'react'
 import { commonStyles, theme } from '@/theme'
 import { Product } from '@/database/models/Product'
-import { ProductService, IngredientService } from '@/services/'
+import { ProductService } from '@/services/'
 import { useRouter } from 'expo-router'
 import { CreateIngredientsModal } from './components/CreateIngredientsModal'
 import { Ingredient } from '@/database/models'
-import { FormTextInput, FormCurrencyInput } from '@/components/'
-import { AntDesign, MaterialIcons } from '@expo/vector-icons'
+import { FormTextInput, FormCurrencyInput, successToast } from '@/components/'
+import { MaterialIcons } from '@expo/vector-icons'
 import { CopyIngredientsModal } from './components/CopyIngredientsModal'
-import { successToast } from '../../../src/components/AppToast'
 
 export default function RegisterProduct({
    editProductId
