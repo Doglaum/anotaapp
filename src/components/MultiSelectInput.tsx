@@ -1,56 +1,67 @@
-import React, { useState } from 'react'
 import { StyleSheet, View, TouchableOpacity, Text } from 'react-native'
 import { MultiSelect } from 'react-native-element-dropdown'
-import AntDesign from '@expo/vector-icons/AntDesign'
-import { commonStyles } from '../theme'
+import { commonStyles, theme } from '../theme'
+import { MaterialIcons } from '@expo/vector-icons'
+import { formStyle } from './form-inputs/styles'
+import { useState } from 'react'
 
 type MultiSelectType = {
+   value: string[]
    data: any[]
    labelField: string
    valueField: string
    placeholder: string
-   onChange: (item: any) => void
+   setIngredients: (item: any) => void
 }
 
 export const MultiSelectInput = ({
+   value,
    data,
    labelField,
-   onChange,
+   setIngredients,
    placeholder,
    valueField
 }: MultiSelectType) => {
-   const [selected, setSelected] = useState<string[]>([])
-
+   const [isFocus, setIsFocus] = useState(false)
    return (
-      <MultiSelect
-         style={commonStyles.input}
-         placeholderStyle={styles.placeholderStyle}
-         selectedTextStyle={styles.selectedTextStyle}
-         inputSearchStyle={styles.inputSearchStyle}
-         data={data}
-         labelField={labelField}
-         valueField={valueField}
-         placeholder={placeholder}
-         value={selected}
-         search
-         searchPlaceholder="Procurar..."
-         onChange={item => {
-            setSelected(item)
-         }}
-         renderItem={item => (
-            <View style={styles.item}>
-               <Text style={styles.selectedTextStyle}>{item.label}</Text>
-            </View>
-         )}
-         renderSelectedItem={(item, unSelect) => (
-            <TouchableOpacity onPress={() => unSelect && unSelect(item)}>
-               <View style={styles.selectedStyle}>
-                  <Text style={styles.textSelectedStyle}>{item.label}</Text>
-                  <AntDesign color="black" name="delete" size={17} />
-               </View>
-            </TouchableOpacity>
-         )}
-      />
+      <View
+         style={{ flex: 1, backgroundColor: theme.colors.appContainerColor }}
+      >
+         <MultiSelect
+            style={[
+               formStyle.dropdown,
+               isFocus && { borderColor: theme.colors.primary }
+            ]}
+            selectedStyle={styles.selectedStyle}
+            selectedTextStyle={[
+               styles.selectTextStyle,
+               isFocus && {
+                  color: theme.colors.primary,
+                  borderColor: theme.colors.primary
+               }
+            ]}
+            placeholderStyle={[
+               styles.selectTextStyle,
+               { color: theme.colors.placeholder },
+               isFocus && {
+                  color: theme.colors.primary,
+                  borderColor: theme.colors.primary
+               }
+            ]}
+            data={data}
+            labelField={labelField}
+            valueField="id"
+            placeholder={placeholder}
+            value={value}
+            search
+            searchPlaceholder="Procurar..."
+            onChange={setIngredients}
+            alwaysRenderSelectedItem
+            visibleSelectedItem
+            onFocus={() => setIsFocus(true)}
+            onBlur={() => setIsFocus(false)}
+         />
+      </View>
    )
 }
 
@@ -60,7 +71,8 @@ const styles = StyleSheet.create({
       fontSize: 16
    },
    selectedTextStyle: {
-      fontSize: 11
+      fontSize: 11,
+      height: 50
    },
    iconStyle: {
       width: 20,
@@ -74,32 +86,22 @@ const styles = StyleSheet.create({
       marginRight: 5
    },
    item: {
+      flex: 1,
       padding: 17,
       flexDirection: 'row',
       justifyContent: 'space-between',
-      alignItems: 'center'
+      alignItems: 'center',
+      height: 50
    },
    selectedStyle: {
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderRadius: 14,
-      backgroundColor: 'white',
-      shadowColor: '#000',
-      marginTop: 8,
-      marginRight: 12,
-      paddingHorizontal: 12,
-      paddingVertical: 8,
-      shadowOffset: {
-         width: 0,
-         height: 1
-      },
-      shadowOpacity: 0.2,
-      shadowRadius: 1.41,
-      elevation: 2
+      backgroundColor: '#fa0c5b',
+      marginRight: 10,
+      fontSize: 11,
+      borderRadius: 8
    },
-   textSelectedStyle: {
-      marginRight: 1,
-      fontSize: 11
+
+   selectTextStyle: {
+      fontSize: 13,
+      color: 'white'
    }
 })

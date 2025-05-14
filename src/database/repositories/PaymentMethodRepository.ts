@@ -18,8 +18,8 @@ export class PaymentMethodRepository {
     return await this.repository.find();
   }
 
-  async findById(id: number): Promise<PaymentMethod | null> {
-    return await this.repository.findOne({ where: { id } });
+  async findById(paymentMethodId: number): Promise<PaymentMethod | null> {
+    return await this.repository.findOne({ where: { paymentMethodId } });
   }
 
   async update(id: number, paymentMethod: Partial<PaymentMethod>): Promise<PaymentMethod | null> {

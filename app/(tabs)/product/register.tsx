@@ -2,97 +2,228 @@ import {
    View,
    Text,
    StyleSheet,
-   TextInput,
    TouchableOpacity,
-   ScrollView
+   FlatList,
+   Alert
 } from 'react-native'
-import { useState } from 'react'
-import { commonStyles } from '@/theme'
+import { useEffect, useState } from 'react'
+import { commonStyles, theme } from '@/theme'
 import { Product } from '@/database/models/Product'
-import { ProductService } from '@/services/ProductService'
+import { ProductService } from '@/services/'
 import { useRouter } from 'expo-router'
-import CurrencyInput from 'react-native-currency-input'
-import { MultiSelectInput } from '@/components/MultiSelectInput'
-import { MaterialIcons } from '@expo/vector-icons'
-import { CreateIngredientsModal } from '@/components/CreateIngredientsModal'
+import { CreateIngredientsModal } from './components/CreateIngredientsModal'
 import { Ingredient } from '@/database/models'
+import { FormTextInput, FormCurrencyInput, successToast } from '@/components/'
+import { MaterialIcons } from '@expo/vector-icons'
+import { CopyIngredientsModal } from './components/CopyIngredientsModal'
 
-export default function RegisterProduct() {
+export default function RegisterProduct({
+   editProductId
+}: {
+   editProductId: number
+}) {
    const router = useRouter()
    const productService = new ProductService()
    const [product, setProduct] = useState<Partial<Product>>({
       name: '',
-      price: 0.0,
+      price: 0,
       ingredients: []
    })
-   const [listIngredients, setListIngredients] = useState<Ingredient[]>([])
-   const insertIngredients = (listIngredients: Ingredient[]) => {
-      setListIngredients(prev => [...prev, ...listIngredients])
-   }
+   useEffect(() => {
+      if (editProductId) {
+         const searchProduct = async () => {
+            const editProduct = await productService.findById(editProductId)
+            setProduct(editProduct || {})
+         }
+         searchProduct()
+      }
+   }, [])
+
    const handleSubmit = async () => {
       if (!product.price) {
          setProduct(prev => ({ ...prev, price: 0 }))
       }
-      await productService.save(product as Product)
+      if (editProductId) {
+         await productService.update(editProductId, product)
+      } else {
+         await productService.save(product as Product)
+      }
       router.push('/product/list')
    }
 
-   const handlePriceChange = (price: number) => {
+   const changeHandle = (name: string, value: any) => {
       setProduct(prev => ({
          ...prev,
-         price: price
+         [name]: value
       }))
    }
 
+   const saveIngredient = (ingredient: Partial<Ingredient>) => {
+      setProduct(prev => ({
+         ...prev,
+         ingredients: [...(prev.ingredients || []), ingredient as Ingredient]
+      }))
+   }
+
+   const removeIngredient = (removeIngredient: Partial<Ingredient>) => {
+      Alert.alert('Atenção!', `Deseja remover ${removeIngredient.name}`, [
+         {
+            text: 'Sim',
+            onPress: () => {
+               setProduct(prev => ({
+                  ...prev,
+                  ingredients: prev.ingredients?.filter(
+                     ingredient => ingredient !== removeIngredient
+                  )
+               }))
+               successToast('Ingrediente removido com sucesso!')
+            }
+         },
+         { text: 'Não' }
+      ])
+   }
+
+   const copyIngredients = (ingredients: Ingredient[]) => {
+      setProduct(prev => ({
+         ...prev,
+         ingredients: [...(prev.ingredients || []), ...ingredients]
+      }))
+   }
+
+   const removeAllIngredients = () => {
+      Alert.alert(
+         'Atenção!',
+         `Deseja remover todos os ingredientes do produto ?`,
+         [
+            {
+               text: 'Sim',
+               onPress: () => {
+                  setProduct(prev => ({
+                     ...prev,
+                     ingredients: []
+                  }))
+                  successToast('Ingrediente removido com sucesso!')
+               }
+            },
+            { text: 'Não' }
+         ]
+      )
+   }
+
    return (
-      <View style={commonStyles.container}>
-         <ScrollView style={commonStyles.container}>
-            <View style={styles.formGroup}>
-               <Text style={commonStyles.title}>Nome</Text>
-               <TextInput
-                  style={commonStyles.input}
-                  value={product.name}
-                  onChangeText={text =>
-                     setProduct(prev => ({ ...prev, name: text }))
-                  }
-                  placeholder="Digite o nome do produto"
+      <View style={[commonStyles.container, { gap: 10 }]}>
+         <FormTextInput
+            name="name"
+            label="Nome"
+            value={product.name}
+            onChange={changeHandle}
+         />
+         <FormTextInput
+            name="description"
+            label="Descrição"
+            value={product.description}
+            onChange={changeHandle}
+         />
+         <FormCurrencyInput
+            name="price"
+            label="Preço"
+            value={product.price}
+            onChange={changeHandle}
+         />
+         <View
+            style={{
+               flexDirection: 'row',
+               alignItems: 'center',
+               padding: 10,
+               paddingVertical: 6
+            }}
+         >
+            <View style={{ flex: 1 }}>
+               <Text
+                  style={{
+                     fontSize: 18,
+                     fontWeight: 'bold',
+                     color: theme.colors.primary
+                  }}
+               >
+                  Ingredientes
+               </Text>
+            </View>
+            <View style={{ flexDirection: 'row', gap: 10 }}>
+               <TouchableOpacity
+                  onPress={() => removeAllIngredients()}
+                  style={commonStyles.smallRemoveButton}
+               >
+                  <MaterialIcons
+                     name="playlist-remove"
+                     size={20}
+                     color={theme.colors.white}
+                  ></MaterialIcons>
+               </TouchableOpacity>
+               <CopyIngredientsModal
+                  currentProductId={product.productId || 0}
+                  buttonStyle={commonStyles.smallCopyButton}
+                  onSelect={copyIngredients}
+               />
+               <CreateIngredientsModal
+                  buttonStyle={commonStyles.smallAddButton}
+                  onSave={saveIngredient}
                />
             </View>
-            <View style={styles.formGroup}>
-               <Text style={commonStyles.title}>Preço</Text>
-               <CurrencyInput
-                  style={commonStyles.input}
-                  value={product.price || null}
-                  onChangeValue={handlePriceChange}
-                  minValue={0}
-                  delimiter="."
-                  separator=","
-                  placeholder="0"
-                  keyboardType="decimal-pad"
-                  inputMode="decimal"
-               />
-            </View>
-            <View style={styles.formGroup}>
-               <Text style={commonStyles.title}>Ingredientes</Text>
-               <View style={commonStyles.searchContainer}>
-                  <MultiSelectInput
-                     data={listIngredients}
-                     labelField="name"
-                     onChange={insertIngredients}
-                     placeholder="Selecione os ingredientes"
-                     valueField="id"
-                  />
-                  <CreateIngredientsModal
-                     insertIngredients={insertIngredients}
-                  />
+         </View>
+         <FlatList<Partial<Ingredient>>
+            keyExtractor={(item, index) => index.toString()}
+            data={product.ingredients}
+            renderItem={({ item, index }) => (
+               <View style={[commonStyles.listItem]}>
+                  <View
+                     style={{
+                        alignItems: 'center',
+                        flexDirection: 'row'
+                     }}
+                  >
+                     <Text
+                        style={{
+                           fontSize: 16,
+                           fontWeight: 'bold'
+                        }}
+                     >
+                        {`${item.name}`}
+                     </Text>
+                     <Text style={{ fontWeight: 'bold' }}>
+                        {`${item.price ? ` - R$${item.price.toFixed(2)}` : ''}`}
+                     </Text>
+                  </View>
+                  <View style={{ flexDirection: 'row', gap: 10 }}>
+                     <TouchableOpacity
+                        key={index}
+                        onPress={() => {
+                           removeIngredient(item)
+                        }}
+                        style={{ flexDirection: 'row' }}
+                     >
+                        <MaterialIcons
+                           name="delete"
+                           size={25}
+                           color={theme.colors.delete}
+                        />
+                     </TouchableOpacity>
+                  </View>
                </View>
-            </View>
-         </ScrollView>
+            )}
+         />
          <TouchableOpacity
-            style={[commonStyles.saveButton, { marginTop: 'auto' }]}
+            style={[
+               !editProductId
+                  ? commonStyles.saveButton
+                  : commonStyles.editButton,
+               { marginTop: 'auto' }
+            ]}
             onPress={handleSubmit}
          >
-            <Text style={commonStyles.saveButtonText}>Salvar</Text>
+            <Text style={commonStyles.saveButtonText}>
+               {!editProductId ? 'Salvar' : 'Editar'}
+            </Text>
          </TouchableOpacity>
       </View>
    )
@@ -101,5 +232,12 @@ export default function RegisterProduct() {
 const styles = StyleSheet.create({
    formGroup: {
       marginBottom: 16
+   },
+   selectedStyle: {
+      backgroundColor: '#fa0c5b',
+      marginRight: 10,
+      fontSize: 10,
+      borderRadius: 8,
+      padding: 6
    }
 })

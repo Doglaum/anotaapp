@@ -2,20 +2,39 @@ import {
    View,
    Text,
    StyleSheet,
-   TextInput,
    TouchableOpacity,
-   ScrollView,
-   FlatList
+   FlatList,
+   Alert
 } from 'react-native'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { commonStyles, theme } from '@/theme'
-import { Client } from '@/database/models'
+import { Address, Client } from '@/database/models'
 import { ClientService } from '@/services/ClientService'
 import { useRouter } from 'expo-router'
+import {
+   EmptyList,
+   FormTextInput,
+   FormPhoneInput,
+   CreateAddressModal,
+   successToast
+} from '@/components'
+import { formStyle } from '@/components/form-inputs/styles'
+import { MaterialIcons } from '@expo/vector-icons'
 
-export default function RegisterClient() {
+const RegisterClient = ({ editClientId }: { editClientId: number }) => {
    const router = useRouter()
    const clientService = new ClientService()
+
+   useEffect(() => {
+      if (editClientId) {
+         const searchProduct = async () => {
+            const editClient = await clientService.findById(editClientId)
+            setClient(editClient || {})
+         }
+         searchProduct()
+      }
+   }, [])
+
    const [client, setClient] = useState<Partial<Client>>({
       name: '',
       phoneNumber: '',
@@ -27,49 +46,152 @@ export default function RegisterClient() {
       router.back()
    }
 
-   return (
-      <View style={commonStyles.container}>
-         <ScrollView style={commonStyles.container}>
-            <View style={styles.formGroup}>
-               <Text style={commonStyles.title}>Nome</Text>
-               <TextInput
-                  style={commonStyles.input}
-                  value={client.name}
-                  onChangeText={text => setClient({ ...client, name: text })}
-                  placeholder="Digite o nome"
-               />
-            </View>
+   const handleChange = (name: string, value: any) => {
+      setClient(prev => ({
+         ...prev,
+         [name]: value
+      }))
+   }
 
-            <View style={styles.formGroup}>
-               <Text style={commonStyles.title}>Telefone</Text>
-               <TextInput
-                  style={commonStyles.input}
-                  value={client.phoneNumber}
-                  onChangeText={text =>
-                     setClient({ ...client, phoneNumber: text })
-                  }
-                  placeholder="Digite o telefone"
-               />
-            </View>
-            {/* <FlatList<Endereco>
-            data={cliente.enderecos}
-            keyExtractor={item => item.id.toString()}
-            renderItem={({ item }) => (
-               <View style={commonStyles.listItem}>
-                  <View>
-                     <Text>
-                        {item.bairro} {' - '} {item.rua}
-                     </Text>
-                  </View>
-               </View>
-            )}
-            ListEmptyComponent={
-               <EmptyList iconName="person" text="Nenhum cliente cadastrado" />
+   const saveAddress = (address: Partial<Address>) => {
+      setClient(prev => ({
+         ...prev,
+         addresses: [...(prev.addresses || []), address as Address]
+      }))
+   }
+
+   const deleteAddress = (addressToRemove: Partial<Address>) => {
+      Alert.alert('Atenção!', `Deseja remover o endereço?`, [
+         { text: 'Não' },
+         {
+            text: 'Sim',
+            onPress: () => {
+               setClient(prev => ({
+                  ...prev,
+                  addresses: prev.addresses?.filter(
+                     address => address !== addressToRemove
+                  )
+               }))
+               successToast('Endereço removido com sucesso!')
             }
-         /> */}
-         </ScrollView>
+         }
+      ])
+   }
+
+   const addressListItem = ({ item }: { item: Address }) => (
+      <View
+         style={{
+            flex: 1,
+            marginBottom: 5,
+            backgroundColor: theme.colors.white,
+            borderRadius: 8,
+            borderWidth: 1,
+            borderColor: '#ddd',
+            flexDirection: 'row',
+            padding: 5,
+            paddingTop: 15,
+            paddingBottom: 15
+         }}
+      >
+         <View
+            style={{
+               flex: 1,
+               alignItems: 'center',
+               justifyContent: 'center'
+            }}
+         >
+            <MaterialIcons name="home" size={24} color={'lightgrey'} />
+         </View>
+         <View style={{ flex: 7 }}>
+            {item.street && (
+               <Text style={{ fontWeight: 'bold', fontSize: 14 }}>
+                  {item.street}, {item.number}
+               </Text>
+            )}
+
+            {item.neighborhood && (
+               <Text style={{ fontSize: 12 }}>{item.neighborhood}</Text>
+            )}
+            {item.city && <Text style={{ fontSize: 12 }}>{item.city}</Text>}
+
+            {item.zipCode && (
+               <Text style={{ fontSize: 12 }}>{item.zipCode}</Text>
+            )}
+         </View>
+         <View
+            style={{
+               flex: 1,
+               alignItems: 'flex-end'
+            }}
+         >
+            <TouchableOpacity onPress={() => deleteAddress(item)}>
+               <MaterialIcons name="delete" size={18} color={'red'} />
+            </TouchableOpacity>
+         </View>
+      </View>
+   )
+
+   return (
+      <View style={[commonStyles.container, { gap: 10 }]}>
+         <FormTextInput
+            label="Nome"
+            name="name"
+            value={client.name}
+            onChange={handleChange}
+         />
+         <FormPhoneInput
+            label="Numero para contato"
+            name="phoneNumber"
+            value={client.phoneNumber}
+            onChange={handleChange}
+         />
+         <View>
+            <View
+               style={{
+                  flexDirection: 'row',
+                  marginBottom: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center'
+               }}
+            >
+               <Text
+                  style={[
+                     formStyle.formLabel,
+                     {
+                        marginBottom: 10,
+                        flex: 1,
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                     }
+                  ]}
+               >
+                  Endereços
+               </Text>
+               <CreateAddressModal onSave={saveAddress} />
+            </View>
+         </View>
+         <FlatList<Address>
+            keyExtractor={(item, index) => index.toString()}
+            data={client.addresses}
+            renderItem={addressListItem}
+            contentContainerStyle={{ padding: 10 }}
+            ListEmptyComponent={
+               <View
+                  style={{
+                     backgroundColor: theme.colors.white,
+                     borderRadius: 8,
+                     borderWidth: 0.2
+                  }}
+               >
+                  <EmptyList
+                     iconName="hourglass-empty"
+                     text="Sem endereço cadastrado"
+                  />
+               </View>
+            }
+         />
          <TouchableOpacity
-            style={commonStyles.saveButton}
+            style={[commonStyles.saveButton, { marginTop: 'auto' }]}
             onPress={handleSubmit}
          >
             <Text style={commonStyles.saveButtonText}>Salvar</Text>
@@ -77,6 +199,8 @@ export default function RegisterClient() {
       </View>
    )
 }
+
+export default RegisterClient
 
 const styles = StyleSheet.create({
    container: {

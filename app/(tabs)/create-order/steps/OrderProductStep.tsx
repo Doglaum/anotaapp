@@ -8,14 +8,17 @@ import {
    Button,
    TextInput
 } from 'react-native'
-import { commonStyles } from '@/theme'
-import { useState, useCallback } from 'react'
-import { Order, Product, OrderProduct } from '@/database/models'
+import { commonStyles, theme } from '@/theme'
+import { useState, useCallback, useEffect } from 'react'
+import { Order, Product, OrderProduct, Ingredient } from '@/database/models'
 import { ProductService } from '@/services/ProductService'
-import { useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect } from 'expo-router'
 import { EmptyList } from '@/components/EmptyList'
+import { FormSearchInput, successToast } from '@/components'
+import { MaterialIcons } from '@expo/vector-icons'
+import CreateOrderProduct from '../components/CreateOrderProduct'
 
-export const OrdeProductStep = ({
+const OrderProductStep = ({
    order,
    insertOrderData
 }: {
@@ -25,28 +28,41 @@ export const OrdeProductStep = ({
    const productService = new ProductService()
    const [products, setProducts] = useState<Product[]>([])
    const [modalVisible, setModalVisible] = useState(false)
-   const [details, setDetails] = useState('')
    const [selectedProduct, setSelectedProduct] = useState<Product>(
       {} as Product
    )
    const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
+   const [filterText, setFilterText] = useState<string>('')
 
    const handleOpenModal = (product: Product) => {
       setSelectedProduct(product)
       setModalVisible(true)
    }
 
-   const handleSave = () => {
+   const handleClose = () => {
+      setModalVisible(false)
+   }
+
+   const handleSave = (ingredients: Ingredient[], details: string) => {
       const orderProduct = new OrderProduct()
       orderProduct.details = details
       orderProduct.product = selectedProduct
       orderProduct.unitPrice = selectedProduct.price
+      let ingredientsTotalPrice = ingredients.reduce(
+         (total, orderProductIngredient) => {
+            const price = orderProductIngredient.price
+            return total + price
+         },
+         0
+      )
+      orderProduct.totalPrice = selectedProduct.price + ingredientsTotalPrice
+      orderProduct.selectedIngredients = ingredients
       insertOrderData('orderProducts', [
          ...(order?.orderProducts || []),
          orderProduct
       ])
+      successToast(`${selectedProduct.name} adicionado ao carrinho`)
       setSelectedProduct({} as Product)
-      setDetails('')
       setModalVisible(false)
    }
 
@@ -68,32 +84,56 @@ export const OrdeProductStep = ({
       }, [])
    )
 
+   useEffect(() => {
+      const handleSearch = (text: string) => {
+         const searchText = text.toLowerCase().trim()
+         const filtered = products.filter(product => {
+            const name = product.name?.toLowerCase() || ''
+            const price = product.price?.toString().toLowerCase() || ''
+            return name.includes(searchText) || price.includes(searchText)
+         })
+         setFilteredProducts(filtered)
+      }
+      handleSearch(filterText)
+   }, [filterText])
+
    return (
       <View style={commonStyles.container}>
-         <View style={commonStyles.searchContainer}>
-            <TextInput
-               style={commonStyles.input}
-               placeholder="Pesquisar produto"
-               onChangeText={text => {
-                  const filteredProducts = products.filter(product =>
-                     product.name.toLowerCase().includes(text.toLowerCase())
-                  )
-                  setFilteredProducts(filteredProducts)
-               }}
-            />
-         </View>
+         <FormSearchInput
+            onChange={setFilterText}
+            label="Nome, preço"
+            value={filterText}
+            style={{ marginBottom: 10 }}
+         />
          <FlatList<Product>
             data={filteredProducts}
-            keyExtractor={item => item.id.toString()}
+            keyExtractor={item => item.productId.toString()}
             renderItem={({ item }) => (
                <TouchableOpacity onPress={() => handleOpenModal(item)}>
                   <View style={commonStyles.listItem}>
                      <View style={styles.productInfo}>
-                        <Text style={styles.productName}>{item.name}</Text>
                         <View>
+                           <Text style={styles.productName}>{item.name}</Text>
                            <Text style={styles.productPrice}>
                               R$ {item.price.toFixed(2)}
                            </Text>
+                        </View>
+                        <View
+                           style={{
+                              backgroundColor: theme.colors.primary,
+                              flexDirection: 'row',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              borderRadius: 8,
+                              borderWidth: 0.2,
+                              padding: 5
+                           }}
+                        >
+                           <MaterialIcons
+                              name="add-shopping-cart"
+                              size={16}
+                              color={theme.colors.white}
+                           ></MaterialIcons>
                         </View>
                      </View>
                   </View>
@@ -106,30 +146,12 @@ export const OrdeProductStep = ({
                />
             }
          />
-         <Modal
-            visible={modalVisible}
-            transparent={true}
-            animationType="slide"
-            onRequestClose={() => setModalVisible(false)}
-         >
-            <View style={styles.modalContainer}>
-               <View style={styles.modalContent}>
-                  <Text style={styles.modalTitle}>Adicionar Detalhes</Text>
-                  <TextInput
-                     style={styles.input}
-                     placeholder="Detalhes"
-                     onChangeText={setDetails}
-                  />
-                  <View style={styles.modalActions}>
-                     <Button
-                        title="Cancelar"
-                        onPress={() => setModalVisible(false)}
-                     />
-                     <Button title="Salvar" onPress={handleSave} />
-                  </View>
-               </View>
-            </View>
-         </Modal>
+         <CreateOrderProduct
+            modalVisible={modalVisible}
+            onClose={() => handleClose()}
+            product={selectedProduct}
+            save={handleSave}
+         />
       </View>
    )
 }
@@ -142,13 +164,12 @@ const styles = StyleSheet.create({
       flex: 1
    },
    productName: {
-      fontSize: 16,
+      fontSize: 14,
       fontWeight: 'bold'
    },
    productPrice: {
-      fontSize: 14,
-      color: '#666',
-      marginTop: 4
+      fontSize: 13,
+      color: '#535353'
    },
    modalContainer: {
       flex: 1,
@@ -181,3 +202,5 @@ const styles = StyleSheet.create({
       justifyContent: 'space-between'
    }
 })
+
+export default OrderProductStep

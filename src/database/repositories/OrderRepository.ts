@@ -1,57 +1,76 @@
-import { Repository } from 'typeorm';
-import { AppDataSource } from '../../config/orm-config';
-import { Order } from '../models/Order';
-import { OrderProduct } from '../models/OrderProduct';
+import { Repository } from 'typeorm'
+import { AppDataSource } from '../../config/orm-config'
+import { Order } from '../models/Order'
+import { OrderProduct } from '../models/OrderProduct'
+import { errorToast, successToast } from '@/components'
+import { DateType } from 'react-native-ui-datepicker'
 
 export class OrderRepository {
-  private repository: Repository<Order>;
-  private orderProductRepository: Repository<OrderProduct>;
+   private repository: Repository<Order>
+   private orderProductRepository: Repository<OrderProduct>
 
-  constructor() {
-    this.repository = AppDataSource.getRepository(Order);
-    this.orderProductRepository = AppDataSource.getRepository(OrderProduct);
-  }
+   constructor() {
+      this.repository = AppDataSource.getRepository(Order)
+      this.orderProductRepository = AppDataSource.getRepository(OrderProduct)
+   }
 
-  async create(order: Partial<Order>): Promise<Order> {
-    const newOrder = this.repository.create(order);
-    return await this.repository.save(newOrder);
-  }
+   async create(order: Partial<Order>): Promise<Order> {
+      try {
+         let newOrder = this.repository.create(order)
+         newOrder = await this.repository.save(newOrder)
+         successToast('Pedido criado com sucesso, verifique a impressão!')
+         return newOrder
+      } catch (e) {
+         errorToast('Ocorreu um problema ao criar o pedido!')
+         console.error(e)
+      }
+      return {} as Order
+   }
 
-  async findAll(): Promise<Order[]> {
-    return await this.repository.find({
-      relations: ['client', 'paymentMethod', 'orderSituation', 'orderProducts.product', 'address']
-    });
-  }
+   async findAll(): Promise<Order[]> {
+      return await this.repository.find({
+         relations: ['client']
+      })
+   }
 
-  async findById(id: number): Promise<Order | null> {
-    return await this.repository.findOne({
-      where: { id },
-      relations: ['client', 'paymentMethod', 'orderSituation', 'orderProducts.product', 'address']
-    });
-  }
+   async findById(orderId: number): Promise<Order | null> {
+      return await this.repository.findOne({
+         where: { orderId },
+         relations: ['client']
+      })
+   }
 
-  async update(id: number, order: Partial<Order>): Promise<Order | null> {
-    await this.repository.update(id, order);
-    return await this.findById(id);
-  }
+   async update(id: number, order: Partial<Order>): Promise<Order | null> {
+      await this.repository.update(id, order)
+      return await this.findById(id)
+   }
 
-  async delete(id: number): Promise<void> {
-    await this.repository.delete(id);
-  }
+   async delete(id: number): Promise<void> {
+      await this.repository.delete(id)
+   }
 
-  async addProduto(orderId: number, productId: number, details?: string): Promise<void> {
-    const orderProduct = this.orderProductRepository.create({
-      orderId,
-      productId,
-      details
-    });
-    await this.orderProductRepository.save(orderProduct);
-  }
-
-  async removeOrderProduct(orderId: number, productId: number): Promise<void> {
-    await this.orderProductRepository.delete({
-      orderId,
-      productId
-    });
-  }
-} 
+   async findAllWithDateRange(
+      startDate: DateType,
+      endDate: DateType
+   ): Promise<Order[]> {
+      const query = this.repository
+         .createQueryBuilder('o')
+         .leftJoinAndSelect('o.client', 'client')
+         .leftJoinAndSelect('o.orderProducts', 'orderProducts')
+         .leftJoinAndSelect('orderProducts.product', 'product')
+         .leftJoinAndSelect(
+            'orderProducts.selectedIngredients',
+            'selectedIngredients'
+         )
+         .leftJoinAndSelect('o.address', 'address')
+         .leftJoinAndSelect('o.orderSituation', 'orderSituation')
+         .leftJoinAndSelect('o.paymentMethod', 'paymentMethod')
+         .leftJoinAndSelect('o.paymentStatus', 'paymentStatus')
+         .orderBy('o.orderId', 'DESC')
+         .where('o.created_at >= :startDate', { startDate })
+      if (endDate) {
+         query.andWhere('o.created_at <= :endDate', { endDate })
+      }
+      return query.getMany()
+   }
+}

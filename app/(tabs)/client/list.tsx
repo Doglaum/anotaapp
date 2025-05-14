@@ -3,8 +3,7 @@ import {
    Text,
    StyleSheet,
    FlatList,
-   TouchableOpacity,
-   TextInput
+   TouchableOpacity
 } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
 import { commonStyles, theme } from '@/theme'
@@ -13,7 +12,8 @@ import { useState, useCallback } from 'react'
 import { Client } from '@/database/models/Client'
 import { ClientService } from '@/services/ClientService'
 import { EmptyList } from '@/components/EmptyList'
-import { useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect } from 'expo-router'
+import { FormSearchInput } from '@/components/form-inputs/FormSearchInput'
 
 export default function Clients() {
    const router = useRouter()
@@ -42,59 +42,65 @@ export default function Clients() {
 
    const handleDelete = async (id: number) => {
       await clientService.delete(id)
-      const newList = clients.filter(p => p.id !== id)
+      const newList = clients.filter(p => p.clientId !== id)
       setClients(() => newList)
       setFilteredClients(() => newList)
    }
 
+   const handleSearch = (text: string) => {
+      const filteredClients = clients.filter(
+         client =>
+            client.name.toLowerCase().includes(text.toLowerCase()) ||
+            client.phoneNumber.toLowerCase().includes(text.toLowerCase())
+      )
+      setFilteredClients(filteredClients)
+   }
+
    return (
       <View style={commonStyles.container}>
-         <View style={commonStyles.searchContainer}>
-            <TextInput
-               style={commonStyles.input}
-               placeholder="Pesquisar cliente"
-               onChangeText={text => {
-                  const filteredClients = clients.filter(client =>
-                     client.name.toLowerCase().includes(text.toLowerCase())
-                  )
-                  setFilteredClients(filteredClients)
-               }}
-            />
-            <TouchableOpacity
-               style={commonStyles.addButton}
-               onPress={() => router.push('/client/register')}
-            >
-               <MaterialIcons name="add" size={24} color="#fff" />
-            </TouchableOpacity>
-         </View>
+         <FormSearchInput
+            onChange={handleSearch}
+            label="Digite nome ou numero..."
+            rota="/client/register"
+            style={{ marginBottom: 20 }}
+         />
          <FlatList<Client>
             data={filteredClients}
-            keyExtractor={item => item.id.toString()}
+            keyExtractor={item => item.clientId.toString()}
             renderItem={({ item }) => (
                <View style={commonStyles.listItem}>
                   <View>
                      <Text style={[styles.clientName]}>
-                        {item.name} {' - '} {item.phoneNumber}
+                        {item.name}
+                        {item.phoneNumber ? ' - ' + item.phoneNumber : null}
                      </Text>
+                     {item.addresses && (
+                        <Text style={{ fontSize: 12, fontWeight: '400' }}>
+                           {item.addresses[0]?.street}
+                           {item.addresses[0]?.number
+                              ? ' - ' + item.addresses[0]?.number
+                              : null}
+                        </Text>
+                     )}
                   </View>
-                  <View style={styles.clienteActions}>
+                  <View style={[styles.clienteActions]}>
                      <TouchableOpacity
                         style={styles.actionButton}
-                        onPress={() => router.push(`/client/${item.id}`)}
+                        onPress={() => router.push(`/client/${item.clientId}`)}
                      >
                         <MaterialIcons
                            name="edit"
-                           size={24}
+                           size={20}
                            color={theme.colors.edit}
                         />
                      </TouchableOpacity>
                      <TouchableOpacity
                         style={styles.actionButton}
-                        onPress={() => handleDelete(item.id)}
+                        onPress={() => handleDelete(item.clientId)}
                      >
                         <MaterialIcons
                            name="delete"
-                           size={24}
+                           size={20}
                            color={theme.colors.delete}
                         />
                      </TouchableOpacity>

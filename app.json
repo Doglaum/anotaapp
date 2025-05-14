@@ -1,5 +1,9 @@
 {
   "expo": {
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "jsEngine": "hermes",
     "name": "Anota App",
     "slug": "anotaapp",
@@ -21,8 +25,15 @@
     "plugins": [
       "expo-sqlite",
       "expo-router"
+       
     ],
-    "scheme": "anotaapp"
+    "scheme": "anotaapp",
+    "android": {
+      "package": "br.com.doglaum.anotaapp"
+    },
+    "ios": {
+      "bundleIdentifier": "br.com.doglaum.anotaapp",
+      "supportsTablet": true
+    }
   }
-    
 }

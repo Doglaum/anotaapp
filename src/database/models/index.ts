@@ -6,3 +6,4 @@ export { OrderProduct } from './OrderProduct';
 export { OrderSituation } from './OrderSituation';
 export { PaymentMethod } from './PaymentMethod';
 export { Product } from './Product';
+export { PaymentStatus } from './PaymentStatus';

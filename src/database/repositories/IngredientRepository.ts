@@ -18,8 +18,8 @@ export class IngredientRepository {
     return await this.repository.find();
   }
 
-  async findById(id: number): Promise<Ingredient | null> {
-    return await this.repository.findOne({ where: { id } });
+  async findById(ingredientId: number): Promise<Ingredient | null> {
+    return await this.repository.findOne({ where: { ingredientId } });
   }
 
   async update(id: number, ingredient: Partial<Ingredient>): Promise<Ingredient | null> {
@@ -28,6 +28,13 @@ export class IngredientRepository {
   }
 
   async delete(id: number): Promise<void> {
-    await this.repository.delete(id);
+    await this.repository.softDelete(id);
+  }
+
+  async findByProductId(productId: number): Promise<Ingredient[]> {
+    return await this.repository.query(
+      'SELECT * FROM ingredients WHERE productId = ?',
+      [productId]
+    );
   }
 } 

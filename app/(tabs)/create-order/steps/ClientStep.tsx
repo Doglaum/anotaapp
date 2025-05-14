@@ -3,19 +3,17 @@ import {
    Text,
    StyleSheet,
    FlatList,
-   TouchableOpacity,
-   TextInput
+   TouchableOpacity
 } from 'react-native'
 import { commonStyles, theme } from '@/theme'
 import { useEffect, useState } from 'react'
 import { Client, Order } from '@/database/models/'
 import { ClientService } from '@/services/ClientService'
-import { useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect } from 'expo-router'
 import { useCallback } from 'react'
-import { EmptyList } from '@/components/EmptyList'
-import { router } from 'expo-router'
+import { FormSearchInput, CreateClientModal, EmptyList } from '@/components/'
 
-export const ClientStep = ({
+const ClientStep = ({
    order,
    insertOrderData
 }: {
@@ -25,7 +23,6 @@ export const ClientStep = ({
    const clientService = new ClientService()
    const [clients, setClients] = useState<Client[]>([])
    const [filteredClients, setFilteredClients] = useState<Client[]>([])
-   const [openModal, setOpenModal] = useState<boolean>(false)
    const [filterText, setFilterText] = useState<string>('')
 
    useFocusEffect(
@@ -59,24 +56,33 @@ export const ClientStep = ({
       handleSearch(filterText)
    }, [filterText])
 
+   const handleOnSaveClient = (client: Client) => {
+      setClients(prev => [client, ...prev])
+      setFilteredClients(prev => [client, ...prev])
+   }
    return (
       <View style={commonStyles.container}>
-         <View style={commonStyles.searchContainer}>
-            <TextInput
-               style={commonStyles.input}
-               placeholder="Nome, telefone"
-               onChangeText={setFilterText}
+         <View style={{ marginBottom: 10, flexDirection: 'row' }}>
+            <FormSearchInput
+               onChange={setFilterText}
+               label="Nome, telefone"
                value={filterText}
+               style={{ flex: 1 }}
             />
+
+            <CreateClientModal onSave={handleOnSaveClient} />
          </View>
          <FlatList<Client>
             data={filteredClients}
-            keyExtractor={item => item.id.toString()}
+            keyExtractor={item => item.clientId.toString()}
             renderItem={({ item }: { item: Client }) => {
-               const isSelected = order.client?.id === item.id
+               const isSelected = order.client?.clientId === item.clientId
                return (
                   <TouchableOpacity
-                     onPress={() => insertOrderData('client', item)}
+                     onPress={() => {
+                        insertOrderData('client', item)
+                        insertOrderData('clientName', item.name)
+                     }}
                   >
                      <View
                         style={[
@@ -112,19 +118,6 @@ export const ClientStep = ({
                      iconName="person"
                      text="Nenhum cliente encontrado"
                   />
-                  <TouchableOpacity
-                     style={commonStyles.addButton}
-                     onPress={() => router.push('/client/register')}
-                  >
-                     <Text
-                        style={[
-                           commonStyles.addButtonText,
-                           { flex: 1, textAlign: 'center' }
-                        ]}
-                     >
-                        Cadastrar
-                     </Text>
-                  </TouchableOpacity>
                </View>
             }
          />
@@ -138,3 +131,5 @@ const styles = StyleSheet.create({
       fontWeight: 'bold'
    }
 })
+
+export default ClientStep

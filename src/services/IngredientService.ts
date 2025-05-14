@@ -10,6 +10,10 @@ export class IngredientService {
   }
 
   async save(ingredient: Partial<Ingredient>): Promise<Ingredient> {
+    if(!ingredient.name) {
+      errorToast('Nome é obrigatório')
+      throw Error('ingredient.name is required')
+    }
     const newIngredient = await this.repository.create(ingredient);
     if(newIngredient) {
       successToast('Ingrediente Cadastrado')
@@ -19,11 +23,20 @@ export class IngredientService {
     return newIngredient
   }
 
+  async delete(id: number) {
+    await this.repository.delete(id)
+    return await this.listAll()
+  }
+
   async listAll(): Promise<Ingredient[]> {
     return await this.repository.findAll();
   }
 
   async findById(id: number): Promise<Ingredient | null> {
     return await this.repository.findById(id);
+  }
+
+  async findByProductId(productId: number): Promise<Ingredient[] | null> {
+    return await this.repository.findByProductId(productId);
   }
 } 

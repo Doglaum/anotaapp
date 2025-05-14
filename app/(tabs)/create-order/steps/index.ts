@@ -1,3 +1,15 @@
-export { ClientStep } from "./ClientStep";
-export { OrdeProductStep} from "./OrdeProductStep"
-export { AdditionalInformationsStep } from "./AdditionalInformationsStep";
+import AdditionalInformationsStep from './AdditionalInformationsStep'
+import ClientNameStep from './ClientNameStep'
+import ClientStep from './ClientStep'
+import OrderProductStep from './OrderProductStep'
+import OrderSummaryStep from './OrderSummaryStep'
+import AddressStep from './AddressStep'
+
+export {
+   AdditionalInformationsStep,
+   ClientNameStep,
+   ClientStep,
+   OrderProductStep,
+   OrderSummaryStep,
+   AddressStep
+}

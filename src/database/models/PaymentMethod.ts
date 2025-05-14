@@ -1,14 +1,18 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
+import {
+   Entity,
+   PrimaryGeneratedColumn,
+   Column,
+   CreateDateColumn
+} from 'typeorm'
 
 @Entity('payment_method')
 export class PaymentMethod {
-  
-  @PrimaryGeneratedColumn()
-  id: number;
+   @PrimaryGeneratedColumn()
+   paymentMethodId: number
 
-  @Column('text')
-  name: string;
+   @Column('text')
+   name: string
 
-  @CreateDateColumn()
-  created_at: Date;
-} 
+   @CreateDateColumn()
+   created_at: Date
+}

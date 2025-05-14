@@ -1,14 +1,22 @@
-import { View, Text, StyleSheet, ScrollView } from 'react-native'
-import { useState, useEffect } from 'react'
+import { View, Text, StyleSheet } from 'react-native'
+import { useState } from 'react'
 import { commonStyles, theme } from '@/theme'
-import { PaymentMethod, OrderSituation, Order } from '@/database/models/'
-import { OrderSituationService, PaymentMethodService } from '@/services'
-import { useFocusEffect } from '@react-navigation/native'
+import {
+   PaymentMethod,
+   OrderSituation,
+   Order,
+   PaymentStatus
+} from '@/database/models/'
+import {
+   OrderSituationService,
+   PaymentMethodService,
+   PaymentStatusService
+} from '@/services'
+import { useFocusEffect } from 'expo-router'
 import { useCallback } from 'react'
-import CurrencyInput from 'react-native-currency-input'
-import { SelectInput } from '@/components'
+import { FormCurrencyInput, FormSelectInput } from '@/components'
 
-export const AdditionalInformationsStep = ({
+const AdditionalInformationsStep = ({
    order,
    insertOrderData
 }: {
@@ -16,18 +24,19 @@ export const AdditionalInformationsStep = ({
    insertOrderData: <K extends keyof Order>(campo: K, valor: Order[K]) => void
 }) => {
    const paymentMethodService = new PaymentMethodService()
-   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>()
-   const orderSituationService = new OrderSituationService()
-   const [orderSituations, setOrderSituations] = useState<OrderSituation[]>()
+   const [paymentMethodsList, setPaymentMethodsList] =
+      useState<PaymentMethod[]>()
+   const paymentStatusService = new PaymentStatusService()
+   const [paymenStatusList, setPaymentStatusList] = useState<PaymentStatus[]>()
 
    useFocusEffect(
       useCallback(() => {
          const loadSelectData = async () => {
             try {
                const paymentMethods = await paymentMethodService.listAll()
-               setPaymentMethods(paymentMethods)
-               const orderSituations = await orderSituationService.listAll()
-               setOrderSituations(orderSituations)
+               setPaymentMethodsList(paymentMethods)
+               const paymentStatusList = await paymentStatusService.listAll()
+               setPaymentStatusList(paymentStatusList)
             } catch (error) {
                console.error('Erro ao carregar formas de pagamento:', error)
             }
@@ -39,64 +48,54 @@ export const AdditionalInformationsStep = ({
       }, [])
    )
 
+   const selectHandle = (name: any, text: any) => {
+      insertOrderData(name, text)
+   }
+
+   const changeHandle = (name: any, text: any) => {
+      insertOrderData(name, text)
+   }
+
    return (
-      <ScrollView style={commonStyles.container}>
-         <View style={styles.formGroup}>
-            <Text style={styles.label}>Forma de Pagamento</Text>
-            <SelectInput
-               data={paymentMethods || []}
-               labelField="nome"
+      <View style={commonStyles.container}>
+         <View style={{ marginTop: 10, gap: 10 }}>
+            <FormSelectInput<Order>
+               onChange={selectHandle}
+               data={paymenStatusList || []}
+               label="Situação do pagamento"
+               labelField="name"
                valueField="id"
-               placeholder="Selecione a forma de pagamento"
-               onChange={value => insertOrderData('paymentMethod', value)}
+               name="paymentStatus"
+               placeholder="Pago, Pedente, Cancelado"
             />
-         </View>
-         <View style={styles.formGroup}>
-            <Text style={styles.label}>Situação Pedido</Text>
-            <SelectInput
-               data={orderSituations || []}
-               labelField="nome"
+            <FormSelectInput<Order>
+               onChange={selectHandle}
+               data={paymentMethodsList || []}
+               label="Forma de pagamento"
+               labelField="name"
                valueField="id"
-               placeholder="Selecione a situação do pedido"
-               onChange={item => insertOrderData('orderSituation', item)}
+               name="paymentMethod"
+               placeholder="PIX, Crédito, Débito, Dinheiro"
             />
-         </View>
-         <View style={styles.formGroup}>
-            <Text style={styles.label}>Troco</Text>
-            <CurrencyInput
-               style={commonStyles.input}
-               value={order.changeFor || 0.0}
-               onChangeValue={item => insertOrderData('changeFor', item || 0.0)}
-               placeholder="Digite o troco"
-               keyboardType="numeric"
-               minValue={0}
-               delimiter="."
-               separator=","
-               inputMode="decimal"
+            <FormCurrencyInput
+               label="Troco"
+               name="changeFor"
+               onChange={changeHandle}
+               value={order.changeFor}
             />
-         </View>
-         <View style={styles.formGroup}>
-            <Text style={styles.label}>Taxa Entrega</Text>
-            <CurrencyInput
-               style={commonStyles.input}
-               value={order.deliveryFee || 0}
-               onChangeValue={item =>
-                  insertOrderData('deliveryFee', item || 0.0)
-               }
-               placeholder="Digite a taxa de entrega"
-               keyboardType="numeric"
-               minValue={0}
-               delimiter="."
-               separator=","
-               inputMode="decimal"
+            <FormCurrencyInput
+               label="Tx. Entrega"
+               name="deliveryFee"
+               onChange={changeHandle}
+               value={order.deliveryFee}
             />
+            <View style={{ marginTop: 16 }}>
+               <Text style={styles.modalTitle}>
+                  Valor total: R${order.totalPrice?.toFixed(2)}
+               </Text>
+            </View>
          </View>
-         <View style={{ marginTop: 16 }}>
-            <Text style={styles.modalTitle}>
-               Valor total: R${order.totalPrice?.toFixed(2)}
-            </Text>
-         </View>
-      </ScrollView>
+      </View>
    )
 }
 
@@ -116,3 +115,5 @@ const styles = StyleSheet.create({
       marginBottom: 16
    }
 })
+
+export default AdditionalInformationsStep

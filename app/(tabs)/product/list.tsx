@@ -4,16 +4,17 @@ import {
    StyleSheet,
    FlatList,
    TouchableOpacity,
-   TextInput
+   Alert
 } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
 import { commonStyles, theme } from '@/theme'
 import { useRouter } from 'expo-router'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import { Product } from '@/database/models/Product'
 import { ProductService } from '@/services/ProductService'
 import { useFocusEffect } from 'expo-router'
 import { EmptyList } from '@/components/EmptyList'
+import { FormSearchInput } from '@/components/'
 
 export default function Products() {
    const router = useRouter()
@@ -39,9 +40,21 @@ export default function Products() {
       }, [])
    )
 
-   const handleDelete = async (id: number) => {
-      await productService.delete(id)
-      const newList = products.filter(p => p.id !== id)
+   const handleDelete = async (product: Product) => {
+      Alert.alert('Atenção!', `Deseja remover ${product.name}`, [
+         {
+            text: 'Sim',
+            onPress: () => {
+               deleteProduct(product)
+            }
+         },
+         { text: 'Não' }
+      ])
+   }
+
+   const deleteProduct = async (product: Product) => {
+      await productService.delete(product.productId)
+      const newList = products.filter(p => p.productId !== product.productId)
       setProducts(() => newList)
       setFilteredProducts(() => newList)
    }
@@ -57,34 +70,38 @@ export default function Products() {
 
    return (
       <View style={commonStyles.container}>
-         <View style={commonStyles.searchContainer}>
-            <TextInput
-               style={commonStyles.input}
-               placeholder="Pesquisar produto"
-               onChangeText={handleSearch}
-            />
-            <TouchableOpacity
-               style={commonStyles.addButton}
-               onPress={() => router.push('/product/register')}
-            >
-               <MaterialIcons name="add" size={24} color="#fff" />
-            </TouchableOpacity>
-         </View>
+         <FormSearchInput
+            label="Pesquisar produto..."
+            onChange={handleSearch}
+            rota="/product/register/"
+            style={{ marginBottom: 10 }}
+         />
          <FlatList<Product>
             data={filteredProducts}
-            keyExtractor={item => item.id.toString()}
+            keyExtractor={item => item.productId.toString()}
             renderItem={({ item }) => (
                <View style={commonStyles.listItem}>
-                  <View>
+                  <View style={{ flex: 1, flexShrink: 1 }}>
                      <Text style={styles.productName}>{item.name}</Text>
+                     {item.description ? (
+                        <Text
+                           style={{ fontWeight: '300' }}
+                           ellipsizeMode="tail"
+                           numberOfLines={1}
+                        >
+                           {item.description}
+                        </Text>
+                     ) : null}
                      <Text style={styles.productPrice}>
                         R$ {item.price.toFixed(2)}
                      </Text>
                   </View>
-                  <View style={styles.productActions}>
+                  <View></View>
+                  <View style={[styles.productActions]}>
                      <TouchableOpacity
-                        style={styles.actionButton}
-                        onPress={() => router.push(`/product/${item.id}`)}
+                        onPress={() =>
+                           router.push(`/product/${item.productId}`)
+                        }
                      >
                         <MaterialIcons
                            name="edit"
@@ -92,10 +109,7 @@ export default function Products() {
                            color={theme.colors.edit}
                         />
                      </TouchableOpacity>
-                     <TouchableOpacity
-                        style={styles.actionButton}
-                        onPress={() => handleDelete(item.id)}
-                     >
+                     <TouchableOpacity onPress={() => handleDelete(item)}>
                         <MaterialIcons
                            name="delete"
                            size={24}

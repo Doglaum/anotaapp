@@ -4,3 +4,4 @@ export { OrderRepository } from './OrderRepository';
 export { PaymentMethodRepository } from './PaymentMethodRepository';
 export { OrderSituationRepository } from './OrderSituationRepository';
 export { IngredientRepository } from './IngredientRepository';
+export { PaymentStatusRepository } from './PaymentStatus';
