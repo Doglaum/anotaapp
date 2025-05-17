@@ -29,7 +29,7 @@ export const PrinterProvider: React.FC<{ children: React.ReactNode }> = ({
    const connectToPrinter = async (device: DeviceInfo) => {
       try {
          // Emparelha o dispositivo Bluetooth
-         //await pairBluetoothDevice(device.macAddress)
+         await pairBluetoothDevice(device.macAddress)
 
          // Cria uma instância da impressora
          const connectedPrinter = new Printer({

@@ -21,6 +21,7 @@ type DeviceInfo = {
 const PrinterModal = () => {
    const { connectToPrinter, print } = usePrinter()
    const [visible, setVisible] = useState(true)
+   const [printer, setPrinters] = useState()
 
    const [testDevices, setTestDevices] = useState<DeviceInfo[]>()
 
