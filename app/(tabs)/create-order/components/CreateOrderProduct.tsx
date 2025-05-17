@@ -8,7 +8,7 @@ import {
    Button
 } from 'react-native'
 import React, { useState } from 'react'
-import { OverlayerModal } from '@/components/modals/OverlayModal'
+import { OverlayerModal } from '@/components/'
 import { FormTextInput } from '@/components'
 import { Ingredient, OrderProduct, Product } from '@/database/models'
 import { commonStyles, theme } from '@/theme'

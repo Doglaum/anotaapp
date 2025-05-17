@@ -94,7 +94,7 @@ export default function ShoppingCart({
                                           {item.name}
                                        </Text>
                                        {item.price ? (
-                                          <Text style={styles.cartItemText}>
+                                          <Text>
                                              {` R$${item.price.toFixed(2)}`}
                                           </Text>
                                        ) : null}

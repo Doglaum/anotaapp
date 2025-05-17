@@ -12,6 +12,16 @@ export default function TabLayout() {
          }}
       >
          <Tabs.Screen
+            name="printer"
+            options={{
+               tabBarLabel: 'Conexão',
+               tabBarIcon: ({ color, size }) => (
+                  <Entypo name="print" size={size} color={color} />
+               ),
+               headerShown: false
+            }}
+         />
+         <Tabs.Screen
             name="order"
             options={{
                tabBarLabel: 'Pedidos',

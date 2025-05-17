@@ -2,48 +2,41 @@ import { View, Text, ScrollView } from 'react-native'
 import { Order } from '@/database/models'
 import { StyleSheet } from 'react-native'
 import { theme } from '@/theme'
+import { useEffect, useRef } from 'react'
 
 const OrderInformation = ({ order }: { order: Partial<Order> }) => {
    return (
-      <ScrollView style={[commonStyles.container, { overflow: 'hidden' }]}>
+      <ScrollView style={[style.container, { overflow: 'hidden' }]}>
          <View>
-            <View style={commonStyles.section}>
-               <Text style={commonStyles.title}>Dados do cliente</Text>
+            <View style={style.section}>
+               <Text style={style.title}>Dados do cliente</Text>
                <View>
-                  <Text style={commonStyles.text}>
-                     <Text style={commonStyles.highlightedText}>
-                        Nome do cliente:{' '}
-                     </Text>
+                  <Text style={style.text}>
+                     <Text style={style.highlightedText}>Nome: </Text>
                      {order.clientName}
                   </Text>
-                  <Text style={commonStyles.text}>
-                     <Text style={commonStyles.highlightedText}>
-                        Telefone:{' '}
-                     </Text>
+                  <Text style={style.text}>
+                     <Text style={style.highlightedText}>Telefone: </Text>
                      {order.client?.phoneNumber}
                   </Text>
                </View>
             </View>
 
-            <View style={commonStyles.section}>
-               <Text style={commonStyles.title}>Produtos</Text>
+            <View style={style.section}>
+               <Text style={style.title}>Produtos</Text>
                {order?.orderProducts?.map((item, index) => (
-                  <View key={index} style={commonStyles.productContainer}>
-                     <Text style={commonStyles.text}>
-                        <Text style={commonStyles.highlightedText}>Nome: </Text>
+                  <View key={index} style={style.productContainer}>
+                     <Text style={style.text}>
+                        <Text style={style.highlightedText}>Nome: </Text>
                         {item.product.name}
                      </Text>
-                     <Text style={commonStyles.text}>
-                        <Text style={commonStyles.highlightedText}>
-                           Preço:{' '}
-                        </Text>
+                     <Text style={style.text}>
+                        <Text style={style.highlightedText}>Preço: </Text>
                         R${item.unitPrice.toFixed(2)}
                      </Text>
                      {item.details ? (
-                        <Text style={commonStyles.text}>
-                           <Text style={commonStyles.highlightedText}>
-                              Detalhes:{' '}
-                           </Text>
+                        <Text style={style.text}>
+                           <Text style={style.highlightedText}>Detalhes: </Text>
                            {item.details}
                         </Text>
                      ) : null}
@@ -52,7 +45,7 @@ const OrderInformation = ({ order }: { order: Partial<Order> }) => {
                            <View
                               key={ingredientIndex}
                               style={[
-                                 commonStyles.ingredientContainer,
+                                 style.ingredientContainer,
                                  {
                                     flexDirection: 'row',
                                     justifyContent: 'space-between',
@@ -60,11 +53,11 @@ const OrderInformation = ({ order }: { order: Partial<Order> }) => {
                                  }
                               ]}
                            >
-                              <Text style={commonStyles.ingredientText}>
+                              <Text style={style.ingredientText}>
                                  {ingredient.name}
                               </Text>
                               {ingredient.price ? (
-                                 <Text style={commonStyles.ingredientText}>
+                                 <Text style={style.ingredientText}>
                                     R${ingredient.price.toFixed(2)}
                                  </Text>
                               ) : null}
@@ -72,8 +65,13 @@ const OrderInformation = ({ order }: { order: Partial<Order> }) => {
                         )
                      )}
                      {item.unitPrice != item.totalPrice ? (
-                        <Text style={[commonStyles.text, { marginTop: 8 }]}>
-                           <Text style={commonStyles.ingredientText}>
+                        <Text style={[style.text, { marginTop: 8 }]}>
+                           <Text
+                              style={[
+                                 style.ingredientText,
+                                 { fontWeight: 'bold' }
+                              ]}
+                           >
                               Preço total:{' '}
                            </Text>
                            R${item.totalPrice.toFixed(2)}
@@ -83,30 +81,30 @@ const OrderInformation = ({ order }: { order: Partial<Order> }) => {
                ))}
             </View>
 
-            <View style={commonStyles.section}>
-               <Text style={commonStyles.title}>Pagamento</Text>
+            <View style={style.section}>
+               <Text style={style.title}>Pagamento</Text>
                <View>
-                  <Text style={[commonStyles.title, { color: 'red' }]}>
+                  <Text style={[style.title, { color: 'red' }]}>
                      {order.paymentStatus?.name.toUpperCase()}
                   </Text>
-                  <Text style={commonStyles.text}>
-                     <Text style={commonStyles.highlightedText}>
+                  <Text style={style.text}>
+                     <Text style={style.highlightedText}>
                         Forme de pagamento:{' '}
                      </Text>
                      {order.paymentMethod?.name}
                   </Text>
-                  <Text style={commonStyles.text}>
-                     <Text style={commonStyles.highlightedText}>Troco: </Text>
+                  <Text style={style.text}>
+                     <Text style={style.highlightedText}>Troco: </Text>
                      R${order.changeFor?.toFixed(2)}
                   </Text>
-                  <Text style={commonStyles.text}>
-                     <Text style={commonStyles.highlightedText}>
+                  <Text style={style.text}>
+                     <Text style={style.highlightedText}>
                         Taxa de entrega:{' '}
                      </Text>
                      R${order.deliveryFee?.toFixed(2)}
                   </Text>
-                  <Text style={commonStyles.text}>
-                     <Text style={commonStyles.highlightedText}>
+                  <Text style={style.text}>
+                     <Text style={style.highlightedText}>
                         Valor total do pedido:{' '}
                      </Text>
                      R${order.totalPrice?.toFixed(2)}
@@ -115,35 +113,27 @@ const OrderInformation = ({ order }: { order: Partial<Order> }) => {
             </View>
 
             {order.address ? (
-               <View style={commonStyles.section}>
-                  <Text style={commonStyles.title}>Dados do endereço</Text>
+               <View style={style.section}>
+                  <Text style={style.title}>Dados do endereço</Text>
                   <View>
-                     <Text style={commonStyles.text}>
-                        <Text style={commonStyles.highlightedText}>
-                           Bairro:{' '}
-                        </Text>
+                     <Text style={style.text}>
+                        <Text style={style.highlightedText}>Bairro: </Text>
                         {order.address?.neighborhood}
                      </Text>
-                     <Text style={commonStyles.text}>
-                        <Text style={commonStyles.highlightedText}>
-                           Número:{' '}
-                        </Text>
+                     <Text style={style.text}>
+                        <Text style={style.highlightedText}>Número: </Text>
                         {order.address?.number}
                      </Text>
-                     <Text style={commonStyles.text}>
-                        <Text style={commonStyles.highlightedText}>
-                           Complemento:{' '}
-                        </Text>
+                     <Text style={style.text}>
+                        <Text style={style.highlightedText}>Complemento: </Text>
                         {order.address?.complement}
                      </Text>
-                     <Text style={commonStyles.text}>
-                        <Text style={commonStyles.highlightedText}>CEP: </Text>
+                     <Text style={style.text}>
+                        <Text style={style.highlightedText}>CEP: </Text>
                         {order.address?.zipCode}
                      </Text>
-                     <Text style={commonStyles.text}>
-                        <Text style={commonStyles.highlightedText}>
-                           Cidade:{' '}
-                        </Text>
+                     <Text style={style.text}>
+                        <Text style={style.highlightedText}>Cidade: </Text>
                         {order.address?.city}
                      </Text>
                   </View>
@@ -154,7 +144,7 @@ const OrderInformation = ({ order }: { order: Partial<Order> }) => {
    )
 }
 
-const commonStyles = StyleSheet.create({
+const style = StyleSheet.create({
    container: {
       flex: 1,
       padding: 16,

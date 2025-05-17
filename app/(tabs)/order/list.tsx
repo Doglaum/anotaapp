@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
    View,
    Text,
@@ -16,8 +16,10 @@ import { DateRangeSelect, OrderDetailsModal } from '@/components'
 import { DateType } from 'react-native-ui-datepicker'
 import dayjs from 'dayjs'
 import { AntDesign } from '@expo/vector-icons'
+import { usePrinter } from '@/context/PrinterContext'
 
 export default function Lista() {
+   const { print } = usePrinter()
    const [orders, setOrders] = useState<Order[]>([])
    const orderService = new OrderService()
    const [selectOrder, setSelectedOrder] = useState<Order>()
@@ -132,6 +134,7 @@ export default function Lista() {
                            padding: 10,
                            justifyContent: 'center'
                         }}
+                        onPress={() => print(item)}
                      >
                         <AntDesign name="printer" size={20} />
                      </TouchableOpacity>

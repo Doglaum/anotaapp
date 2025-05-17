@@ -2,6 +2,7 @@ import { View } from 'react-native'
 import { OverlayerModal } from '@/components/modals/'
 import { Order } from '@/database/models'
 import OrderInformation from '../OrderInformation'
+import { useEffect, useRef } from 'react'
 
 const OrderDetailsModal = ({
    onClose,

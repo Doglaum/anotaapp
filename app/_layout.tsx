@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { View, ActivityIndicator, Text, StatusBar } from 'react-native'
 import { initDatabase } from '../src/database/database'
 import { AppToast } from '@/components/AppToast'
+import { PrinterProvider } from '@/context/PrinterContext'
 
 export default function RootLayout() {
    const [isReady, setIsReady] = useState(false)
@@ -36,11 +37,19 @@ export default function RootLayout() {
 
    return (
       <SafeAreaProvider>
-         <StatusBar barStyle={'light-content'} />
-         <PaperProvider theme={theme}>
-            <Stack>
-               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            </Stack>
+         <StatusBar
+            barStyle={'light-content'}
+            backgroundColor={theme.colors.primary}
+         />
+         <PaperProvider>
+            <PrinterProvider>
+               <Stack>
+                  <Stack.Screen
+                     name="(tabs)"
+                     options={{ headerShown: false }}
+                  />
+               </Stack>
+            </PrinterProvider>
             <AppToast />
          </PaperProvider>
       </SafeAreaProvider>
