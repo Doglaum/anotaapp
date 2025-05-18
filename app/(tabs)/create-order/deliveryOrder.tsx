@@ -14,7 +14,9 @@ import {
 import ShoppingCart from './components/ShoppingCart'
 import { MaterialIcons } from '@expo/vector-icons'
 import { infoToast } from '@/components'
+import { usePrinter } from '@/context/PrinterContext'
 export default function PedidoForm() {
+   const { print } = usePrinter()
    const orderService = new OrderService()
    const [order, setOrder] = useState<Partial<Order>>({
       changeFor: 0,
@@ -52,7 +54,8 @@ export default function PedidoForm() {
    const [modalVisible, setModalVisible] = useState(false)
 
    const handleSubmit = async () => {
-      await orderService.createOrder(order)
+      const createdOrder = await orderService.createOrder(order)
+      print(createdOrder)
       router.push('(tabs)/create-order')
    }
 

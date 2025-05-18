@@ -48,7 +48,7 @@ export const PrinterProvider: React.FC<{ children: React.ReactNode }> = ({
     */
    const print = async (order: Order) => {
       if (!printer) {
-         errorToast('Ocorreu um erro ao tentar imprimir')
+         errorToast('Impressora não conectada!')
          return
       }
       try {
