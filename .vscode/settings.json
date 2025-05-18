@@ -1,4 +1,5 @@
 {
    "avdmanager.executable": "c:\\Users\\Douglas\\.android\\avd\\Pixel_6_API_35.ini",
-   "java.configuration.updateBuildConfiguration": "interactive"
+   "java.configuration.updateBuildConfiguration": "interactive",
+   "java.compile.nullAnalysis.mode": "automatic"
 }

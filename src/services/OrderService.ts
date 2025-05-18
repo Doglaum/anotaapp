@@ -33,7 +33,7 @@ export class OrderService {
    ): Promise<Order[]> {
       if (!startDate) {
          startDate = dayjs()
-            .hour(6)
+            .hour(0)
             .minute(0)
             .second(0)
             .millisecond(0)

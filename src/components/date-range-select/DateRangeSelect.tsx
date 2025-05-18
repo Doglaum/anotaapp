@@ -54,8 +54,7 @@ const DateRangeSelect = ({
                flexDirection: 'row',
                alignItems: 'center',
                padding: 8,
-               backgroundColor: theme.colors.primary,
-               borderRadius: 8
+               backgroundColor: theme.colors.primary
             }}
          >
             {selectedStartDate ? (
@@ -74,7 +73,7 @@ const DateRangeSelect = ({
                         color: theme.colors.white
                      }}
                   >
-                     {formatDate(selectedStartDate)}
+                     Início {formatDate(selectedStartDate)}
                   </Text>
                   {formatDate(selectedEndDate) ? (
                      <Text
@@ -95,7 +94,7 @@ const DateRangeSelect = ({
                         color: theme.colors.white
                      }}
                   >
-                     {formatDate(selectedEndDate)}
+                     Fim {formatDate(selectedEndDate)}
                   </Text>
                </View>
             ) : (

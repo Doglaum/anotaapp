@@ -94,7 +94,7 @@ const ClientStep = ({
                      >
                         <Text
                            style={[
-                              styles.clientName,
+                              styles.label,
                               isSelected && { color: theme.colors.white }
                            ]}
                         >
@@ -102,7 +102,7 @@ const ClientStep = ({
                         </Text>
                         <Text
                            style={[
-                              styles.clientName,
+                              styles.label,
                               isSelected && { color: theme.colors.white }
                            ]}
                         >
@@ -126,7 +126,7 @@ const ClientStep = ({
 }
 
 const styles = StyleSheet.create({
-   clientName: {
+   label: {
       fontSize: 16,
       fontWeight: 'bold'
    }

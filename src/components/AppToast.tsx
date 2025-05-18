@@ -13,8 +13,8 @@ export const AppToast = () => {
       <Toast
          config={toastMessageConfig}
          position="top"
-         topOffset={50}
-         visibilityTime={1500}
+         topOffset={0}
+         visibilityTime={3000}
       />
    )
 }
