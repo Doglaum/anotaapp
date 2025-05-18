@@ -78,11 +78,11 @@ export default function Lista() {
 
    return (
       <View style={{ flex: 1 }}>
+         <DateRangeSelect
+            style={{ marginBottom: 10 }}
+            onClose={handleDateSelect}
+         />
          <View style={commonStyles.container}>
-            <DateRangeSelect
-               style={{ marginBottom: 10 }}
-               onClose={handleDateSelect}
-            />
             <FlatList<Order>
                data={orders}
                style={{ flex: 1 }}
