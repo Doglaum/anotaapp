@@ -39,7 +39,7 @@ export default function RootLayout() {
       <SafeAreaProvider>
          <StatusBar
             barStyle={'light-content'}
-            backgroundColor={theme.colors.primary}
+            backgroundColor={theme.colors.secondary}
          />
          <PaperProvider>
             <PrinterProvider>

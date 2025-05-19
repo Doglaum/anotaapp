@@ -1,22 +1,25 @@
 import { Tabs } from 'expo-router'
 import { Entypo, MaterialIcons } from '@expo/vector-icons'
 import { theme } from '@/theme'
-import { AntDesign } from '@expo/vector-icons'
 
 export default function TabLayout() {
    return (
       <Tabs
          screenOptions={{
             tabBarActiveTintColor: theme.colors.primary,
-            tabBarInactiveTintColor: 'gray'
+            tabBarInactiveTintColor: theme.colors.gray
          }}
       >
          <Tabs.Screen
-            name="printer"
+            name="configuration"
             options={{
-               tabBarLabel: 'Conexão',
+               tabBarLabel: 'Configurações',
                tabBarIcon: ({ color, size }) => (
-                  <Entypo name="print" size={size} color={color} />
+                  <MaterialIcons
+                     name="app-settings-alt"
+                     size={size}
+                     color={color}
+                  />
                ),
                headerShown: false
             }}
@@ -27,26 +30,6 @@ export default function TabLayout() {
                tabBarLabel: 'Pedidos',
                tabBarIcon: ({ color, size }) => (
                   <Entypo name="ticket" size={size} color={color} />
-               ),
-               headerShown: false
-            }}
-         />
-         <Tabs.Screen
-            name="client"
-            options={{
-               tabBarLabel: 'Clientes',
-               tabBarIcon: ({ color, size }) => (
-                  <MaterialIcons name="people" size={size} color={color} />
-               ),
-               headerShown: false
-            }}
-         />
-         <Tabs.Screen
-            name="product"
-            options={{
-               tabBarLabel: 'Produtos',
-               tabBarIcon: ({ color, size }) => (
-                  <Entypo name="shop" size={size} color={color} />
                ),
                headerShown: false
             }}

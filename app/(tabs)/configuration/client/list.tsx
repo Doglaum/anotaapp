@@ -61,7 +61,7 @@ export default function Clients() {
          <FormSearchInput
             onChange={handleSearch}
             label="Digite nome ou numero..."
-            rota="/client/register"
+            rota="/configuration/client/register"
             style={{ marginBottom: 20 }}
          />
          <FlatList<Client>
@@ -86,7 +86,9 @@ export default function Clients() {
                   <View style={[styles.clienteActions]}>
                      <TouchableOpacity
                         style={styles.actionButton}
-                        onPress={() => router.push(`/client/${item.clientId}`)}
+                        onPress={() =>
+                           router.push(`/configuration/client/${item.clientId}`)
+                        }
                      >
                         <MaterialIcons
                            name="edit"

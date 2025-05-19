@@ -73,7 +73,7 @@ export default function Products() {
          <FormSearchInput
             label="Pesquisar produto..."
             onChange={handleSearch}
-            rota="/product/register/"
+            rota="(tabs)/configuration/product/register/"
             style={{ marginBottom: 10 }}
          />
          <FlatList<Product>
@@ -100,7 +100,9 @@ export default function Products() {
                   <View style={[styles.productActions]}>
                      <TouchableOpacity
                         onPress={() =>
-                           router.push(`/product/${item.productId}`)
+                           router.push(
+                              `/configuration/product/${item.productId}`
+                           )
                         }
                      >
                         <MaterialIcons
