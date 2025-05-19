@@ -3,7 +3,10 @@ import {
    TouchableOpacity,
    View,
    ViewStyle,
-   StyleProp
+   StyleProp,
+   ScrollView,
+   KeyboardAvoidingView,
+   Platform
 } from 'react-native'
 import { commonStyles, theme } from '@/theme'
 import { Ingredient } from '@/database/models'
@@ -12,7 +15,7 @@ import { FormCurrencyInput, FormTextInput, OverlayerModal } from '@/components/'
 import { MaterialIcons } from '@expo/vector-icons'
 import { errorToast, successToast } from '@/components'
 
-export const CreateIngredientsModal = ({
+const CreateIngredientsModal = ({
    onClose,
    buttonStyle,
    onSave
@@ -91,3 +94,5 @@ export const CreateIngredientsModal = ({
       </View>
    )
 }
+
+export default CreateIngredientsModal

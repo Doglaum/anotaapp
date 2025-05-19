@@ -17,7 +17,7 @@ import { EmptyList, successToast, OverlayerModal } from '@/components'
 import { ProductService } from '@/services'
 import { MaterialIcons } from '@expo/vector-icons'
 
-export const CopyIngredientsModal = ({
+const CopyIngredientsModal = ({
    onClose,
    buttonStyle,
    onSelect,
@@ -178,3 +178,5 @@ const styles = StyleSheet.create({
       elevation: 5
    }
 })
+
+export default CopyIngredientsModal

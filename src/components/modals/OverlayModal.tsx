@@ -1,5 +1,14 @@
 import { PaperProvider } from 'react-native-paper'
-import { Dimensions, Modal, TouchableOpacity, View, Text } from 'react-native'
+import {
+   Dimensions,
+   Modal,
+   TouchableOpacity,
+   View,
+   Text,
+   ScrollView,
+   KeyboardAvoidingView,
+   Platform
+} from 'react-native'
 import { commonStyles, theme } from '@/theme'
 import { MaterialIcons } from '@expo/vector-icons'
 import { AppToast } from '../AppToast'
@@ -26,78 +35,68 @@ const OverlayerModal: React.FC<OverlayModalProps> = ({
    }
 
    return (
-      <View>
-         <PaperProvider>
-            <Modal
-               animationType="fade"
-               visible={overlayModalVisible}
-               transparent
+      <Modal animationType="fade" visible={overlayModalVisible} transparent>
+         <View
+            style={{
+               flex: 1,
+               alignItems: 'center',
+               backgroundColor: '#313131cf'
+            }}
+         >
+            <View
+               style={{
+                  backgroundColor: theme.colors.appContainerColor,
+                  height: height * 0.85,
+                  width: '100%',
+                  borderRadius: 15,
+                  borderColor: theme.colors.primary,
+                  marginTop: 'auto'
+               }}
             >
                <View
                   style={{
-                     flex: 1,
-                     justifyContent: 'flex-end',
+                     height: height * 0.06,
+                     flexDirection: 'row',
+                     justifyContent: 'space-between',
                      alignItems: 'center',
-                     backgroundColor: '#313131cf'
+                     borderBottomColor: '#ddd',
+                     backgroundColor: theme.colors.primary,
+                     borderTopLeftRadius: 15,
+                     borderTopRightRadius: 15,
+                     padding: 10
                   }}
                >
-                  <View
-                     style={{
-                        backgroundColor: theme.colors.appContainerColor,
-                        height: height * 0.85,
-                        width: '100%',
-                        borderRadius: 15,
-                        borderColor: theme.colors.primary
-                     }}
+                  <Text
+                     style={[commonStyles.title, { color: theme.colors.white }]}
                   >
-                     <View
-                        style={{
-                           height: height * 0.06,
-                           flexDirection: 'row',
-                           justifyContent: 'space-between',
-                           alignItems: 'center',
-                           borderBottomColor: '#ddd',
-                           backgroundColor: theme.colors.primary,
-                           borderTopLeftRadius: 15,
-                           borderTopRightRadius: 15,
-                           padding: 10
-                        }}
-                     >
-                        <Text
-                           style={[
-                              commonStyles.title,
-                              { color: theme.colors.white }
-                           ]}
-                        >
-                           {title}
-                        </Text>
-                        <TouchableOpacity
-                           onPress={handleClose}
-                           style={{ padding: 5 }}
-                        >
-                           <MaterialIcons
-                              name="close"
-                              size={20}
-                              color={theme.colors.white}
-                           />
-                        </TouchableOpacity>
-                     </View>
-
-                     <View
-                        style={{
-                           flex: 1,
-                           paddingVertical: 16,
-                           paddingHorizontal: 10
-                        }}
-                     >
-                        {children}
-                     </View>
-                  </View>
+                     {title}
+                  </Text>
+                  <TouchableOpacity
+                     onPress={handleClose}
+                     style={{ padding: 5 }}
+                  >
+                     <MaterialIcons
+                        name="close"
+                        size={20}
+                        color={theme.colors.white}
+                     />
+                  </TouchableOpacity>
                </View>
-               <AppToast />
-            </Modal>
-         </PaperProvider>
-      </View>
+
+               <KeyboardAvoidingView
+                  style={{
+                     flex: 1,
+                     paddingVertical: 16,
+                     paddingHorizontal: 10
+                  }}
+                  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+               >
+                  {children}
+               </KeyboardAvoidingView>
+            </View>
+         </View>
+         <AppToast />
+      </Modal>
    )
 }
 

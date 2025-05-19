@@ -15,7 +15,8 @@ import ShoppingCart from './components/ShoppingCart'
 import { MaterialIcons } from '@expo/vector-icons'
 import { infoToast } from '@/components'
 import { usePrinter } from '@/context/PrinterContext'
-export default function PedidoForm() {
+
+const PedidoForm = () => {
    const { print } = usePrinter()
    const orderService = new OrderService()
    const [order, setOrder] = useState<Partial<Order>>({
@@ -164,8 +165,7 @@ export default function PedidoForm() {
             <View
                style={{
                   display: step === 5 ? 'flex' : 'none',
-                  flex: 1,
-                  backgroundColor: 'red'
+                  flex: 1
                }}
             >
                <OrderSummaryStep order={order} />
@@ -190,7 +190,7 @@ export default function PedidoForm() {
                   <MaterialIcons name="arrow-back" size={24} color="#fff" />
                </TouchableOpacity>
             </View>
-            <View style={{}}>
+            <View>
                {step < 5 && (
                   <TouchableOpacity
                      style={styles.roundedButton}
@@ -307,3 +307,5 @@ const styles = StyleSheet.create({
       color: '#fff'
    }
 })
+
+export default PedidoForm

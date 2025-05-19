@@ -11,11 +11,11 @@ import { commonStyles, theme } from '@/theme'
 import { Product } from '@/database/models/Product'
 import { ProductService } from '@/services/'
 import { useRouter } from 'expo-router'
-import { CreateIngredientsModal } from './components/CreateIngredientsModal'
+import CreateIngredientsModal from './components/CreateIngredientsModal'
 import { Ingredient } from '@/database/models'
 import { FormTextInput, FormCurrencyInput, successToast } from '@/components/'
 import { MaterialIcons } from '@expo/vector-icons'
-import { CopyIngredientsModal } from './components/CopyIngredientsModal'
+import CopyIngredientsModal from './components/CopyIngredientsModal'
 
 export default function RegisterProduct({
    editProductId
@@ -216,8 +216,7 @@ export default function RegisterProduct({
             style={[
                !editProductId
                   ? commonStyles.saveButton
-                  : commonStyles.editButton,
-               { marginTop: 'auto' }
+                  : commonStyles.editButton
             ]}
             onPress={handleSubmit}
          >
