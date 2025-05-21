@@ -46,7 +46,7 @@ export const PrinterProvider: React.FC<{ children: React.ReactNode }> = ({
       const setSavedAddress = async () => {
          const savedPrinterAddress = await systemParamsService.findById(1)
          if (savedPrinterAddress.value) {
-            setConnectedPrinter({
+            connectToPrinter({
                name: '',
                address: savedPrinterAddress.value
             })
