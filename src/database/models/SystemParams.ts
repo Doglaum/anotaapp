@@ -8,8 +8,8 @@ export class SystemParams {
    @Column('text')
    name: string
 
-   @Column('text')
-   code: string
+   @Column('integer')
+   code: number
 
    @Column('text', { nullable: false })
    value: string

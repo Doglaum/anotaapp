@@ -1,4 +1,5 @@
 import { errorToast } from '@/components'
+import { SystemParamsEnum } from '@/database/enums/SystemParamsEnum'
 import { Order } from '@/database/models'
 import { SystemParamsService } from '@/services'
 import dayjs from 'dayjs'
@@ -9,7 +10,8 @@ import {
    BluetoothManager,
    BluetoothEscposPrinter,
    BluetoothDevice,
-   ALIGN
+   ALIGN,
+   ERROR_CORRECTION
 } from 'tp-react-native-bluetooth-printer'
 
 type FoundedDevicesType = {
@@ -40,6 +42,25 @@ export const PrinterProvider: React.FC<{ children: React.ReactNode }> = ({
    )
    const [isDiscovering, setIsDisconvering] = useState(false)
 
+   useEffect(() => {
+      const setSavedAddress = async () => {
+         const savedPrinterAddress = await systemParamsService.findById(1)
+         if (savedPrinterAddress.value) {
+            setConnectedPrinter({
+               name: '',
+               address: savedPrinterAddress.value
+            })
+         }
+      }
+      setSavedAddress()
+   }, [])
+
+   useEffect(() => {
+      DeviceEventEmitter.addListener('EVENT_DEVICE_DISCOVER_DONE', () => {
+         setIsDisconvering(false)
+      })
+   }, [])
+
    const scanDevices = async () => {
       try {
          const isBluetoothEnabled = await BluetoothManager.isBluetoothEnabled()
@@ -49,35 +70,20 @@ export const PrinterProvider: React.FC<{ children: React.ReactNode }> = ({
          }
          setIsDisconvering(true)
          const devices = await BluetoothManager.scanDevices()
+         console.log(devices)
          const objectDevices = JSON.parse(devices.toString())
-         if (objectDevices?.paired[0]?.address) {
-            connectToPrinter(objectDevices.paired[0])
-         }
          setDevices(objectDevices)
       } catch (error) {
          console.error(error)
       }
    }
 
-   useEffect(() => {
-      DeviceEventEmitter.addListener('EVENT_DEVICE_DISCOVER_DONE', () => {
-         console.log('emiiter')
-         setIsDisconvering(false)
-      })
-   }, [])
-
    const connectToPrinter = async (printer: BluetoothDevice) => {
       await BluetoothManager.connect(printer.address)
-      await BluetoothEscposPrinter.printerAlign(ALIGN.CENTER)
-      await BluetoothEscposPrinter.printText('TESTE DE IMPRESSAO\n\r', {
-         codepage: 0,
-         widthtimes: 1,
-         heigthtimes: 1,
-         fonttype: 1
-      })
+      await BluetoothEscposPrinter.printAndFeed(100)
       systemParamsService.save({
          systemParamsId: 1,
-         code: '',
+         code: SystemParamsEnum.PRINTER_ADDRESS,
          name: 'PRINTER',
          value: printer.address
       })
@@ -116,7 +122,7 @@ export const PrinterProvider: React.FC<{ children: React.ReactNode }> = ({
                heigthtimes: 2,
                fonttype: 1
             })
-            await BluetoothEscposPrinter.printAndFeed(15)
+            await BluetoothEscposPrinter.printAndFeed(10)
             if (order.clientName) {
                await BluetoothEscposPrinter.printText(
                   `Nome: ${order.clientName.replaceAll('ç', 'c')}\n\r`,
@@ -145,6 +151,8 @@ export const PrinterProvider: React.FC<{ children: React.ReactNode }> = ({
          })
          await BluetoothEscposPrinter.printAndFeed(15)
          if (order?.orderProducts?.length) {
+            let totalProductsPrice = 0
+            let volta = 0
             for (const item of order.orderProducts) {
                await BluetoothEscposPrinter.printerAlign(ALIGN.LEFT)
                await BluetoothEscposPrinter.printText(
@@ -155,7 +163,7 @@ export const PrinterProvider: React.FC<{ children: React.ReactNode }> = ({
                   `Preco: R$${item.unitPrice.toFixed(2)}\n\r`,
                   {}
                )
-
+               totalProductsPrice += item.unitPrice
                if (item.details) {
                   await BluetoothEscposPrinter.printText(
                      `Detalhes: ${item.details.replaceAll('ç', 'c')}\n\r`,
@@ -166,13 +174,14 @@ export const PrinterProvider: React.FC<{ children: React.ReactNode }> = ({
                if (item.selectedIngredients?.length) {
                   for (const ingredient of item.selectedIngredients) {
                      await BluetoothEscposPrinter.printText(
-                        `  - ${ingredient.name.replaceAll('ç', 'c')}${
+                        `- ${ingredient.name.replaceAll('ç', 'c')}${
                            ingredient.price
                               ? `: R$${ingredient.price.toFixed(2)}`
                               : ''
                         }\n\r`,
                         {}
                      )
+                     totalProductsPrice += ingredient.price
                   }
                }
 
@@ -182,14 +191,25 @@ export const PrinterProvider: React.FC<{ children: React.ReactNode }> = ({
                      {}
                   )
                }
-
-               await BluetoothEscposPrinter.printText(
-                  '--------------------------------\n\r',
-                  {}
-               )
+               ++volta
+               if (order.orderProducts.length == volta) {
+                  await BluetoothEscposPrinter.printAndFeed(10)
+                  await BluetoothEscposPrinter.printText(
+                     `Total produtos: R$${totalProductsPrice.toFixed(2)}\n\r`,
+                     {}
+                  )
+                  await BluetoothEscposPrinter.printText(
+                     '--------------------------------\n\r',
+                     {}
+                  )
+               } else {
+                  await BluetoothEscposPrinter.printText(
+                     '--------------------------------\n\r',
+                     {}
+                  )
+               }
             }
          }
-
          await BluetoothEscposPrinter.printerAlign(ALIGN.CENTER)
          await BluetoothEscposPrinter.printText('PAGAMENTO\n\r', {
             codepage: 0,
@@ -200,7 +220,7 @@ export const PrinterProvider: React.FC<{ children: React.ReactNode }> = ({
          await BluetoothEscposPrinter.printAndFeed(15)
          if (order.paymentStatus?.name) {
             await BluetoothEscposPrinter.printText(
-               `Status: ${order.paymentStatus.name.toUpperCase()}\n\r`,
+               `Situação: ${order.paymentStatus.name.toUpperCase()}\n\r`,
                {}
             )
          }
@@ -219,30 +239,22 @@ export const PrinterProvider: React.FC<{ children: React.ReactNode }> = ({
                {}
             )
          }
-         let total = order.totalPrice
          if (order.deliveryFee) {
-            total += order.deliveryFee
             await BluetoothEscposPrinter.printText(
                `Taxa de entrega: R$${order.deliveryFee.toFixed(2)}\n\r`,
                {}
             )
          }
          await BluetoothEscposPrinter.printText(
-            `Valor total produtos: R$${order.totalPrice.toFixed(2)}\n\r`,
+            `Total pedido: R$${order.totalPrice.toFixed(2)}\n\r`,
             {}
          )
-
-         await BluetoothEscposPrinter.printText(
-            `Valor total pedido: R$${total.toFixed(2)}\n\r`,
-            {}
-         )
-
          await BluetoothEscposPrinter.printText(
             '--------------------------------\n\r',
             {}
          )
-
          if (order.address) {
+            let addressName = ''
             await BluetoothEscposPrinter.printerAlign(ALIGN.CENTER)
             await BluetoothEscposPrinter.printText('ENDERECO\n\r', {
                codepage: 0,
@@ -260,12 +272,21 @@ export const PrinterProvider: React.FC<{ children: React.ReactNode }> = ({
                   )}\n\r`,
                   {}
                )
+               addressName += order.address.neighborhood
+            }
+            if (order.address.street) {
+               await BluetoothEscposPrinter.printText(
+                  `Rua: ${order.address.street.replaceAll('ç', 'c')}\n\r`,
+                  {}
+               )
+               addressName += order.address.neighborhood
             }
             if (order.address.number) {
                await BluetoothEscposPrinter.printText(
                   `Número: ${order.address.number}\n\r`,
                   {}
                )
+               addressName += ',' + order.address.number
             }
             if (order.address.complement) {
                await BluetoothEscposPrinter.printText(
@@ -281,20 +302,30 @@ export const PrinterProvider: React.FC<{ children: React.ReactNode }> = ({
                   `CEP: ${order.address.zipCode}\n\r`,
                   {}
                )
+               addressName += ',' + order.address.zipCode
             }
             if (order.address.city) {
                await BluetoothEscposPrinter.printText(
                   `Cidade: ${order.address.city.replaceAll('ç', 'c')}\n\r`,
                   {}
                )
+               addressName += ',' + order.address.city
             }
-
+            await BluetoothEscposPrinter.printAndFeed(15)
+            await BluetoothEscposPrinter.printerAlign(ALIGN.CENTER)
+            await BluetoothEscposPrinter.printQRCode(
+               `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+                  addressName
+               )}`,
+               300,
+               ERROR_CORRECTION.H,
+               0
+            )
             await BluetoothEscposPrinter.printText(
                '--------------------------------\n\r',
                {}
             )
          }
-
          await BluetoothEscposPrinter.printerAlign(ALIGN.CENTER)
          await BluetoothEscposPrinter.printText(
             'Obrigado pela preferencia!\n\r\n\r',

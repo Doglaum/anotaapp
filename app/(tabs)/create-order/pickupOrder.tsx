@@ -50,11 +50,7 @@ const PedidoForm = () => {
 
    const handleSubmit = async () => {
       const newOrder = await orderService.createOrder(order)
-      try {
-         await print(newOrder as Order)
-      } catch (error) {
-         order.printed = false
-      }
+      print(newOrder as Order)
       router.push('(tabs)/create-order')
    }
 
