@@ -283,7 +283,7 @@ export const PrinterProvider: React.FC<{ children: React.ReactNode }> = ({
             }
             if (order.address.number) {
                await BluetoothEscposPrinter.printText(
-                  `Número: ${order.address.number}\n\r`,
+                  `Numero: ${order.address.number}\n\r`,
                   {}
                )
                addressName += ',' + order.address.number
