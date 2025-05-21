@@ -62,6 +62,9 @@ export class Order {
    @JoinColumn({ name: 'paymentStatusId' })
    paymentStatus: PaymentStatus
 
+   @Column('boolean', { nullable: true })
+   printed: boolean
+
    @CreateDateColumn()
    created_at: Date
 }

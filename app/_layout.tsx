@@ -6,10 +6,13 @@ import { useEffect, useState } from 'react'
 import { View, ActivityIndicator, Text, StatusBar } from 'react-native'
 import { initDatabase } from '../src/database/database'
 import { AppToast } from '@/components/AppToast'
-import { PrinterProvider } from '@/context/PrinterContext'
+import { PrinterProvider, usePrinter } from '@/context/PrinterContext'
+import { SystemParamsService } from '@/services'
+import { BluetoothDevice } from 'tp-react-native-bluetooth-printer'
 
 export default function RootLayout() {
    const [isReady, setIsReady] = useState(false)
+   const systemParamsService = new SystemParamsService()
 
    useEffect(() => {
       const init = async () => {

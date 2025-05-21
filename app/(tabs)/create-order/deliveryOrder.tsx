@@ -55,8 +55,12 @@ const PedidoForm = () => {
    const [modalVisible, setModalVisible] = useState(false)
 
    const handleSubmit = async () => {
-      const createdOrder = await orderService.createOrder(order)
-      print(createdOrder)
+      const newOrder = await orderService.createOrder(order)
+      try {
+         await print(newOrder as Order)
+      } catch (error) {
+         order.printed = false
+      }
       router.push('(tabs)/create-order')
    }
 

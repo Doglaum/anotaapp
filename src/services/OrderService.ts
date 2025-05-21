@@ -69,4 +69,8 @@ export class OrderService {
 
       return result
    }
+
+   async updateOrder(order: Order): Promise<Order | null> {
+      return await this.orderRepository.update(order.orderId, order)
+   }
 }

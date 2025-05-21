@@ -38,6 +38,7 @@
     "react-native-toast-message": "^2.3.0",
     "react-native-ui-datepicker": "^3.1.2",
     "reflect-metadata": "^0.2.2",
+    "tp-react-native-bluetooth-printer": "^1.5.0",
     "typeorm": "^0.3.22"
   },
   "devDependencies": {

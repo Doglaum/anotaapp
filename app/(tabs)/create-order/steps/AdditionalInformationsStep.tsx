@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, ScrollView } from 'react-native'
 import { useState } from 'react'
 import { commonStyles, theme } from '@/theme'
 import {
@@ -57,7 +57,7 @@ const AdditionalInformationsStep = ({
    }
 
    return (
-      <View style={commonStyles.container}>
+      <ScrollView style={commonStyles.container}>
          <View style={{ marginTop: 10, gap: 10 }}>
             <FormSelectInput<Order>
                onChange={selectHandle}
@@ -95,7 +95,7 @@ const AdditionalInformationsStep = ({
                </Text>
             </View>
          </View>
-      </View>
+      </ScrollView>
    )
 }
 

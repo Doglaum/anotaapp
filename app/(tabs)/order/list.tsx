@@ -19,7 +19,7 @@ import { AntDesign } from '@expo/vector-icons'
 import { usePrinter } from '@/context/PrinterContext'
 
 export default function Lista() {
-   const { print } = usePrinter()
+   const { print, isPrinting } = usePrinter()
    const [orders, setOrders] = useState<Order[]>([])
    const orderService = new OrderService()
    const [selectOrder, setSelectedOrder] = useState<Order>()
@@ -76,6 +76,16 @@ export default function Lista() {
       setOpenModal(false)
    }
 
+   const printHandle = async (item: Order) => {
+      try {
+         await print(item)
+         //item.printed = true
+         //orderService.updateOrder(item)
+      } catch (error) {
+         console.error(error)
+      }
+   }
+
    return (
       <View style={{ flex: 1 }}>
          <DateRangeSelect
@@ -89,18 +99,21 @@ export default function Lista() {
                keyExtractor={item => item.orderId.toString()}
                renderItem={({ item }: { item: Order }) => (
                   <View
-                     style={{
-                        flex: 1,
-                        marginBottom: 5,
-                        backgroundColor: theme.colors.white,
-                        borderRadius: 8,
-                        borderWidth: 1,
-                        borderColor: '#ddd',
-                        flexDirection: 'row',
-                        padding: 5,
-                        paddingTop: 15,
-                        paddingBottom: 15
-                     }}
+                     style={[
+                        {
+                           flex: 1,
+                           marginBottom: 5,
+                           backgroundColor: theme.colors.white,
+                           borderRadius: 8,
+                           borderWidth: 1,
+                           borderColor: '#ddd',
+                           flexDirection: 'row',
+                           padding: 5,
+                           paddingTop: 15,
+                           paddingBottom: 15
+                        },
+                        item.printed && { backgroundColor: theme.colors.alert }
+                     ]}
                   >
                      <TouchableOpacity
                         onPress={() => {
@@ -127,17 +140,19 @@ export default function Lista() {
                            ).format('DD/MM/YYYY HH:mm')}`}</Text>
                         </View>
                      </TouchableOpacity>
-                     <TouchableOpacity
-                        style={{
-                           marginLeft: 'auto',
-                           height: '100%',
-                           padding: 10,
-                           justifyContent: 'center'
-                        }}
-                        onPress={() => print(item)}
-                     >
-                        <AntDesign name="printer" size={20} />
-                     </TouchableOpacity>
+                     {!isPrinting && (
+                        <TouchableOpacity
+                           style={{
+                              marginLeft: 'auto',
+                              height: '100%',
+                              padding: 10,
+                              justifyContent: 'center'
+                           }}
+                           onPress={() => printHandle(item)}
+                        >
+                           <AntDesign name="printer" size={20} />
+                        </TouchableOpacity>
+                     )}
                   </View>
                )}
                ListEmptyComponent={

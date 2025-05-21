@@ -3,7 +3,8 @@ import {
    TouchableOpacity,
    View,
    ViewStyle,
-   StyleProp
+   StyleProp,
+   ScrollView
 } from 'react-native'
 import { commonStyles, theme } from '@/theme'
 import { OverlayerModal } from '@/components/modals/'
@@ -101,7 +102,7 @@ const CreateAddressModal = ({
             overlayModalVisible={overlayModalVisible}
          >
             <View style={commonStyles.container}>
-               <View style={{ flex: 1, gap: 10 }}>
+               <ScrollView style={{ flex: 1, gap: 10 }}>
                   <FormZipCodeInput
                      label="CEP"
                      name="zipCode"
@@ -139,15 +140,15 @@ const CreateAddressModal = ({
                      value={address.city}
                      onChange={changeHandle}
                   />
-                  <TouchableOpacity
-                     style={commonStyles.addButton}
-                     onPress={handleSaveAddress}
-                  >
-                     <Text style={commonStyles.addButtonText}>
-                        Salvar Endereço
-                     </Text>
-                  </TouchableOpacity>
-               </View>
+               </ScrollView>
+               <TouchableOpacity
+                  style={[commonStyles.addButton, { marginTop: 10 }]}
+                  onPress={handleSaveAddress}
+               >
+                  <Text style={commonStyles.addButtonText}>
+                     Salvar Endereço
+                  </Text>
+               </TouchableOpacity>
             </View>
          </OverlayerModal>
          <TouchableOpacity

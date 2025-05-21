@@ -47,15 +47,16 @@ const OverlayerModal: React.FC<OverlayModalProps> = ({
                style={{
                   backgroundColor: theme.colors.appContainerColor,
                   height: height * 0.85,
+                  borderTopLeftRadius: 15,
+                  borderTopRightRadius: 15,
                   width: '100%',
-                  borderRadius: 15,
                   borderColor: theme.colors.primary,
                   marginTop: 'auto'
                }}
             >
                <View
                   style={{
-                     height: height * 0.06,
+                     height: height * 0.08,
                      flexDirection: 'row',
                      justifyContent: 'space-between',
                      alignItems: 'center',

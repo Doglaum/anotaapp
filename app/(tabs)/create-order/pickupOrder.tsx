@@ -50,7 +50,11 @@ const PedidoForm = () => {
 
    const handleSubmit = async () => {
       const newOrder = await orderService.createOrder(order)
-      print(newOrder)
+      try {
+         await print(newOrder as Order)
+      } catch (error) {
+         order.printed = false
+      }
       router.push('(tabs)/create-order')
    }
 
@@ -61,9 +65,6 @@ const PedidoForm = () => {
 
    function getTotalOrderPrice(): number {
       let totalOrder = 0
-      if (order.deliveryFee) {
-         totalOrder += order.deliveryFee
-      }
       if (order.orderProducts) {
          totalOrder += order.orderProducts.reduce((total, orderProduct) => {
             const productPrice = orderProduct.totalPrice

@@ -23,7 +23,8 @@ export const theme = {
       warning: '#dd9748',
       appContainerColor: '#f5f5f5',
       toastBackgroundColor: '#ffffff',
-      placeholder: '#818181'
+      placeholder: '#818181',
+      alert: '#f59a51'
    }
 }
 

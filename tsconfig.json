@@ -11,8 +11,9 @@
       "@/*": ["src/*", "app/*"],
     },
     "resolveJsonModule": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "typeRoots": ["./node_modules/@types", "./@types"]
   },
-  "include": ["src", "app", "types"],
+  "include": ["src", "app", "@types"],
   "exclude": ["node_modules"]
 }

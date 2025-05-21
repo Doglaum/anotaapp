@@ -1,39 +1,23 @@
 import { commonStyles, theme } from '@/theme'
-import {
-   DiscoveryDeviceType,
-   usePrintersDiscovery
-} from 'react-native-esc-pos-printer'
-import { useEffect, useState } from 'react'
-import { errorToast } from '@/components'
 import { FlatList, Text, TouchableOpacity, View } from 'react-native'
-import { usePrinter } from '@/context/PrinterContext'
-import { Stack } from 'expo-router'
 
-type DeviceInfo = {
-   deviceType: keyof typeof DiscoveryDeviceType
-   target: string
-   deviceName: string
-   ipAddress: string
-   macAddress: string
-   bdAddress: string
-}
+import { BluetoothDevice } from 'tp-react-native-bluetooth-printer'
+import { usePrinter } from '@/context/PrinterContext'
 
 export default function TabLayout() {
-   const { connectToPrinter } = usePrinter()
-   const { start, printerError, printers, isDiscovering } =
-      usePrintersDiscovery()
-
-   useEffect(() => {
-      if (printerError) {
-         errorToast(printerError.message)
-      }
-   }, [printerError])
+   const {
+      scanDevices,
+      isDiscovering,
+      connectToPrinter,
+      devices,
+      connectedPrinter
+   } = usePrinter()
 
    return (
       <View style={commonStyles.container}>
          <TouchableOpacity
             disabled={isDiscovering}
-            onPress={() => start()}
+            onPress={() => scanDevices()}
             style={[
                {
                   backgroundColor: theme.colors.primary,
@@ -52,17 +36,39 @@ export default function TabLayout() {
                </Text>
             )}
          </TouchableOpacity>
-         <FlatList<DeviceInfo>
-            data={printers}
-            renderItem={({ item }) => (
-               <TouchableOpacity
-                  onPress={() => connectToPrinter(item)}
-                  style={[commonStyles.listItem, { flexDirection: 'column' }]}
-               >
-                  <Text style={{ fontSize: 16 }}>{item.deviceName}</Text>
-                  <Text style={{ fontSize: 16 }}>{item.macAddress}</Text>
-               </TouchableOpacity>
-            )}
+         <FlatList<BluetoothDevice>
+            data={devices.found}
+            style={{ marginTop: 5 }}
+            renderItem={({ item }) => {
+               const paired = item.address == connectedPrinter?.address
+               return (
+                  <TouchableOpacity
+                     onPress={() => connectToPrinter(item)}
+                     style={[
+                        commonStyles.listItem,
+                        { flexDirection: 'column' },
+                        paired && { backgroundColor: theme.colors.primary }
+                     ]}
+                  >
+                     <Text
+                        style={[
+                           { fontSize: 16 },
+                           paired && commonStyles.addButtonText
+                        ]}
+                     >
+                        {item.name}
+                     </Text>
+                     <Text
+                        style={[
+                           { fontSize: 16 },
+                           paired && commonStyles.addButtonText
+                        ]}
+                     >
+                        {item.address}
+                     </Text>
+                  </TouchableOpacity>
+               )
+            }}
          />
       </View>
    )

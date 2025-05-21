@@ -41,7 +41,11 @@ export class OrderRepository {
    }
 
    async update(id: number, order: Partial<Order>): Promise<Order | null> {
-      await this.repository.update(id, order)
+      try {
+         await this.repository.update(id, order)
+      } catch (error) {
+         console.log(error)
+      }
       return await this.findById(id)
    }
 

@@ -1,17 +1,30 @@
 import { errorToast } from '@/components'
 import { Order } from '@/database/models'
-import React, { createContext, useContext, useState } from 'react'
+import { SystemParamsService } from '@/services'
+import dayjs from 'dayjs'
+import React, { createContext, useContext, useEffect, useState } from 'react'
+import { DeviceEventEmitter } from 'react-native'
+
 import {
-   DeviceInfo,
-   Printer,
-   PrinterConstants,
-   usePrintersDiscovery
-} from 'react-native-esc-pos-printer'
+   BluetoothManager,
+   BluetoothEscposPrinter,
+   BluetoothDevice,
+   ALIGN
+} from 'tp-react-native-bluetooth-printer'
+
+type FoundedDevicesType = {
+   paired: BluetoothDevice[]
+   found: BluetoothDevice[]
+}
 
 type PrinterContextType = {
-   connectToPrinter: (device: DeviceInfo) => Promise<void>
+   connectToPrinter: (printer: BluetoothDevice) => Promise<void>
    print: (order: Order) => Promise<void>
-   printing: boolean
+   scanDevices: () => void
+   isDiscovering: boolean
+   devices: FoundedDevicesType
+   connectedPrinter: BluetoothDevice | undefined
+   isPrinting: boolean
 }
 
 const PrinterContext = createContext<PrinterContextType | undefined>(undefined)
@@ -19,143 +32,293 @@ const PrinterContext = createContext<PrinterContextType | undefined>(undefined)
 export const PrinterProvider: React.FC<{ children: React.ReactNode }> = ({
    children
 }) => {
-   const { pairBluetoothDevice } = usePrintersDiscovery()
-   const [printer, setPrinter] = useState<Printer | null>(null)
-   const [printing, setPrinting] = useState(false)
+   const systemParamsService = new SystemParamsService()
+   const [isPrinting, setIsPrinting] = useState(false)
+   const [connectedPrinter, setConnectedPrinter] = useState<BluetoothDevice>()
+   const [devices, setDevices] = useState<FoundedDevicesType>(
+      {} as FoundedDevicesType
+   )
+   const [isDiscovering, setIsDisconvering] = useState(false)
 
-   /**
-    * Conecta à impressora Bluetooth
-    */
-   const connectToPrinter = async (device: DeviceInfo) => {
+   const scanDevices = async () => {
       try {
-         // Emparelha o dispositivo Bluetooth
-         await pairBluetoothDevice(device.macAddress)
-
-         // Cria uma instância da impressora
-         const connectedPrinter = new Printer({
-            target: device.macAddress,
-            deviceName: device.deviceName
-         })
-         setPrinter(connectedPrinter)
-         console.log(`Conectado à impressora: ${device.deviceName}`)
+         const isBluetoothEnabled = await BluetoothManager.isBluetoothEnabled()
+         if (!isBluetoothEnabled) {
+            errorToast('É necessário ligar o bluetooth para continuar')
+            return
+         }
+         setIsDisconvering(true)
+         const devices = await BluetoothManager.scanDevices()
+         const objectDevices = JSON.parse(devices.toString())
+         if (objectDevices?.paired[0]?.address) {
+            connectToPrinter(objectDevices.paired[0])
+         }
+         setDevices(objectDevices)
       } catch (error) {
-         console.error('Erro ao conectar à impressora:', error)
+         console.error(error)
       }
    }
 
-   /**
-    * Envia comandos de impressão para a impressora
-    */
+   useEffect(() => {
+      DeviceEventEmitter.addListener('EVENT_DEVICE_DISCOVER_DONE', () => {
+         console.log('emiiter')
+         setIsDisconvering(false)
+      })
+   }, [])
+
+   const connectToPrinter = async (printer: BluetoothDevice) => {
+      await BluetoothManager.connect(printer.address)
+      await BluetoothEscposPrinter.printerAlign(ALIGN.CENTER)
+      await BluetoothEscposPrinter.printText('TESTE DE IMPRESSAO\n\r', {
+         codepage: 0,
+         widthtimes: 1,
+         heigthtimes: 1,
+         fonttype: 1
+      })
+      systemParamsService.save({
+         systemParamsId: 1,
+         code: '',
+         name: 'PRINTER',
+         value: printer.address
+      })
+      setConnectedPrinter(printer)
+   }
+
    const print = async (order: Order) => {
-      if (!printer) {
-         errorToast('Impressora não conectada!')
-         return
-      }
+      console.log('print')
       try {
-         setPrinting(true)
+         if (!connectedPrinter?.address) {
+            errorToast('Nenhuma impressora conectada')
+            return
+         }
+         setIsPrinting(true)
+         await BluetoothManager.connect(connectedPrinter.address)
+         await BluetoothEscposPrinter.printerAlign(ALIGN.CENTER)
+         await BluetoothEscposPrinter.printText(
+            `PEDIDO #${order.orderId.toString().padStart(4, '0')}\n\r`,
+            {
+               codepage: 0,
+               widthtimes: 2,
+               heigthtimes: 2,
+               fonttype: 1
+            }
+         )
+         await BluetoothEscposPrinter.printText(
+            `Horario: ${dayjs(order.created_at).format('HH:mm:ss')}\n\r`,
+            {}
+         )
+         await BluetoothEscposPrinter.printAndFeed(20)
+         await BluetoothEscposPrinter.printerAlign(ALIGN.CENTER)
+         if (order.clientName) {
+            await BluetoothEscposPrinter.printText('DADOS DO CLIENTE\n\r', {
+               codepage: 0,
+               widthtimes: 2,
+               heigthtimes: 2,
+               fonttype: 1
+            })
+            await BluetoothEscposPrinter.printAndFeed(15)
+            if (order.clientName) {
+               await BluetoothEscposPrinter.printText(
+                  `Nome: ${order.clientName.replaceAll('ç', 'c')}\n\r`,
+                  {}
+               )
+            }
+            if (order.client?.phoneNumber) {
+               await BluetoothEscposPrinter.printText(
+                  `Telefone: ${order.client.phoneNumber}\n\r`,
+                  {}
+               )
+            }
 
-         const res = await printer.addQueueTask(async () => {
-            // Conecta à impressora
-            await Printer.tryToConnectUntil(
-               printer,
-               status => status.online.statusCode === PrinterConstants.TRUE
+            await BluetoothEscposPrinter.printText(
+               '--------------------------------\n\r',
+               {}
             )
+         }
 
-            // Centraliza o texto e adiciona o título
-            await printer.addTextAlign(PrinterConstants.ALIGN_CENTER)
-            await printer.addTextSize({ width: 2, height: 2 })
-            await printer.addText('RECIBO DO PEDIDO\n')
-            await printer.addFeedLine()
+         await BluetoothEscposPrinter.printerAlign(ALIGN.CENTER)
+         await BluetoothEscposPrinter.printText('PRODUTOS\n\r', {
+            codepage: 0,
+            widthtimes: 2,
+            heigthtimes: 2,
+            fonttype: 1
+         })
+         await BluetoothEscposPrinter.printAndFeed(15)
+         if (order?.orderProducts?.length) {
+            for (const item of order.orderProducts) {
+               await BluetoothEscposPrinter.printerAlign(ALIGN.LEFT)
+               await BluetoothEscposPrinter.printText(
+                  `Nome: ${item.product.name.replaceAll('ç', 'c')}\n\r`,
+                  {}
+               )
+               await BluetoothEscposPrinter.printText(
+                  `Preco: R$${item.unitPrice.toFixed(2)}\n\r`,
+                  {}
+               )
 
-            // Adiciona os dados do cliente
-            await printer.addTextAlign(PrinterConstants.ALIGN_LEFT)
-            await printer.addTextSize({ width: 1, height: 1 })
-            await printer.addText('--- Dados do Cliente ---\n')
-            await printer.addText(`Nome: ${order.clientName}\n`)
-            await printer.addText(
-               `Telefone: ${order.client?.phoneNumber || 'Não informado'}\n`
-            )
-            await printer.addFeedLine()
-
-            // Adiciona os produtos
-            await printer.addText('--- Produtos ---\n')
-            for (const item of order.orderProducts || []) {
-               await printer.addText(`Nome: ${item.product.name}\n`)
-               await printer.addText(`Preço: R$${item.unitPrice.toFixed(2)}\n`)
                if (item.details) {
-                  await printer.addText(`Detalhes: ${item.details}\n`)
+                  await BluetoothEscposPrinter.printText(
+                     `Detalhes: ${item.details.replaceAll('ç', 'c')}\n\r`,
+                     {}
+                  )
                }
-               if (item.selectedIngredients) {
+
+               if (item.selectedIngredients?.length) {
                   for (const ingredient of item.selectedIngredients) {
-                     await printer.addText(
-                        `  - ${ingredient.name} ${
+                     await BluetoothEscposPrinter.printText(
+                        `  - ${ingredient.name.replaceAll('ç', 'c')}${
                            ingredient.price
-                              ? `R$${ingredient.price.toFixed(2)}`
+                              ? `: R$${ingredient.price.toFixed(2)}`
                               : ''
-                        }\n`
+                        }\n\r`,
+                        {}
                      )
                   }
                }
+
                if (item.unitPrice !== item.totalPrice) {
-                  await printer.addText(
-                     `Preço total: R$${item.totalPrice.toFixed(2)}\n`
+                  await BluetoothEscposPrinter.printText(
+                     `Preco total: R$${item.totalPrice.toFixed(2)}\n\r`,
+                     {}
                   )
                }
-               await printer.addFeedLine()
-            }
 
-            // Adiciona os dados de pagamento
-            await printer.addText('--- Pagamento ---\n')
-            await printer.addText(
-               `Status: ${order.paymentStatus?.name.toUpperCase()}\n`
-            )
-            await printer.addText(
-               `Forma de pagamento: ${order.paymentMethod?.name}\n`
-            )
-            await printer.addText(
-               `Troco: R$${order.changeFor?.toFixed(2) || '0.00'}\n`
-            )
-            await printer.addText(
-               `Taxa de entrega: R$${order.deliveryFee?.toFixed(2) || '0.00'}\n`
-            )
-            await printer.addText(
-               `Valor total: R$${order.totalPrice?.toFixed(2) || '0.00'}\n`
-            )
-            await printer.addFeedLine()
-
-            // Adiciona os dados do endereço (se houver)
-            if (order.address) {
-               await printer.addText('--- Endereço ---\n')
-               await printer.addText(`Bairro: ${order.address.neighborhood}\n`)
-               await printer.addText(`Número: ${order.address.number}\n`)
-               await printer.addText(
-                  `Complemento: ${order.address.complement}\n`
+               await BluetoothEscposPrinter.printText(
+                  '--------------------------------\n\r',
+                  {}
                )
-               await printer.addText(`CEP: ${order.address.zipCode}\n`)
-               await printer.addText(`Cidade: ${order.address.city}\n`)
-               await printer.addFeedLine()
             }
-            // Adiciona o corte do papel
-            await printer.addCut()
+         }
 
-            // Envia os dados para a impressora
-            const result = await printer.sendData()
-
-            // Desconecta da impressora
-            await printer.disconnect()
-
-            return result
+         await BluetoothEscposPrinter.printerAlign(ALIGN.CENTER)
+         await BluetoothEscposPrinter.printText('PAGAMENTO\n\r', {
+            codepage: 0,
+            widthtimes: 2,
+            heigthtimes: 2,
+            fonttype: 1
          })
-      } catch (e) {
-         errorToast('Erro ao imprimir:' + e)
-         await printer.disconnect()
-      } finally {
-         setPrinting(false)
+         await BluetoothEscposPrinter.printAndFeed(15)
+         if (order.paymentStatus?.name) {
+            await BluetoothEscposPrinter.printText(
+               `Status: ${order.paymentStatus.name.toUpperCase()}\n\r`,
+               {}
+            )
+         }
+         if (order.paymentMethod?.name) {
+            await BluetoothEscposPrinter.printText(
+               `Forma de pagamento: ${order.paymentMethod.name.replaceAll(
+                  'ç',
+                  'c'
+               )}\n\r`,
+               {}
+            )
+         }
+         if (order.changeFor) {
+            await BluetoothEscposPrinter.printText(
+               `Troco: R$${order.changeFor.toFixed(2)}\n\r`,
+               {}
+            )
+         }
+         let total = order.totalPrice
+         if (order.deliveryFee) {
+            total += order.deliveryFee
+            await BluetoothEscposPrinter.printText(
+               `Taxa de entrega: R$${order.deliveryFee.toFixed(2)}\n\r`,
+               {}
+            )
+         }
+         await BluetoothEscposPrinter.printText(
+            `Valor total produtos: R$${order.totalPrice.toFixed(2)}\n\r`,
+            {}
+         )
+
+         await BluetoothEscposPrinter.printText(
+            `Valor total pedido: R$${total.toFixed(2)}\n\r`,
+            {}
+         )
+
+         await BluetoothEscposPrinter.printText(
+            '--------------------------------\n\r',
+            {}
+         )
+
+         if (order.address) {
+            await BluetoothEscposPrinter.printerAlign(ALIGN.CENTER)
+            await BluetoothEscposPrinter.printText('ENDERECO\n\r', {
+               codepage: 0,
+               widthtimes: 2,
+               heigthtimes: 2,
+               fonttype: 1
+            })
+            await BluetoothEscposPrinter.printAndFeed(15)
+
+            if (order.address.neighborhood) {
+               await BluetoothEscposPrinter.printText(
+                  `Bairro: ${order.address.neighborhood.replaceAll(
+                     'ç',
+                     'c'
+                  )}\n\r`,
+                  {}
+               )
+            }
+            if (order.address.number) {
+               await BluetoothEscposPrinter.printText(
+                  `Número: ${order.address.number}\n\r`,
+                  {}
+               )
+            }
+            if (order.address.complement) {
+               await BluetoothEscposPrinter.printText(
+                  `Complemento: ${order.address.complement.replaceAll(
+                     'ç',
+                     'c'
+                  )}\n\r`,
+                  {}
+               )
+            }
+            if (order.address.zipCode) {
+               await BluetoothEscposPrinter.printText(
+                  `CEP: ${order.address.zipCode}\n\r`,
+                  {}
+               )
+            }
+            if (order.address.city) {
+               await BluetoothEscposPrinter.printText(
+                  `Cidade: ${order.address.city.replaceAll('ç', 'c')}\n\r`,
+                  {}
+               )
+            }
+
+            await BluetoothEscposPrinter.printText(
+               '--------------------------------\n\r',
+               {}
+            )
+         }
+
+         await BluetoothEscposPrinter.printerAlign(ALIGN.CENTER)
+         await BluetoothEscposPrinter.printText(
+            'Obrigado pela preferencia!\n\r\n\r',
+            {}
+         )
+         await BluetoothEscposPrinter.cutLine(5)
+      } catch (error) {
+         console.error(error)
       }
+      setIsPrinting(false)
    }
 
    return (
-      <PrinterContext.Provider value={{ connectToPrinter, print, printing }}>
+      <PrinterContext.Provider
+         value={{
+            connectToPrinter,
+            print,
+            scanDevices,
+            isDiscovering,
+            devices,
+            connectedPrinter,
+            isPrinting
+         }}
+      >
          {children}
       </PrinterContext.Provider>
    )
