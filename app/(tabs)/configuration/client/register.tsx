@@ -4,7 +4,8 @@ import {
    StyleSheet,
    TouchableOpacity,
    FlatList,
-   Alert
+   Alert,
+   ScrollView
 } from 'react-native'
 import { useEffect, useState } from 'react'
 import { commonStyles, theme } from '@/theme'
@@ -78,59 +79,6 @@ const RegisterClient = ({ editClientId }: { editClientId: number }) => {
       ])
    }
 
-   const addressListItem = ({ item }: { item: Address }) => (
-      <View
-         style={{
-            flex: 1,
-            marginBottom: 5,
-            backgroundColor: theme.colors.white,
-            borderRadius: 8,
-            borderWidth: 1,
-            borderColor: '#ddd',
-            flexDirection: 'row',
-            padding: 5,
-            paddingTop: 15,
-            paddingBottom: 15
-         }}
-      >
-         <View
-            style={{
-               flex: 1,
-               alignItems: 'center',
-               justifyContent: 'center'
-            }}
-         >
-            <MaterialIcons name="home" size={24} color={'lightgrey'} />
-         </View>
-         <View style={{ flex: 7 }}>
-            {item.street && (
-               <Text style={{ fontWeight: 'bold', fontSize: 14 }}>
-                  {item.street}, {item.number}
-               </Text>
-            )}
-
-            {item.neighborhood && (
-               <Text style={{ fontSize: 12 }}>{item.neighborhood}</Text>
-            )}
-            {item.city && <Text style={{ fontSize: 12 }}>{item.city}</Text>}
-
-            {item.zipCode && (
-               <Text style={{ fontSize: 12 }}>{item.zipCode}</Text>
-            )}
-         </View>
-         <View
-            style={{
-               flex: 1,
-               alignItems: 'flex-end'
-            }}
-         >
-            <TouchableOpacity onPress={() => deleteAddress(item)}>
-               <MaterialIcons name="delete" size={18} color={'red'} />
-            </TouchableOpacity>
-         </View>
-      </View>
-   )
-
    return (
       <View style={[commonStyles.container, { gap: 10 }]}>
          <FormTextInput
@@ -170,26 +118,74 @@ const RegisterClient = ({ editClientId }: { editClientId: number }) => {
                <CreateAddressModal onSave={saveAddress} />
             </View>
          </View>
-         <FlatList<Address>
-            keyExtractor={(item, index) => index.toString()}
-            data={client.addresses}
-            renderItem={addressListItem}
-            contentContainerStyle={{ padding: 10 }}
-            ListEmptyComponent={
-               <View
-                  style={{
-                     backgroundColor: theme.colors.white,
-                     borderRadius: 8,
-                     borderWidth: 0.2
-                  }}
-               >
-                  <EmptyList
-                     iconName="hourglass-empty"
-                     text="Sem endereço cadastrado"
-                  />
-               </View>
-            }
-         />
+         <ScrollView keyboardShouldPersistTaps="handled">
+            {client.addresses &&
+               client.addresses.map((item, index) => (
+                  <View
+                     key={index}
+                     style={{
+                        flex: 1,
+                        marginBottom: 5,
+                        backgroundColor: theme.colors.white,
+                        borderRadius: 8,
+                        borderWidth: 1,
+                        borderColor: '#ddd',
+                        flexDirection: 'row',
+                        padding: 5,
+                        paddingTop: 15,
+                        paddingBottom: 15
+                     }}
+                  >
+                     <View
+                        style={{
+                           flex: 1,
+                           alignItems: 'center',
+                           justifyContent: 'center'
+                        }}
+                     >
+                        <MaterialIcons
+                           name="home"
+                           size={24}
+                           color={'lightgrey'}
+                        />
+                     </View>
+                     <View style={{ flex: 7 }}>
+                        {item.street && (
+                           <Text style={{ fontWeight: 'bold', fontSize: 14 }}>
+                              {item.street}, {item.number}
+                           </Text>
+                        )}
+
+                        {item.neighborhood && (
+                           <Text style={{ fontSize: 12 }}>
+                              {item.neighborhood}
+                           </Text>
+                        )}
+                        {item.city && (
+                           <Text style={{ fontSize: 12 }}>{item.city}</Text>
+                        )}
+
+                        {item.zipCode && (
+                           <Text style={{ fontSize: 12 }}>{item.zipCode}</Text>
+                        )}
+                     </View>
+                     <View
+                        style={{
+                           flex: 1,
+                           alignItems: 'flex-end'
+                        }}
+                     >
+                        <TouchableOpacity onPress={() => deleteAddress(item)}>
+                           <MaterialIcons
+                              name="delete"
+                              size={25}
+                              color={'red'}
+                           />
+                        </TouchableOpacity>
+                     </View>
+                  </View>
+               ))}
+         </ScrollView>
          <TouchableOpacity
             style={[commonStyles.saveButton, { marginTop: 'auto' }]}
             onPress={handleSubmit}

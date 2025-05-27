@@ -3,7 +3,8 @@ import {
    Text,
    StyleSheet,
    FlatList,
-   TouchableOpacity
+   TouchableOpacity,
+   ScrollView
 } from 'react-native'
 import { commonStyles, theme } from '@/theme'
 import { useEffect, useState } from 'react'
@@ -72,55 +73,47 @@ const ClientStep = ({
 
             <CreateClientModal onSave={handleOnSaveClient} />
          </View>
-         <FlatList<Client>
-            data={filteredClients}
-            keyExtractor={item => item.clientId.toString()}
-            renderItem={({ item }: { item: Client }) => {
-               const isSelected = order.client?.clientId === item.clientId
-               return (
-                  <TouchableOpacity
-                     onPress={() => {
-                        insertOrderData('client', item)
-                        insertOrderData('clientName', item.name)
-                     }}
-                  >
-                     <View
-                        style={[
-                           commonStyles.listItem,
-                           isSelected && {
-                              backgroundColor: theme.colors.primary
-                           }
-                        ]}
+         <ScrollView keyboardShouldPersistTaps="handled">
+            {filteredClients &&
+               filteredClients.map((item, index) => {
+                  const isSelected = order.client?.clientId === item.clientId
+                  return (
+                     <TouchableOpacity
+                        key={index}
+                        onPress={() => {
+                           insertOrderData('client', item)
+                           insertOrderData('clientName', item.name)
+                        }}
                      >
-                        <Text
+                        <View
                            style={[
-                              styles.label,
-                              isSelected && { color: theme.colors.white }
+                              commonStyles.listItem,
+                              isSelected && {
+                                 backgroundColor: theme.colors.primary
+                              }
                            ]}
                         >
-                           {item.name}
-                        </Text>
-                        <Text
-                           style={[
-                              styles.label,
-                              isSelected && { color: theme.colors.white }
-                           ]}
-                        >
-                           {item.phoneNumber}
-                        </Text>
-                     </View>
-                  </TouchableOpacity>
-               )
-            }}
-            ListEmptyComponent={
-               <View>
-                  <EmptyList
-                     iconName="person"
-                     text="Nenhum cliente encontrado"
-                  />
-               </View>
-            }
-         />
+                           <Text
+                              style={[
+                                 styles.label,
+                                 isSelected && { color: theme.colors.white }
+                              ]}
+                           >
+                              {item.name}
+                           </Text>
+                           <Text
+                              style={[
+                                 styles.label,
+                                 isSelected && { color: theme.colors.white }
+                              ]}
+                           >
+                              {item.phoneNumber}
+                           </Text>
+                        </View>
+                     </TouchableOpacity>
+                  )
+               })}
+         </ScrollView>
       </View>
    )
 }

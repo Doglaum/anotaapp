@@ -23,7 +23,7 @@ export const FormSelectInput = <T extends object>({
 }) => {
    const [isFocus, setIsFocus] = useState(false)
    return (
-      <View>
+      <View style={{ flex: 1 }}>
          <Text
             style={[
                isFocus && { color: theme.colors.primary },

@@ -113,7 +113,8 @@ const PedidoForm = () => {
             <View
                style={{
                   flexDirection: 'row',
-                  alignItems: 'center'
+                  alignItems: 'center',
+                  gap: 3
                }}
             >
                {[1, 2, 3, 4, 5].map(num => (
@@ -292,7 +293,6 @@ const styles = StyleSheet.create({
       borderColor: '#ccc',
       justifyContent: 'center',
       alignItems: 'center',
-      marginHorizontal: 5,
       backgroundColor: '#ffffff'
    },
    activeStepBox: {

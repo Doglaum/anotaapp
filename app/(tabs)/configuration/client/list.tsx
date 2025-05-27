@@ -3,7 +3,9 @@ import {
    Text,
    StyleSheet,
    FlatList,
-   TouchableOpacity
+   TouchableOpacity,
+   ScrollView,
+   Alert
 } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
 import { commonStyles, theme } from '@/theme'
@@ -14,6 +16,8 @@ import { ClientService } from '@/services/ClientService'
 import { EmptyList } from '@/components/EmptyList'
 import { useFocusEffect } from 'expo-router'
 import { FormSearchInput } from '@/components/form-inputs/FormSearchInput'
+import { successToast } from '@/components'
+import { SuccessToast } from 'react-native-toast-message'
 
 export default function Clients() {
    const router = useRouter()
@@ -45,6 +49,7 @@ export default function Clients() {
       const newList = clients.filter(p => p.clientId !== id)
       setClients(() => newList)
       setFilteredClients(() => newList)
+      successToast('Cliente removido com sucesso!')
    }
 
    const handleSearch = (text: string) => {
@@ -56,6 +61,22 @@ export default function Clients() {
       setFilteredClients(filteredClients)
    }
 
+   const deleteClientHandle = (clientToRemove: Client) => {
+      Alert.alert(
+         'Atenção!',
+         `Deseja remover o cliente ${clientToRemove.name}?`,
+         [
+            { text: 'Não' },
+            {
+               text: 'Sim',
+               onPress: () => {
+                  handleDelete(clientToRemove.clientId)
+               }
+            }
+         ]
+      )
+   }
+
    return (
       <View style={commonStyles.container}>
          <FormSearchInput
@@ -64,55 +85,53 @@ export default function Clients() {
             rota="/configuration/client/register"
             style={{ marginBottom: 20 }}
          />
-         <FlatList<Client>
-            data={filteredClients}
-            keyExtractor={item => item.clientId.toString()}
-            renderItem={({ item }) => (
-               <View style={commonStyles.listItem}>
-                  <View>
-                     <Text style={[styles.clientName]}>
-                        {item.name}
-                        {item.phoneNumber ? ' - ' + item.phoneNumber : null}
-                     </Text>
-                     {item.addresses && (
-                        <Text style={{ fontSize: 12, fontWeight: '400' }}>
-                           {item.addresses[0]?.street}
-                           {item.addresses[0]?.number
-                              ? ' - ' + item.addresses[0]?.number
-                              : null}
+         <ScrollView keyboardShouldPersistTaps="handled">
+            {filteredClients &&
+               filteredClients.map((item, index) => (
+                  <View key={index} style={commonStyles.listItem}>
+                     <View>
+                        <Text style={[styles.clientName]}>
+                           {item.name}
+                           {item.phoneNumber ? ' - ' + item.phoneNumber : null}
                         </Text>
-                     )}
+                        {item.addresses && (
+                           <Text style={{ fontSize: 12, fontWeight: '400' }}>
+                              {item.addresses[0]?.street}
+                              {item.addresses[0]?.number
+                                 ? ' - ' + item.addresses[0]?.number
+                                 : null}
+                           </Text>
+                        )}
+                     </View>
+                     <View style={[styles.clienteActions]}>
+                        <TouchableOpacity
+                           style={styles.actionButton}
+                           onPress={() =>
+                              router.push(
+                                 `/configuration/client/${item.clientId}`
+                              )
+                           }
+                        >
+                           <MaterialIcons
+                              name="edit"
+                              size={20}
+                              color={theme.colors.edit}
+                           />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                           style={styles.actionButton}
+                           onPress={() => deleteClientHandle(item)}
+                        >
+                           <MaterialIcons
+                              name="delete"
+                              size={20}
+                              color={theme.colors.delete}
+                           />
+                        </TouchableOpacity>
+                     </View>
                   </View>
-                  <View style={[styles.clienteActions]}>
-                     <TouchableOpacity
-                        style={styles.actionButton}
-                        onPress={() =>
-                           router.push(`/configuration/client/${item.clientId}`)
-                        }
-                     >
-                        <MaterialIcons
-                           name="edit"
-                           size={20}
-                           color={theme.colors.edit}
-                        />
-                     </TouchableOpacity>
-                     <TouchableOpacity
-                        style={styles.actionButton}
-                        onPress={() => handleDelete(item.clientId)}
-                     >
-                        <MaterialIcons
-                           name="delete"
-                           size={20}
-                           color={theme.colors.delete}
-                        />
-                     </TouchableOpacity>
-                  </View>
-               </View>
-            )}
-            ListEmptyComponent={
-               <EmptyList iconName="person" text="Nenhum cliente cadastrado" />
-            }
-         />
+               ))}
+         </ScrollView>
       </View>
    )
 }

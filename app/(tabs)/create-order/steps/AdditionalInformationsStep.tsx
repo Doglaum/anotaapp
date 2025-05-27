@@ -57,8 +57,11 @@ const AdditionalInformationsStep = ({
    }
 
    return (
-      <ScrollView style={commonStyles.container}>
-         <View style={{ marginTop: 10, gap: 10 }}>
+      <ScrollView
+         keyboardShouldPersistTaps="handled"
+         style={commonStyles.container}
+      >
+         <View style={{ gap: 10 }}>
             <FormSelectInput<Order>
                onChange={selectHandle}
                data={paymenStatusList || []}
@@ -66,7 +69,7 @@ const AdditionalInformationsStep = ({
                labelField="name"
                valueField="id"
                name="paymentStatus"
-               placeholder="Pago, Pedente, Cancelado"
+               placeholder="Pago, Pedente, Pagar na entrega"
             />
             <FormSelectInput<Order>
                onChange={selectHandle}

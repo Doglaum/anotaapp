@@ -46,6 +46,7 @@ export const FormCurrencyInput = ({
             placeholder="0"
             keyboardType="numeric"
             returnKeyType="done"
+            submitBehavior={'blurAndSubmit'}
             prefix="R$"
             onFocus={() => setIsFocus(true)}
             onBlur={() => setIsFocus(false)}

@@ -1,12 +1,4 @@
-import {
-   KeyboardAvoidingView,
-   Platform,
-   StyleProp,
-   Text,
-   TextInput,
-   View,
-   ViewStyle
-} from 'react-native'
+import { StyleProp, Text, TextInput, View, ViewStyle } from 'react-native'
 import { formStyle } from './styles'
 import { useState } from 'react'
 import { theme } from '@/theme'
@@ -30,6 +22,7 @@ export const FormTextInput = ({
 }) => {
    const [isFocus, setIsFocus] = useState(false)
    const onChangeText = (text: string) => {
+      setIsFocus(true)
       onChange(name, text)
    }
 

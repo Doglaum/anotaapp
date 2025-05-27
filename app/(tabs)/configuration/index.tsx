@@ -22,6 +22,16 @@ const index = () => {
                commonStyles.addButton,
                { flexDirection: 'row', gap: 10, justifyContent: 'center' }
             ]}
+            onPress={() => router.push('(tabs)/configuration/product-group')}
+         >
+            <Text style={commonStyles.addButtonText}>Agrupar Produto</Text>
+            <Entypo name="list" size={20} color={theme.colors.white} />
+         </TouchableOpacity>
+         <TouchableOpacity
+            style={[
+               commonStyles.addButton,
+               { flexDirection: 'row', gap: 10, justifyContent: 'center' }
+            ]}
             onPress={() => router.push('(tabs)/configuration/client')}
          >
             <Text style={commonStyles.addButtonText}>Cliente</Text>

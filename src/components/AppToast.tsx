@@ -1,7 +1,7 @@
 // ## DOCUMENTATION ##
 // https://github.com/calintamas/react-native-toast-message
 import { theme } from '@/theme'
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import Toast, {
    ErrorToast,
    InfoToast,
@@ -15,6 +15,7 @@ export const AppToast = () => {
          position="top"
          topOffset={0}
          visibilityTime={3000}
+         swipeable={true}
       />
    )
 }
@@ -56,6 +57,7 @@ const toastMessageConfig = {
          text1Style={styles.commonText1Style}
          text2Style={styles.commonText2Style}
          position={'top'}
+         text2NumberOfLines={3}
       />
    ),
    error: (props: any) => (
@@ -69,6 +71,7 @@ const toastMessageConfig = {
          }}
          text1Style={styles.commonText1Style}
          text2Style={styles.commonText2Style}
+         text2NumberOfLines={3}
          position={'top'}
       />
    ),
@@ -84,6 +87,7 @@ const toastMessageConfig = {
          text1Style={styles.commonText1Style}
          text2Style={styles.commonText2Style}
          position={'top'}
+         text2NumberOfLines={3}
       />
    )
 }
@@ -91,12 +95,13 @@ const toastMessageConfig = {
 const styles = StyleSheet.create({
    commonText1Style: {
       color: theme.colors.secondary,
-      fontSize: 15,
+      fontSize: 18,
       fontWeight: 'bold'
    },
    commonText2Style: {
       color: theme.colors.secondary,
-      fontSize: 12,
+      fontSize: 15,
+      flexWrap: 'wrap',
       fontWeight: '400'
    }
 })

@@ -46,7 +46,7 @@ export const PrinterProvider: React.FC<{ children: React.ReactNode }> = ({
       const setSavedAddress = async () => {
          const savedPrinterAddress = await systemParamsService.findById(1)
          if (savedPrinterAddress.value) {
-            connectToPrinter({
+            setConnectedPrinter({
                name: '',
                address: savedPrinterAddress.value
             })
@@ -91,7 +91,6 @@ export const PrinterProvider: React.FC<{ children: React.ReactNode }> = ({
    }
 
    const print = async (order: Order) => {
-      console.log('print')
       try {
          if (!connectedPrinter?.address) {
             errorToast('Nenhuma impressora conectada')
@@ -311,16 +310,6 @@ export const PrinterProvider: React.FC<{ children: React.ReactNode }> = ({
                )
                addressName += ',' + order.address.city
             }
-            await BluetoothEscposPrinter.printAndFeed(15)
-            await BluetoothEscposPrinter.printerAlign(ALIGN.CENTER)
-            await BluetoothEscposPrinter.printQRCode(
-               `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
-                  addressName
-               )}`,
-               300,
-               ERROR_CORRECTION.H,
-               0
-            )
             await BluetoothEscposPrinter.printText(
                '--------------------------------\n\r',
                {}
@@ -333,9 +322,12 @@ export const PrinterProvider: React.FC<{ children: React.ReactNode }> = ({
          )
          await BluetoothEscposPrinter.cutLine(5)
       } catch (error) {
-         console.error(error)
+         errorToast(
+            'Houve um erro ao tentar imprimir, por favor cheque a conexão com a impressora!'
+         )
+      } finally {
+         setIsPrinting(false)
       }
-      setIsPrinting(false)
    }
 
    return (

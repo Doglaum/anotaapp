@@ -7,12 +7,13 @@ import {
    FlatList,
    Modal,
    StyleSheet,
-   Button
+   Button,
+   ScrollView
 } from 'react-native'
 import { commonStyles, theme } from '@/theme'
 import { Ingredient, Product } from '@/database/models'
 import { useEffect, useState } from 'react'
-import { FormSearchInput } from '@/components'
+import { FormSearchInput, FormTextInput } from '@/components'
 import { EmptyList, successToast, OverlayerModal } from '@/components'
 import { ProductService } from '@/services'
 import { MaterialIcons } from '@expo/vector-icons'
@@ -81,16 +82,17 @@ const CopyIngredientsModal = ({
             title="Copiar Ingredientes"
          >
             <View style={commonStyles.container}>
-               <View style={{ marginBottom: 10, gap: 20 }}>
+               <View style={{ marginBottom: 10 }}>
                   <FormSearchInput
                      onChange={filterList}
                      label="Pesquisar por nome"
                   />
-                  <FlatList<Product>
-                     keyExtractor={item => item.productId.toString()}
-                     data={filteredProducts}
-                     renderItem={({ item }) => (
+               </View>
+               <ScrollView keyboardShouldPersistTaps="handled">
+                  {filteredProducts &&
+                     filteredProducts.map((item, index) => (
                         <TouchableOpacity
+                           key={index}
                            onPress={() => {
                               setSelectedProduct(item)
                               setConfirmModalVisible(true)
@@ -113,31 +115,33 @@ const CopyIngredientsModal = ({
                            </View>
                            <MaterialIcons name="copy-all" size={20} />
                         </TouchableOpacity>
-                     )}
-                     ListEmptyComponent={
-                        <EmptyList
-                           iconName="restaurant"
-                           text="Nenhum produto encontrado"
-                        />
-                     }
-                  />
-               </View>
+                     ))}
+               </ScrollView>
             </View>
             <Modal
                visible={confirmModalVisible}
                transparent={true}
-               animationType="slide"
+               animationType="fade"
                onRequestClose={() => setConfirmModalVisible(false)}
             >
                <View style={styles.modalContainer}>
                   <View style={styles.modalContent}>
-                     <Text>{`Deseja copiar os ingredientes do produto ${selectProduct.name}?`}</Text>
+                     <Text
+                        style={{
+                           fontWeight: 'bold',
+                           fontSize: 16,
+                           textAlign: 'center',
+                           marginBottom: 20
+                        }}
+                     >{`Deseja copiar os ingredientes do produto ${selectProduct.name}?`}</Text>
                      <View style={styles.modalActions}>
                         <Button
+                           color={theme.colors.delete}
                            title="Cancelar"
                            onPress={() => setConfirmModalVisible(false)}
                         />
                         <Button
+                           color={theme.colors.primary}
                            title="Confirmar"
                            onPress={() => {
                               copyIngredients(selectProduct.ingredients)

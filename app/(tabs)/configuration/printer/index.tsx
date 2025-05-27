@@ -37,7 +37,7 @@ export default function TabLayout() {
             )}
          </TouchableOpacity>
          <FlatList<BluetoothDevice>
-            data={devices.found}
+            data={[...(devices.paired || []), ...(devices.found || [])]}
             style={{ marginTop: 5 }}
             renderItem={({ item }) => {
                const paired = item.address == connectedPrinter?.address

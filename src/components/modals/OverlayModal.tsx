@@ -1,17 +1,9 @@
 import { PaperProvider } from 'react-native-paper'
-import {
-   Dimensions,
-   Modal,
-   TouchableOpacity,
-   View,
-   Text,
-   ScrollView,
-   KeyboardAvoidingView,
-   Platform
-} from 'react-native'
+import { Dimensions, Modal, TouchableOpacity, View, Text } from 'react-native'
 import { commonStyles, theme } from '@/theme'
 import { MaterialIcons } from '@expo/vector-icons'
 import { AppToast } from '../AppToast'
+import { useEffect, useRef } from 'react'
 
 type OverlayModalProps = {
    children: React.ReactNode
@@ -27,7 +19,6 @@ const OverlayerModal: React.FC<OverlayModalProps> = ({
    overlayModalVisible
 }) => {
    const { height } = Dimensions.get('window')
-
    const handleClose = () => {
       if (onClose) {
          onClose()
@@ -83,17 +74,7 @@ const OverlayerModal: React.FC<OverlayModalProps> = ({
                      />
                   </TouchableOpacity>
                </View>
-
-               <KeyboardAvoidingView
-                  style={{
-                     flex: 1,
-                     paddingVertical: 16,
-                     paddingHorizontal: 10
-                  }}
-                  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-               >
-                  {children}
-               </KeyboardAvoidingView>
+               {children}
             </View>
          </View>
          <AppToast />

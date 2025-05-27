@@ -89,7 +89,7 @@ const OrderInformation = ({ order }: { order: Partial<Order> }) => {
                   </Text>
                   <Text style={style.text}>
                      <Text style={style.highlightedText}>
-                        Forme de pagamento:{' '}
+                        Forma de pagamento:{' '}
                      </Text>
                      {order.paymentMethod?.name}
                   </Text>

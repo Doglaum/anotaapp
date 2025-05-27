@@ -6,7 +6,8 @@ import {
    TouchableOpacity,
    Modal,
    Button,
-   TextInput
+   TextInput,
+   ScrollView
 } from 'react-native'
 import { commonStyles, theme } from '@/theme'
 import { useState, useCallback, useEffect } from 'react'
@@ -105,47 +106,45 @@ const OrderProductStep = ({
             value={filterText}
             style={{ marginBottom: 10 }}
          />
-         <FlatList<Product>
-            data={filteredProducts}
-            keyExtractor={item => item.productId.toString()}
-            renderItem={({ item }) => (
-               <TouchableOpacity onPress={() => handleOpenModal(item)}>
-                  <View style={commonStyles.listItem}>
-                     <View style={styles.productInfo}>
-                        <View>
-                           <Text style={styles.productName}>{item.name}</Text>
-                           <Text style={styles.productPrice}>
-                              R$ {item.price.toFixed(2)}
-                           </Text>
-                        </View>
-                        <View
-                           style={{
-                              backgroundColor: theme.colors.primary,
-                              flexDirection: 'row',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              borderRadius: 8,
-                              borderWidth: 0.2,
-                              padding: 5
-                           }}
-                        >
-                           <MaterialIcons
-                              name="add-shopping-cart"
-                              size={16}
-                              color={theme.colors.white}
-                           ></MaterialIcons>
+         <ScrollView keyboardShouldPersistTaps="handled">
+            {filteredProducts &&
+               filteredProducts.map((item, index) => (
+                  <TouchableOpacity
+                     key={index}
+                     onPress={() => handleOpenModal(item)}
+                  >
+                     <View style={commonStyles.listItem}>
+                        <View style={styles.productInfo}>
+                           <View>
+                              <Text style={styles.productName}>
+                                 {item.name}
+                              </Text>
+                              <Text style={styles.productPrice}>
+                                 R$ {item.price.toFixed(2)}
+                              </Text>
+                           </View>
+                           <View
+                              style={{
+                                 backgroundColor: theme.colors.primary,
+                                 flexDirection: 'row',
+                                 justifyContent: 'center',
+                                 alignItems: 'center',
+                                 borderRadius: 8,
+                                 borderWidth: 0.2,
+                                 padding: 5
+                              }}
+                           >
+                              <MaterialIcons
+                                 name="add-shopping-cart"
+                                 size={16}
+                                 color={theme.colors.white}
+                              ></MaterialIcons>
+                           </View>
                         </View>
                      </View>
-                  </View>
-               </TouchableOpacity>
-            )}
-            ListEmptyComponent={
-               <EmptyList
-                  iconName="restaurant"
-                  text="Nenhum produto cadastrado"
-               />
-            }
-         />
+                  </TouchableOpacity>
+               ))}
+         </ScrollView>
          <CreateOrderProduct
             modalVisible={modalVisible}
             onClose={() => handleClose()}

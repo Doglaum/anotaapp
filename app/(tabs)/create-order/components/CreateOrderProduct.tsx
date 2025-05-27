@@ -2,10 +2,9 @@ import {
    View,
    Text,
    StyleSheet,
-   TextInput,
    FlatList,
    TouchableOpacity,
-   Button
+   ScrollView
 } from 'react-native'
 import React, { useState } from 'react'
 import { OverlayerModal } from '@/components/'
@@ -72,57 +71,60 @@ const CreateOrderProduct = ({
                onChange={handleChange}
                style={{ marginBottom: 10 }}
             />
-            <FlatList<Ingredient>
-               data={product.ingredients}
-               renderItem={({ item }) => {
-                  const count = getIngredientCount(item.ingredientId)
-                  return (
-                     <View style={[commonStyles.listItem]}>
-                        <View style={{ flexDirection: 'row' }}>
-                           <Text>{item.name}</Text>
-                           {item.price ? (
-                              <Text>{` - R$${item.price}`}</Text>
-                           ) : null}
-                        </View>
-                        <View
-                           style={{
-                              flexDirection: 'row',
-                              alignItems: 'center',
-                              gap: 10
-                           }}
-                        >
-                           <TouchableOpacity
-                              onPress={() => {
-                                 removeIngredient(item)
+            <ScrollView keyboardShouldPersistTaps="handled">
+               {product.ingredients &&
+                  product.ingredients.map((item, index) => {
+                     const count = getIngredientCount(item.ingredientId)
+
+                     return (
+                        <View key={index} style={[commonStyles.listItem]}>
+                           <View style={{ flexDirection: 'row' }}>
+                              <Text>{item.name}</Text>
+                              {item.price ? (
+                                 <Text>{` - R$${item.price.toFixed(2)}`}</Text>
+                              ) : null}
+                           </View>
+                           <View
+                              style={{
+                                 flexDirection: 'row',
+                                 alignItems: 'center',
+                                 gap: 10
                               }}
                            >
-                              <AntDesign
-                                 name="minussquare"
-                                 size={25}
-                                 color={theme.colors.primary}
-                              ></AntDesign>
-                           </TouchableOpacity>
-                           <Text style={{ fontWeight: 'bold', fontSize: 17 }}>
-                              {count}
-                           </Text>
-                           <TouchableOpacity
-                              onPress={() => {
-                                 addIngredient(item)
-                              }}
-                           >
-                              <AntDesign
-                                 name="plussquare"
-                                 size={25}
-                                 color={theme.colors.primary}
-                              ></AntDesign>
-                           </TouchableOpacity>
+                              <TouchableOpacity
+                                 onPress={() => {
+                                    removeIngredient(item)
+                                 }}
+                              >
+                                 <AntDesign
+                                    name="minussquare"
+                                    size={25}
+                                    color={theme.colors.primary}
+                                 ></AntDesign>
+                              </TouchableOpacity>
+                              <Text
+                                 style={{ fontWeight: 'bold', fontSize: 17 }}
+                              >
+                                 {count}
+                              </Text>
+                              <TouchableOpacity
+                                 onPress={() => {
+                                    addIngredient(item)
+                                 }}
+                              >
+                                 <AntDesign
+                                    name="plussquare"
+                                    size={25}
+                                    color={theme.colors.primary}
+                                 ></AntDesign>
+                              </TouchableOpacity>
+                           </View>
                         </View>
-                     </View>
-                  )
-               }}
-            />
+                     )
+                  })}
+            </ScrollView>
             <TouchableOpacity
-               style={[commonStyles.addButton, { marginBottom: 20 }]}
+               style={[commonStyles.addButton]}
                onPress={() => {
                   save(selectedIngredients, details)
                   setDetails('')

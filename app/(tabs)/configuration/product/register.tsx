@@ -3,10 +3,11 @@ import {
    Text,
    StyleSheet,
    TouchableOpacity,
-   FlatList,
-   Alert
+   Alert,
+   TextInput,
+   ScrollView
 } from 'react-native'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { commonStyles, theme } from '@/theme'
 import { Product } from '@/database/models/Product'
 import { ProductService } from '@/services/'
@@ -22,6 +23,7 @@ export default function RegisterProduct({
 }: {
    editProductId: number
 }) {
+   const viewRef = useRef<TextInput>(null)
    const router = useRouter()
    const productService = new ProductService()
    const [product, setProduct] = useState<Partial<Product>>({
@@ -111,7 +113,10 @@ export default function RegisterProduct({
    }
 
    return (
-      <View style={[commonStyles.container, { gap: 10 }]}>
+      <ScrollView
+         keyboardShouldPersistTaps="handled"
+         style={[commonStyles.container, { gap: 10, flex: 1 }]}
+      >
          <FormTextInput
             name="name"
             label="Nome"
@@ -171,52 +176,55 @@ export default function RegisterProduct({
                />
             </View>
          </View>
-         <FlatList<Partial<Ingredient>>
-            keyExtractor={(item, index) => index.toString()}
-            data={product.ingredients}
-            renderItem={({ item, index }) => (
-               <View style={[commonStyles.listItem]}>
-                  <View
-                     style={{
-                        alignItems: 'center',
-                        flexDirection: 'row'
-                     }}
-                  >
-                     <Text
+         <View>
+            {product.ingredients &&
+               product.ingredients.map((item, index) => (
+                  <View style={[commonStyles.listItem]}>
+                     <View
                         style={{
-                           fontSize: 16,
-                           fontWeight: 'bold'
+                           alignItems: 'center',
+                           flexDirection: 'row'
                         }}
                      >
-                        {`${item.name}`}
-                     </Text>
-                     <Text style={{ fontWeight: 'bold' }}>
-                        {`${item.price ? ` - R$${item.price.toFixed(2)}` : ''}`}
-                     </Text>
+                        <Text
+                           style={{
+                              fontSize: 16,
+                              fontWeight: 'bold'
+                           }}
+                        >
+                           {`${item.name}`}
+                        </Text>
+                        <Text style={{ fontWeight: 'bold' }}>
+                           {`${
+                              item.price ? ` - R$${item.price.toFixed(2)}` : ''
+                           }`}
+                        </Text>
+                     </View>
+                     <View style={{ flexDirection: 'row', gap: 10 }}>
+                        <TouchableOpacity
+                           focusable
+                           key={index}
+                           onPress={() => {
+                              removeIngredient(item)
+                           }}
+                           style={{ flexDirection: 'row' }}
+                        >
+                           <MaterialIcons
+                              name="delete"
+                              size={25}
+                              color={theme.colors.delete}
+                           />
+                        </TouchableOpacity>
+                     </View>
                   </View>
-                  <View style={{ flexDirection: 'row', gap: 10 }}>
-                     <TouchableOpacity
-                        key={index}
-                        onPress={() => {
-                           removeIngredient(item)
-                        }}
-                        style={{ flexDirection: 'row' }}
-                     >
-                        <MaterialIcons
-                           name="delete"
-                           size={25}
-                           color={theme.colors.delete}
-                        />
-                     </TouchableOpacity>
-                  </View>
-               </View>
-            )}
-         />
+               ))}
+         </View>
          <TouchableOpacity
             style={[
                !editProductId
                   ? commonStyles.saveButton
-                  : commonStyles.editButton
+                  : commonStyles.editButton,
+               { marginBottom: 20 }
             ]}
             onPress={handleSubmit}
          >
@@ -224,7 +232,7 @@ export default function RegisterProduct({
                {!editProductId ? 'Salvar' : 'Editar'}
             </Text>
          </TouchableOpacity>
-      </View>
+      </ScrollView>
    )
 }
 

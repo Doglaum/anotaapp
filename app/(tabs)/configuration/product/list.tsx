@@ -4,7 +4,8 @@ import {
    StyleSheet,
    FlatList,
    TouchableOpacity,
-   Alert
+   Alert,
+   ScrollView
 } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
 import { commonStyles, theme } from '@/theme'
@@ -76,58 +77,50 @@ export default function Products() {
             rota="(tabs)/configuration/product/register/"
             style={{ marginBottom: 10 }}
          />
-         <FlatList<Product>
-            data={filteredProducts}
-            keyExtractor={item => item.productId.toString()}
-            renderItem={({ item }) => (
-               <View style={commonStyles.listItem}>
-                  <View style={{ flex: 1, flexShrink: 1 }}>
-                     <Text style={styles.productName}>{item.name}</Text>
-                     {item.description ? (
-                        <Text
-                           style={{ fontWeight: '300' }}
-                           ellipsizeMode="tail"
-                           numberOfLines={1}
-                        >
-                           {item.description}
+         <ScrollView keyboardShouldPersistTaps="handled" style={{ flex: 1 }}>
+            {filteredProducts &&
+               filteredProducts.map((item, index) => (
+                  <View key={index} style={commonStyles.listItem}>
+                     <View style={{ flex: 1, flexShrink: 1 }}>
+                        <Text style={styles.productName}>{item.name}</Text>
+                        {item.description ? (
+                           <Text
+                              style={{ fontWeight: '300' }}
+                              ellipsizeMode="tail"
+                              numberOfLines={2}
+                           >
+                              {item.description}
+                           </Text>
+                        ) : null}
+                        <Text style={styles.productPrice}>
+                           R$ {item.price.toFixed(2)}
                         </Text>
-                     ) : null}
-                     <Text style={styles.productPrice}>
-                        R$ {item.price.toFixed(2)}
-                     </Text>
+                     </View>
+                     <View style={[styles.productActions, { gap: 20 }]}>
+                        <TouchableOpacity
+                           onPress={() =>
+                              router.push(
+                                 `/configuration/product/${item.productId}`
+                              )
+                           }
+                        >
+                           <MaterialIcons
+                              name="edit"
+                              size={24}
+                              color={theme.colors.edit}
+                           />
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => handleDelete(item)}>
+                           <MaterialIcons
+                              name="delete"
+                              size={24}
+                              color={theme.colors.delete}
+                           />
+                        </TouchableOpacity>
+                     </View>
                   </View>
-                  <View></View>
-                  <View style={[styles.productActions]}>
-                     <TouchableOpacity
-                        onPress={() =>
-                           router.push(
-                              `/configuration/product/${item.productId}`
-                           )
-                        }
-                     >
-                        <MaterialIcons
-                           name="edit"
-                           size={24}
-                           color={theme.colors.edit}
-                        />
-                     </TouchableOpacity>
-                     <TouchableOpacity onPress={() => handleDelete(item)}>
-                        <MaterialIcons
-                           name="delete"
-                           size={24}
-                           color={theme.colors.delete}
-                        />
-                     </TouchableOpacity>
-                  </View>
-               </View>
-            )}
-            ListEmptyComponent={
-               <EmptyList
-                  iconName="restaurant"
-                  text="Nenhum produto cadastrado"
-               />
-            }
-         />
+               ))}
+         </ScrollView>
       </View>
    )
 }

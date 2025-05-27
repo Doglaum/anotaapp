@@ -20,7 +20,7 @@ export class Client {
    phoneNumber: string
 
    @OneToMany(() => Address, address => address.client, {
-      cascade: true,
+      cascade: false,
       nullable: true
    })
    addresses: Address[]
