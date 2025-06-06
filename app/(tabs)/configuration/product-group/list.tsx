@@ -1,4 +1,4 @@
-import { FormSearchInput } from '@/components'
+import { FormSearchInput, useConfirmModal } from '@/components'
 import { ProductGroup } from '@/database/models'
 import { ProductGroupService } from '@/services/ProductGroupService'
 import { commonStyles, theme } from '@/theme'
@@ -15,6 +15,7 @@ import {
 import { MaterialIcons } from '@expo/vector-icons'
 
 export default function TabLayout() {
+   const { confirm, Confirm } = useConfirmModal()
    const productGroupService = new ProductGroupService()
    const [productGroupList, setProductGroupList] = useState<ProductGroup[]>([])
    const [filteredProductGroupList, setFilteredProductGroupList] = useState<
@@ -42,6 +43,24 @@ export default function TabLayout() {
       setFilteredProductGroupList(filtered)
    }
 
+   const handleDelete = async (productGroup: ProductGroup) => {
+      const result = await confirm(
+         `Deseja remover o grupo de produtos ${productGroup.name}?`
+      )
+      console.log('result', result)
+      if (result) {
+         deleteProduct(productGroup)
+      }
+   }
+
+   const deleteProduct = async (productGroup: ProductGroup) => {
+      const newList = await productGroupService.delete(
+         productGroup.productGroupId
+      )
+      setProductGroupList(() => newList)
+      setFilteredProductGroupList(() => newList)
+   }
+
    return (
       <View style={commonStyles.container}>
          <FormSearchInput
@@ -49,9 +68,9 @@ export default function TabLayout() {
             onChange={handleSearch}
             rota="(tabs)/configuration/product-group/register"
          />
-         {productGroupList && !loading ? (
-            <ScrollView>
-               {productGroupList.map((item, index) => (
+         {filteredProductGroupList && !loading ? (
+            <ScrollView keyboardShouldPersistTaps="handled">
+               {filteredProductGroupList.map((item, index) => (
                   <View key={index} style={commonStyles.listItem}>
                      <View style={{ flex: 1, flexShrink: 1 }}>
                         <Text style={styles.productName}>{item.name}</Text>
@@ -70,7 +89,7 @@ export default function TabLayout() {
                               color={theme.colors.edit}
                            />
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {}}>
+                        <TouchableOpacity onPress={() => handleDelete(item)}>
                            <MaterialIcons
                               name="delete"
                               size={24}
@@ -80,6 +99,7 @@ export default function TabLayout() {
                      </View>
                   </View>
                ))}
+               {Confirm}
             </ScrollView>
          ) : (
             <View

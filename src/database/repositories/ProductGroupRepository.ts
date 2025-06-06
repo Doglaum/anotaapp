@@ -10,8 +10,8 @@ export class ProductGroupRepository {
    }
 
    async create(ProductGroup: Partial<ProductGroup>): Promise<ProductGroup> {
-      const newIngredient = this.repository.create(ProductGroup)
-      return await this.repository.save(newIngredient)
+      //const newIngredient = this.repository.create(ProductGroup)
+      return await this.repository.save(ProductGroup)
    }
 
    async findAll(): Promise<ProductGroup[]> {
@@ -36,6 +36,6 @@ export class ProductGroupRepository {
    }
 
    async delete(id: number): Promise<void> {
-      await this.repository.softDelete(id)
+      await this.repository.delete(id)
    }
 }

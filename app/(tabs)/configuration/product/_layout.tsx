@@ -19,7 +19,7 @@ export default function TabLayout() {
          <Stack.Screen
             name="register"
             options={{
-               title: 'Cadastrar Produto'
+               title: 'Cadastrar produto'
             }}
          />
          <Stack.Screen

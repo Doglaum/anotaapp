@@ -10,11 +10,16 @@ export class ProductGroupService {
    }
 
    async save(productGroup: Partial<ProductGroup>): Promise<ProductGroup> {
+      let newIngredient = {} as ProductGroup
       if (!productGroup.name) {
          errorToast('Nome é obrigatório')
          throw Error('ProductGroup.name is required')
       }
-      const newIngredient = await this.repository.create(productGroup)
+      try {
+         newIngredient = await this.repository.create(productGroup)
+      } catch (error) {
+         console.log(error)
+      }
       if (newIngredient) {
          successToast('Grupo cadastrado com sucesso')
       } else {

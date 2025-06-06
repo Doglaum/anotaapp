@@ -2,24 +2,21 @@ import {
    View,
    Text,
    StyleSheet,
-   FlatList,
    TouchableOpacity,
-   ScrollView,
-   Alert
+   ScrollView
 } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
 import { commonStyles, theme } from '@/theme'
-import { Stack, useRouter } from 'expo-router'
+import { useRouter } from 'expo-router'
 import { useState, useCallback } from 'react'
 import { Client } from '@/database/models/Client'
 import { ClientService } from '@/services/ClientService'
-import { EmptyList } from '@/components/EmptyList'
 import { useFocusEffect } from 'expo-router'
 import { FormSearchInput } from '@/components/form-inputs/FormSearchInput'
-import { successToast } from '@/components'
-import { SuccessToast } from 'react-native-toast-message'
+import { successToast, useConfirmModal } from '@/components'
 
 export default function Clients() {
+   const { confirm, Confirm } = useConfirmModal()
    const router = useRouter()
    const [clients, setClients] = useState<Client[]>([])
    const [filteredClients, setFilteredClients] = useState<Client[]>([])
@@ -61,20 +58,13 @@ export default function Clients() {
       setFilteredClients(filteredClients)
    }
 
-   const deleteClientHandle = (clientToRemove: Client) => {
-      Alert.alert(
-         'Atenção!',
-         `Deseja remover o cliente ${clientToRemove.name}?`,
-         [
-            { text: 'Não' },
-            {
-               text: 'Sim',
-               onPress: () => {
-                  handleDelete(clientToRemove.clientId)
-               }
-            }
-         ]
+   const deleteClientHandle = async (clientToRemove: Client) => {
+      const result = await confirm(
+         `Deseja remover o cliente ${clientToRemove.name}?`
       )
+      if (result) {
+         handleDelete(clientToRemove.clientId)
+      }
    }
 
    return (
@@ -131,6 +121,7 @@ export default function Clients() {
                      </View>
                   </View>
                ))}
+            {Confirm}
          </ScrollView>
       </View>
    )

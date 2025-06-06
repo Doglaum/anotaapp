@@ -3,7 +3,6 @@ import {
    Text,
    StyleSheet,
    TouchableOpacity,
-   Alert,
    TextInput,
    ScrollView
 } from 'react-native'
@@ -14,7 +13,12 @@ import { ProductService } from '@/services/'
 import { useRouter } from 'expo-router'
 import CreateIngredientsModal from './components/CreateIngredientsModal'
 import { Ingredient } from '@/database/models'
-import { FormTextInput, FormCurrencyInput, successToast } from '@/components/'
+import {
+   FormTextInput,
+   FormCurrencyInput,
+   successToast,
+   useConfirmModal
+} from '@/components/'
 import { MaterialIcons } from '@expo/vector-icons'
 import CopyIngredientsModal from './components/CopyIngredientsModal'
 
@@ -23,7 +27,7 @@ export default function RegisterProduct({
 }: {
    editProductId: number
 }) {
-   const viewRef = useRef<TextInput>(null)
+   const { confirm, Confirm } = useConfirmModal()
    const router = useRouter()
    const productService = new ProductService()
    const [product, setProduct] = useState<Partial<Product>>({
@@ -67,22 +71,17 @@ export default function RegisterProduct({
       }))
    }
 
-   const removeIngredient = (removeIngredient: Partial<Ingredient>) => {
-      Alert.alert('Atenção!', `Deseja remover ${removeIngredient.name}`, [
-         {
-            text: 'Sim',
-            onPress: () => {
-               setProduct(prev => ({
-                  ...prev,
-                  ingredients: prev.ingredients?.filter(
-                     ingredient => ingredient !== removeIngredient
-                  )
-               }))
-               successToast('Ingrediente removido com sucesso!')
-            }
-         },
-         { text: 'Não' }
-      ])
+   const removeIngredient = async (removeIngredient: Partial<Ingredient>) => {
+      const result = await confirm(`Deseja remover ${removeIngredient.name}`)
+      if (result) {
+         setProduct(prev => ({
+            ...prev,
+            ingredients: prev.ingredients?.filter(
+               ingredient => ingredient !== removeIngredient
+            )
+         }))
+         successToast('Ingrediente removido com sucesso!')
+      }
    }
 
    const copyIngredients = (ingredients: Ingredient[]) => {
@@ -92,24 +91,17 @@ export default function RegisterProduct({
       }))
    }
 
-   const removeAllIngredients = () => {
-      Alert.alert(
-         'Atenção!',
-         `Deseja remover todos os ingredientes do produto ?`,
-         [
-            {
-               text: 'Sim',
-               onPress: () => {
-                  setProduct(prev => ({
-                     ...prev,
-                     ingredients: []
-                  }))
-                  successToast('Ingrediente removido com sucesso!')
-               }
-            },
-            { text: 'Não' }
-         ]
+   const removeAllIngredients = async () => {
+      const result = await confirm(
+         `Deseja remover todos os ingredientes do produto ?`
       )
+      if (result) {
+         setProduct(prev => ({
+            ...prev,
+            ingredients: []
+         }))
+         successToast('Ingrediente removido com sucesso!')
+      }
    }
 
    return (
@@ -179,7 +171,7 @@ export default function RegisterProduct({
          <View>
             {product.ingredients &&
                product.ingredients.map((item, index) => (
-                  <View style={[commonStyles.listItem]}>
+                  <View key={index} style={[commonStyles.listItem]}>
                      <View
                         style={{
                            alignItems: 'center',
@@ -218,6 +210,7 @@ export default function RegisterProduct({
                      </View>
                   </View>
                ))}
+            {Confirm}
          </View>
          <TouchableOpacity
             style={[

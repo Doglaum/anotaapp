@@ -2,9 +2,7 @@ import {
    View,
    Text,
    StyleSheet,
-   FlatList,
    TouchableOpacity,
-   Alert,
    ScrollView
 } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
@@ -14,10 +12,10 @@ import { useState, useCallback } from 'react'
 import { Product } from '@/database/models/Product'
 import { ProductService } from '@/services/ProductService'
 import { useFocusEffect } from 'expo-router'
-import { EmptyList } from '@/components/EmptyList'
-import { FormSearchInput } from '@/components/'
+import { FormSearchInput, successToast, useConfirmModal } from '@/components/'
 
 export default function Products() {
+   const { confirm, Confirm } = useConfirmModal()
    const router = useRouter()
    const [products, setProducts] = useState<Product[]>([])
    const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
@@ -42,15 +40,10 @@ export default function Products() {
    )
 
    const handleDelete = async (product: Product) => {
-      Alert.alert('Atenção!', `Deseja remover ${product.name}`, [
-         {
-            text: 'Sim',
-            onPress: () => {
-               deleteProduct(product)
-            }
-         },
-         { text: 'Não' }
-      ])
+      const result = await confirm(`Deseja remover ${product.name}`)
+      if (result) {
+         deleteProduct(product)
+      }
    }
 
    const deleteProduct = async (product: Product) => {
@@ -58,6 +51,7 @@ export default function Products() {
       const newList = products.filter(p => p.productId !== product.productId)
       setProducts(() => newList)
       setFilteredProducts(() => newList)
+      successToast('Produto removido com sucesso!')
    }
 
    const handleSearch = (text: string) => {
@@ -120,6 +114,7 @@ export default function Products() {
                      </View>
                   </View>
                ))}
+            {Confirm}
          </ScrollView>
       </View>
    )

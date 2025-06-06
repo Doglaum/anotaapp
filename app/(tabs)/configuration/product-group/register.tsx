@@ -7,7 +7,7 @@ import {
    ActivityIndicator
 } from 'react-native'
 import { useEffect, useState } from 'react'
-import { router, Stack } from 'expo-router'
+import { router } from 'expo-router'
 import { commonStyles, theme } from '@/theme'
 import { FormTextInput } from '@/components'
 import { Product, ProductGroup } from '@/database/models'
@@ -26,8 +26,6 @@ const RegisterProductGroup = ({
    const [group, setGroup] = useState<Partial<ProductGroup>>(
       {} as Partial<ProductGroup>
    )
-
-   useEffect(() => {}, [])
 
    useEffect(() => {
       if (editProductGroupId) {
@@ -58,15 +56,29 @@ const RegisterProductGroup = ({
       }))
    }
 
-   const addProductToGroup = (product: Product) => {
-      setGroup(prev => ({
-         ...prev,
-         products: [...(prev.products || []), product]
-      }))
-      console.log(group)
+   const toggleProductInGroup = (product: Product) => {
+      setGroup(prev => {
+         const exists = prev.products?.some(
+            p => p.productId === product.productId
+         )
+         if (exists) {
+            return {
+               ...prev,
+               products: prev.products?.filter(
+                  p => p.productId !== product.productId
+               )
+            }
+         } else {
+            return {
+               ...prev,
+               products: [...(prev.products || []), product]
+            }
+         }
+      })
    }
 
    const handleSubmit = async () => {
+      console.log(group)
       setLoading(true)
       try {
          await productGroupService.save(group)
@@ -79,11 +91,6 @@ const RegisterProductGroup = ({
    }
    return (
       <View style={commonStyles.container}>
-         <Stack.Screen
-            options={{
-               title: 'Criar grupo'
-            }}
-         />
          <FormTextInput
             label="Nome do grupo"
             name="name"
@@ -97,12 +104,16 @@ const RegisterProductGroup = ({
                   const isSelected = group.products?.find(
                      product => product.productId == item.productId
                   )
+                  const alreadyHaveGroup = item.productGroup
                   return (
                      <TouchableOpacity
-                        onPress={() => addProductToGroup(item)}
+                        onPress={() => toggleProductInGroup(item)}
                         key={index}
                         style={[
                            commonStyles.listItem,
+                           alreadyHaveGroup && {
+                              backgroundColor: theme.colors.delete
+                           },
                            isSelected && {
                               backgroundColor: theme.colors.primary
                            }
@@ -112,7 +123,7 @@ const RegisterProductGroup = ({
                            <Text
                               style={[
                                  styles.productName,
-                                 isSelected && {
+                                 (isSelected || alreadyHaveGroup) && {
                                     color: theme.colors.white
                                  }
                               ]}
@@ -123,7 +134,7 @@ const RegisterProductGroup = ({
                               <Text
                                  style={[
                                     { fontWeight: '300' },
-                                    isSelected && {
+                                    (isSelected || alreadyHaveGroup) && {
                                        color: theme.colors.white
                                     }
                                  ]}
@@ -136,7 +147,7 @@ const RegisterProductGroup = ({
                            <Text
                               style={[
                                  styles.productPrice,
-                                 isSelected && {
+                                 (isSelected || alreadyHaveGroup) && {
                                     color: theme.colors.white
                                  }
                               ]}

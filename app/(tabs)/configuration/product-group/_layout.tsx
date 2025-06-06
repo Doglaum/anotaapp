@@ -11,9 +11,21 @@ const TabLayout = () => {
          }}
       >
          <Stack.Screen
-            name="index"
+            name="list"
             options={{
-               title: 'Agrupar Produto'
+               title: 'Agrupar produto'
+            }}
+         />
+         <Stack.Screen
+            name="register"
+            options={{
+               title: 'Criar grupo'
+            }}
+         />
+         <Stack.Screen
+            name="[id]"
+            options={{
+               title: 'Editar grupo'
             }}
          />
       </Stack>

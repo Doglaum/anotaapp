@@ -19,13 +19,13 @@ export default function TabLayout() {
          <Stack.Screen
             name="register"
             options={{
-               title: 'Cadastrar Cliente'
+               title: 'Cadastrar cliente'
             }}
          />
          <Stack.Screen
             name="[id]"
             options={{
-               title: 'Editar Cliente'
+               title: 'Editar cliente'
             }}
          />
       </Stack>

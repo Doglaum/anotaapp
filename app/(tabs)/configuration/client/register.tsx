@@ -3,8 +3,6 @@ import {
    Text,
    StyleSheet,
    TouchableOpacity,
-   FlatList,
-   Alert,
    ScrollView
 } from 'react-native'
 import { useEffect, useState } from 'react'
@@ -13,16 +11,17 @@ import { Address, Client } from '@/database/models'
 import { ClientService } from '@/services/ClientService'
 import { useRouter } from 'expo-router'
 import {
-   EmptyList,
    FormTextInput,
    FormPhoneInput,
    CreateAddressModal,
-   successToast
+   successToast,
+   useConfirmModal
 } from '@/components'
 import { formStyle } from '@/components/form-inputs/styles'
 import { MaterialIcons } from '@expo/vector-icons'
 
 const RegisterClient = ({ editClientId }: { editClientId: number }) => {
+   const { confirm, Confirm } = useConfirmModal()
    const router = useRouter()
    const clientService = new ClientService()
 
@@ -61,22 +60,19 @@ const RegisterClient = ({ editClientId }: { editClientId: number }) => {
       }))
    }
 
-   const deleteAddress = (addressToRemove: Partial<Address>) => {
-      Alert.alert('Atenção!', `Deseja remover o endereço?`, [
-         { text: 'Não' },
-         {
-            text: 'Sim',
-            onPress: () => {
-               setClient(prev => ({
-                  ...prev,
-                  addresses: prev.addresses?.filter(
-                     address => address !== addressToRemove
-                  )
-               }))
-               successToast('Endereço removido com sucesso!')
-            }
-         }
-      ])
+   const deleteAddress = async (addressToRemove: Partial<Address>) => {
+      const result = await confirm(
+         `Deseja remover o endereço ${addressToRemove.street}, ${addressToRemove.number}?`
+      )
+      if (result) {
+         setClient(prev => ({
+            ...prev,
+            addresses: prev.addresses?.filter(
+               address => address !== addressToRemove
+            )
+         }))
+         successToast('Endereço removido com sucesso!')
+      }
    }
 
    return (
@@ -185,6 +181,7 @@ const RegisterClient = ({ editClientId }: { editClientId: number }) => {
                      </View>
                   </View>
                ))}
+            {Confirm}
          </ScrollView>
          <TouchableOpacity
             style={[commonStyles.saveButton, { marginTop: 'auto' }]}
