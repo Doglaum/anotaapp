@@ -33,9 +33,6 @@ export default function Products() {
             }
          }
          loadProducts()
-         return () => {
-            console.log('Saindo da aba Pedidos')
-         }
       }, [])
    )
 

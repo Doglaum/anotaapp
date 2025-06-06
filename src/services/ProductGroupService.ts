@@ -18,7 +18,7 @@ export class ProductGroupService {
       try {
          newIngredient = await this.repository.create(productGroup)
       } catch (error) {
-         console.log(error)
+         console.error(error)
       }
       if (newIngredient) {
          successToast('Grupo cadastrado com sucesso')

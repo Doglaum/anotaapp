@@ -29,13 +29,11 @@ const RegisterProductGroup = ({
 
    useEffect(() => {
       if (editProductGroupId) {
-         console.log(editProductGroupId)
          const searchProduct = async () => {
             setLoading(true)
             const editProductGroup = await productGroupService.findById(
                editProductGroupId
             )
-            console.log('editProduct', editProductGroup)
             setGroup(editProductGroup || {})
          }
          searchProduct()
@@ -78,13 +76,12 @@ const RegisterProductGroup = ({
    }
 
    const handleSubmit = async () => {
-      console.log(group)
       setLoading(true)
       try {
          await productGroupService.save(group)
          router.push('/configuration/product-group')
       } catch (error) {
-         console.log(error)
+         console.error(error)
       } finally {
          setLoading(false)
       }

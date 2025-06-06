@@ -79,9 +79,6 @@ const OrderProductStep = ({
             }
          }
          loadProdutos()
-         return () => {
-            console.log('pedido produto step')
-         }
       }, [])
    )
 

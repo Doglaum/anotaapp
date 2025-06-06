@@ -42,9 +42,6 @@ const AdditionalInformationsStep = ({
             }
          }
          loadSelectData()
-         return () => {
-            console.log('pedido produto step')
-         }
       }, [])
    )
 

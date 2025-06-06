@@ -33,11 +33,7 @@ export default function Clients() {
                console.error('Erro ao carregar clientes:', error)
             }
          }
-
          loadOrders()
-         return () => {
-            console.log('Saindo da aba Pedidos')
-         }
       }, [])
    )
 

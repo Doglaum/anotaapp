@@ -61,9 +61,6 @@ export default function Lista() {
             setOrders(orders)
          }
          loadOrders()
-         return () => {
-            console.log('Saindo da aba Pedidos')
-         }
       }, [])
    )
 

@@ -47,7 +47,6 @@ export default function TabLayout() {
       const result = await confirm(
          `Deseja remover o grupo de produtos ${productGroup.name}?`
       )
-      console.log('result', result)
       if (result) {
          deleteProduct(productGroup)
       }

@@ -44,7 +44,7 @@ export class OrderRepository {
       try {
          await this.repository.update(id, order)
       } catch (error) {
-         console.log(error)
+         console.error(error)
       }
       return await this.findById(id)
    }

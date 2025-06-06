@@ -70,7 +70,6 @@ export const PrinterProvider: React.FC<{ children: React.ReactNode }> = ({
          }
          setIsDisconvering(true)
          const devices = await BluetoothManager.scanDevices()
-         console.log(devices)
          const objectDevices = JSON.parse(devices.toString())
          setDevices(objectDevices)
       } catch (error) {

@@ -38,9 +38,6 @@ const ClientStep = ({
             }
          }
          loadClients()
-         return () => {
-            console.log('Saindo da aba Pedidos')
-         }
       }, [])
    )
 
