@@ -3,7 +3,8 @@ import {
    Text,
    StyleSheet,
    TouchableOpacity,
-   ScrollView
+   ScrollView,
+   ActivityIndicator
 } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
 import { commonStyles, theme } from '@/theme'
@@ -20,20 +21,23 @@ export default function Clients() {
    const router = useRouter()
    const [clients, setClients] = useState<Client[]>([])
    const [filteredClients, setFilteredClients] = useState<Client[]>([])
+   const [loading, setLoading] = useState<boolean>(false)
    const clientService = new ClientService()
 
    useFocusEffect(
       useCallback(() => {
-         const loadOrders = async () => {
+         const loadClients = async () => {
             try {
+               setLoading(true)
                const clients = await clientService.listAll()
                setClients(clients)
                setFilteredClients(clients)
+               setLoading(false)
             } catch (error) {
                console.error('Erro ao carregar clientes:', error)
             }
          }
-         loadOrders()
+         loadClients()
       }, [])
    )
 
@@ -42,7 +46,6 @@ export default function Clients() {
       const newList = clients.filter(p => p.clientId !== id)
       setClients(() => newList)
       setFilteredClients(() => newList)
-      successToast('Cliente removido com sucesso!')
    }
 
    const handleSearch = (text: string) => {
@@ -71,9 +74,9 @@ export default function Clients() {
             rota="/configuration/client/register"
             style={{ marginBottom: 20 }}
          />
-         <ScrollView keyboardShouldPersistTaps="handled">
-            {filteredClients &&
-               filteredClients.map((item, index) => (
+         {filteredClients && !loading ? (
+            <ScrollView keyboardShouldPersistTaps="handled">
+               {filteredClients.map((item, index) => (
                   <View key={index} style={commonStyles.listItem}>
                      <View>
                         <Text style={[styles.clientName]}>
@@ -117,8 +120,24 @@ export default function Clients() {
                      </View>
                   </View>
                ))}
-            {Confirm}
-         </ScrollView>
+               {Confirm}
+            </ScrollView>
+         ) : (
+            <View
+               style={{
+                  flex: 1,
+                  height: '100%',
+                  justifyContent: 'center',
+                  alignItems: 'center'
+               }}
+            >
+               <ActivityIndicator
+                  animating={loading}
+                  size="large"
+                  color={theme.colors.primary}
+               />
+            </View>
+         )}
       </View>
    )
 }

@@ -44,7 +44,14 @@ export class ClientService {
    }
 
    async delete(id: number): Promise<void> {
-      await this.repository.delete(id)
+      try {
+         await this.repository.delete(id)
+         successToast('Cliente removido com sucesso!')
+      } catch (error) {
+         console.error(error)
+         errorToast('Erro ao remover cliente')
+         throw new Error('Erro ao remover cliente')
+      }
    }
 
    private validate(cliente: Partial<Client> | Client) {

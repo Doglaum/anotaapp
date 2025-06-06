@@ -3,7 +3,8 @@ import {
    Text,
    StyleSheet,
    TouchableOpacity,
-   ScrollView
+   ScrollView,
+   ActivityIndicator
 } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
 import { commonStyles, theme } from '@/theme'
@@ -20,9 +21,11 @@ export default function Products() {
    const [products, setProducts] = useState<Product[]>([])
    const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
    const productService = new ProductService()
+   const [loading, setLoading] = useState<boolean>(false)
 
    useFocusEffect(
       useCallback(() => {
+         setLoading(true)
          const loadProducts = async () => {
             try {
                const products = await productService.listAll()
@@ -30,6 +33,8 @@ export default function Products() {
                setFilteredProducts(products)
             } catch (error) {
                console.error('Erro ao carregar produtos:', error)
+            } finally {
+               setLoading(false)
             }
          }
          loadProducts()
@@ -68,9 +73,9 @@ export default function Products() {
             rota="(tabs)/configuration/product/register/"
             style={{ marginBottom: 10 }}
          />
-         <ScrollView keyboardShouldPersistTaps="handled" style={{ flex: 1 }}>
-            {filteredProducts &&
-               filteredProducts.map((item, index) => (
+         {filteredProducts && !loading ? (
+            <ScrollView keyboardShouldPersistTaps="handled" style={{ flex: 1 }}>
+               {filteredProducts.map((item, index) => (
                   <View key={index} style={commonStyles.listItem}>
                      <View style={{ flex: 1, flexShrink: 1 }}>
                         <Text style={styles.productName}>{item.name}</Text>
@@ -111,8 +116,24 @@ export default function Products() {
                      </View>
                   </View>
                ))}
-            {Confirm}
-         </ScrollView>
+               {Confirm}
+            </ScrollView>
+         ) : (
+            <View
+               style={{
+                  flex: 1,
+                  height: '100%',
+                  justifyContent: 'center',
+                  alignItems: 'center'
+               }}
+            >
+               <ActivityIndicator
+                  animating={loading}
+                  size="large"
+                  color={theme.colors.primary}
+               />
+            </View>
+         )}
       </View>
    )
 }
