@@ -39,7 +39,7 @@ export class Product {
       eager: true
    })
    @JoinColumn()
-   productGroup: ProductGroup
+   productGroup: ProductGroup | null
 
    @DeleteDateColumn()
    deletedAt: Date

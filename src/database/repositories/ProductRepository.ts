@@ -57,4 +57,19 @@ export class ProductRepository {
          console.error(e)
       }
    }
+
+   async updateProductGroup(productIds: number[]): Promise<void> {
+      await this.repository
+         .createQueryBuilder()
+         .update(Product)
+         .set({ productGroup: null })
+         .where('productId IN (:...productIds)', { productIds })
+         .execute()
+   }
+
+   async updateMany(products: Partial<Product>[]): Promise<Product[]> {
+      const updatedProducts = await this.repository.save(products)
+      successToast('Produtos atualizados com sucesso!')
+      return updatedProducts
+   }
 }

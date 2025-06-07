@@ -1,6 +1,7 @@
 import { ProductRepository } from '../database/repositories'
 import { Product } from '../database/models/Product'
 import { errorToast, successToast } from '@/components'
+import { ProductGroup } from '@/database/models'
 
 export class ProductService {
    private repository: ProductRepository
@@ -58,5 +59,19 @@ export class ProductService {
          errorToast('Nome é obrigatório')
          throw new Error('Nome é obrigatório')
       }
+   }
+
+   async updateProductGroup(
+      productGroup: ProductGroup,
+      products: Product[]
+   ): Promise<void> {
+      await this.repository.updateProductGroup(
+         products.map(product => product.productId)
+      )
+      const productsWithGroup = products.map(product => ({
+         ...product,
+         productGroup: productGroup
+      }))
+      await this.repository.updateMany(productsWithGroup)
    }
 }

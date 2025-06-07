@@ -9,9 +9,9 @@ export class ProductGroupRepository {
       this.repository = AppDataSource.getRepository(ProductGroup)
    }
 
-   async create(ProductGroup: Partial<ProductGroup>): Promise<ProductGroup> {
-      //const newIngredient = this.repository.create(ProductGroup)
-      return await this.repository.save(ProductGroup)
+   async create(productGroup: Partial<ProductGroup>): Promise<ProductGroup> {
+      const newProductGroup = this.repository.create(productGroup)
+      return await this.repository.save(newProductGroup)
    }
 
    async findAll(): Promise<ProductGroup[]> {

@@ -1,32 +1,51 @@
 import { ProductGroupRepository } from '@/database/repositories'
 import { ProductGroup } from '@/database/models/'
 import { errorToast, successToast } from '@/components'
+import { ProductService } from './ProductService'
 
 export class ProductGroupService {
    private repository: ProductGroupRepository
+   private productService: ProductService
 
    constructor() {
       this.repository = new ProductGroupRepository()
+      this.productService = new ProductService()
    }
 
-   async save(productGroup: Partial<ProductGroup>): Promise<ProductGroup> {
-      let newIngredient = {} as ProductGroup
+   async save(
+      productGroup: Partial<ProductGroup>
+   ): Promise<ProductGroup | null> {
+      let newProductGroup:
+         | ProductGroup
+         | PromiseLike<ProductGroup | null>
+         | null = null
       if (!productGroup.name) {
          errorToast('Nome é obrigatório')
          throw Error('ProductGroup.name is required')
       }
       try {
-         newIngredient = await this.repository.create(productGroup)
+         const { products, ...groupData } = productGroup
+         if (groupData.productGroupId) {
+            newProductGroup = await this.repository.update(
+               groupData.productGroupId,
+               groupData
+            )
+         } else {
+            newProductGroup = await this.repository.create(groupData)
+         }
+         if (products && newProductGroup) {
+            this.productService.updateProductGroup(newProductGroup, products)
+         }
       } catch (error) {
          console.error(error)
       }
-      if (newIngredient) {
+      if (newProductGroup) {
          successToast('Grupo cadastrado com sucesso')
       } else {
-         throw new Error('Erro ao tentar cadastrar grupo')
          errorToast('Erro ao tentar cadastrar grupo')
+         throw new Error('Erro ao tentar cadastrar grupo')
       }
-      return newIngredient
+      return newProductGroup
    }
 
    async delete(id: number) {
