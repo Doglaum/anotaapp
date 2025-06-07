@@ -218,7 +218,7 @@ export const PrinterProvider: React.FC<{ children: React.ReactNode }> = ({
          await BluetoothEscposPrinter.printAndFeed(15)
          if (order.paymentStatus?.name) {
             await BluetoothEscposPrinter.printText(
-               `Situação: ${order.paymentStatus.name.toUpperCase()}\n\r`,
+               `Situacao: ${order.paymentStatus.name.toUpperCase()}\n\r`,
                {}
             )
          }

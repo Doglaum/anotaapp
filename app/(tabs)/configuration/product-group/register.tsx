@@ -42,7 +42,9 @@ const RegisterProductGroup = ({
          setLoading(true)
          const list = await productService.listAll()
          setProductList(list)
-         setLoading(false)
+         setTimeout(() => {
+            setLoading(false)
+         }, 1000)
       }
       getProducts()
    }, [])
@@ -79,7 +81,7 @@ const RegisterProductGroup = ({
       setLoading(true)
       try {
          await productGroupService.save(group)
-         router.push('/configuration/product-group')
+         router.back()
       } catch (error) {
          console.error(error)
       } finally {

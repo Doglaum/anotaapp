@@ -24,7 +24,7 @@ export default function PedidoForm() {
          >
             <TouchableOpacity
                style={[commonStyles.editButton, { width: '100%' }]}
-               onPress={() => router.push('(tabs)/create-order/pickupOrder')}
+               onPress={() => router.replace('(tabs)/create-order/pickupOrder')}
             >
                <View>
                   <Text style={commonStyles.editButtonText}>Balcão</Text>
@@ -32,7 +32,9 @@ export default function PedidoForm() {
             </TouchableOpacity>
             <TouchableOpacity
                style={[commonStyles.addButton, { width: '100%' }]}
-               onPress={() => router.push('(tabs)/create-order/deliveryOrder')}
+               onPress={() =>
+                  router.replace('(tabs)/create-order/deliveryOrder')
+               }
             >
                <View>
                   <Text style={commonStyles.addButtonText}>Entrega</Text>

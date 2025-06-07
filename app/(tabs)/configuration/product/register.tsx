@@ -54,7 +54,7 @@ export default function RegisterProduct({
       } else {
          await productService.save(product as Product)
       }
-      router.push('/configuration/product/list')
+      router.back()
    }
 
    const changeHandle = (name: string, value: any) => {

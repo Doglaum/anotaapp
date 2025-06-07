@@ -57,7 +57,7 @@ const PedidoForm = () => {
    const handleSubmit = async () => {
       const newOrder = await orderService.createOrder(order)
       print(newOrder as Order)
-      router.push('(tabs)/create-order')
+      router.replace('(tabs)/create-order')
    }
 
    useEffect(() => {

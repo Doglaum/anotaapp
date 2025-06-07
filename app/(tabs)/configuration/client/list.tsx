@@ -14,7 +14,7 @@ import { Client } from '@/database/models/Client'
 import { ClientService } from '@/services/ClientService'
 import { useFocusEffect } from 'expo-router'
 import { FormSearchInput } from '@/components/form-inputs/FormSearchInput'
-import { successToast, useConfirmModal } from '@/components'
+import { useConfirmModal } from '@/components'
 
 export default function Clients() {
    const { confirm, Confirm } = useConfirmModal()

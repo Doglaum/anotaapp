@@ -51,7 +51,7 @@ const PedidoForm = () => {
    const handleSubmit = async () => {
       const newOrder = await orderService.createOrder(order)
       print(newOrder as Order)
-      router.push('(tabs)/create-order')
+      router.replace('(tabs)/create-order')
    }
 
    useEffect(() => {
@@ -166,7 +166,8 @@ const PedidoForm = () => {
                flexDirection: 'row',
                justifyContent: 'space-around',
                paddingBottom: 10,
-               paddingTop: 10
+               paddingTop: 10,
+               backgroundColor: theme.colors.white
             }}
          >
             <View>

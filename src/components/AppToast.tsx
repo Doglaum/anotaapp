@@ -14,8 +14,7 @@ export const AppToast = () => {
          config={toastMessageConfig}
          position="top"
          topOffset={0}
-         visibilityTime={3000}
-         swipeable={true}
+         visibilityTime={1500}
       />
    )
 }
