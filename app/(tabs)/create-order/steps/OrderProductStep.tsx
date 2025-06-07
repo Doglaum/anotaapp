@@ -1,22 +1,10 @@
-import {
-   View,
-   Text,
-   StyleSheet,
-   FlatList,
-   TouchableOpacity,
-   Modal,
-   Button,
-   TextInput,
-   ScrollView
-} from 'react-native'
+import { View, ScrollView } from 'react-native'
 import { commonStyles, theme } from '@/theme'
 import { useState, useCallback, useEffect } from 'react'
 import { Order, Product, OrderProduct, Ingredient } from '@/database/models'
 import { ProductService } from '@/services/ProductService'
 import { useFocusEffect } from 'expo-router'
-import { EmptyList } from '@/components/EmptyList'
-import { FormSearchInput, successToast } from '@/components'
-import { MaterialIcons } from '@expo/vector-icons'
+import { successToast } from '@/components'
 import CreateOrderProduct from '../components/CreateOrderProduct'
 import { List } from 'react-native-paper'
 
@@ -119,50 +107,28 @@ const OrderProductStep = ({
       )
    }
    return (
-      <View style={commonStyles.container}>
-         <ScrollView keyboardShouldPersistTaps="handled">
-            <List.AccordionGroup>
-               {groupedProducts.map(group => (
-                  <List.Accordion
-                     key={group.groupId}
-                     title={group.groupName}
-                     id={group.groupId.toString()}
-                  >
-                     {group.products.map(product => {
-                        const count = getProductCount(product.productId)
-                        return (
-                           <List.Item
-                              key={product.productId}
-                              title={
-                                 count > 0
-                                    ? `${product.name}  (x${count})`
-                                    : product.name
-                              }
-                              description={`R$ ${product.price.toFixed(2)}`}
-                              onPress={() => handleOpenModal(product)}
-                              style={{
-                                 paddingLeft: 16,
-                                 backgroundColor: theme.colors.white
-                              }}
-                              titleStyle={{
-                                 fontSize: 16,
-                                 color: theme.colors.primary
-                              }}
-                           />
-                        )
-                     })}
-                  </List.Accordion>
-               ))}
-               {ungroupedProducts.length > 0 &&
-                  ungroupedProducts.map(product => {
+      <ScrollView style={commonStyles.container}>
+         <List.AccordionGroup>
+            {groupedProducts.map(group => (
+               <List.Accordion
+                  key={group.groupId}
+                  title={group.groupName}
+                  id={group.groupId.toString()}
+               >
+                  {group.products.map(product => {
                      const count = getProductCount(product.productId)
                      return (
                         <List.Item
                            key={product.productId}
-                           title={product.name}
+                           title={
+                              count > 0
+                                 ? `${product.name}  (x${count})`
+                                 : product.name
+                           }
                            description={`R$ ${product.price.toFixed(2)}`}
                            onPress={() => handleOpenModal(product)}
                            style={{
+                              paddingLeft: 16,
                               backgroundColor: theme.colors.white
                            }}
                            titleStyle={{
@@ -172,15 +138,39 @@ const OrderProductStep = ({
                         />
                      )
                   })}
-            </List.AccordionGroup>
-         </ScrollView>
+               </List.Accordion>
+            ))}
+            {ungroupedProducts.length > 0 &&
+               ungroupedProducts.map(product => {
+                  const count = getProductCount(product.productId)
+                  return (
+                     <List.Item
+                        key={product.productId}
+                        title={
+                           count > 0
+                              ? `${product.name}  (x${count})`
+                              : product.name
+                        }
+                        description={`R$ ${product.price.toFixed(2)}`}
+                        onPress={() => handleOpenModal(product)}
+                        style={{
+                           backgroundColor: theme.colors.white
+                        }}
+                        titleStyle={{
+                           fontSize: 16,
+                           color: theme.colors.primary
+                        }}
+                     />
+                  )
+               })}
+         </List.AccordionGroup>
          <CreateOrderProduct
             modalVisible={modalVisible}
             onClose={() => handleClose()}
             product={selectedProduct}
             save={handleSave}
          />
-      </View>
+      </ScrollView>
    )
 }
 export default OrderProductStep
